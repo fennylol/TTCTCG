@@ -1,24 +1,23 @@
 extends Node3D
 
-signal Results(ExpansionID : DATA.ExpansionIDs, CardList : Array)
+signal Results(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card])
 
 const STARTING_PACK_HEIGHT: float = 5.0
 
-func _ready() -> void:
-	add_pack()
 
-func add_pack():
+func DEBUG_add_pack():
 	var pull: Dictionary = determine_pack_pull(DATA.ExpansionIDs.TEST_SET)
 	var pack_rarity: DATA.Rarities = pull["RARITY"]
 	var pack_content: Array[Card] = pull["CONTENT"]
 	
 	print("generated a ", DATA.Rarities.find_key(pack_rarity), " pack")
+	Results.emit(DATA.ExpansionIDs.TEST_SET, pack_content)
 	
 	var pack: Pack = Pack.new(pack_rarity, pack_content)
 	pack.set_name(DATA.Rarities.find_key(pack_rarity).to_lower()+"_pack_"+str(int(RNG.random_value()*1000)))
 	pack.position.y = STARTING_PACK_HEIGHT
 	add_child(pack)
-	pack.finished.connect(add_pack)
+	pack.finished.connect(DEBUG_add_pack)
 
 
 ## [b]Purpose[/b]: generates a pack from a requested expansion[br]

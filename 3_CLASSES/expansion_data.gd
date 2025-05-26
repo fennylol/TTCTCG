@@ -9,7 +9,9 @@ enum ExpansionIDs {TEST_SET}
 ## the fields of [member ExpansionData] 
 enum ExpansionDataFields {PACK_RARITY_ODDS, CONTENT_RARITY_ODDS, PACK_RARITY_CONTENT_COUNTS}
 ## the fields of [member ExpansionContent]
-enum ExpansionContentFields {NAME, RARITY, IMAGE}
+enum ExpansionContentFields {NAME, TYPE, RARITY, IMAGE}
+## the types of content. 
+enum ContentTypes {CRITTER, WEAPON, CONSUMABLE}
 
 ## metadata about expansions. contains pack and content rarity and content count per pack.[br]
 ## see [member ExpansionContent] for pack contents. 
@@ -40,43 +42,61 @@ const ExpansionContent: Dictionary = {
 		Rarities.COMMON : [
 			{
 				ExpansionContentFields.NAME : "Glormpus The Great Frog", 
+				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
 				ExpansionContentFields.RARITY : Rarities.COMMON, 
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/0_Common/GlormpusTheGreatFrog.png"
-			}
+				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/0_Common/GlormpusTheGreatFrog.png",
+			},
+			{
+				ExpansionContentFields.NAME : "Rat", 
+				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
+				ExpansionContentFields.RARITY : Rarities.COMMON, 
+				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/0_Common/Rat.png",
+			},
 		],
 		Rarities.UNCOMMON : [
 			{
 				ExpansionContentFields.NAME : "Greg", 
+				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
 				ExpansionContentFields.RARITY : Rarities.UNCOMMON, 
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/1_Uncommon/Greg.png"
+				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/1_Uncommon/Greg.png",
 			}
 		],
 		Rarities.RARE : [
 			{
 				ExpansionContentFields.NAME : "The Weird Fish", 
+				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
 				ExpansionContentFields.RARITY : Rarities.RARE, 
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/2_Rare/Weird_Fish.png"
+				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/2_Rare/Weird_Fish.png",
 			}
 		],
 		Rarities.EPIC : [
 			{
 				ExpansionContentFields.NAME : "The Weirder Fish", 
+				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
 				ExpansionContentFields.RARITY : Rarities.EPIC, 
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/3_Epic/Weirder_Fish.png"
+				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/3_Epic/Weirder_Fish.png",
 			}
 		],
 		Rarities.LEGENDARY : [
 			{
 				ExpansionContentFields.NAME : "Birb", 
+				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
 				ExpansionContentFields.RARITY : Rarities.LEGENDARY, 
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/4_Legendary/Birb.png"
+				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/4_Legendary/Birb.png",
 			}
 		],
 		Rarities.HOLY_MOLY : [
 			{
 				ExpansionContentFields.NAME : "The Man of Mud", 
+				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
 				ExpansionContentFields.RARITY : Rarities.HOLY_MOLY, 
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/5_Holy_Moly/The_Man_of_Mud.png"
+				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/5_Holy_Moly/The_Man_of_Mud.png",
+			},
+			{
+				ExpansionContentFields.NAME : "Snel", 
+				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
+				ExpansionContentFields.RARITY : Rarities.HOLY_MOLY, 
+				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/5_Holy_Moly/Snel.png",
 			}
 		]
 	}
@@ -126,11 +146,31 @@ static func get_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Ra
 	#return ExpansionContent[ExpansionID][ContentRarity][ContentIndex]
 	var data : Dictionary = ExpansionContent[ExpansionID][ContentRarity][ContentIndex]
 	var c : Card = Card.new(
+		ContentIndex,
 		data[ExpansionContentFields.NAME],
+		data[ExpansionContentFields.TYPE],
 		data[ExpansionContentFields.RARITY],
 		load(data[ExpansionContentFields.IMAGE])
-		)
+	)
 	return c
+
+static func DEBUG_print_expansion_EVs(ExpansionID : ExpansionIDs) -> void:
+	var expected_values: Array[float] = [0, 0, 0, 0, 0, 0]
+	
+	for pack_tier in range(Rarities.size()):
+		var pack_probability = ExpansionData[ExpansionID][ExpansionDataFields.PACK_RARITY_ODDS][pack_tier]
+		var pack_card_count = ExpansionData[ExpansionID][ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS][pack_tier]
+	
+		for card_tier in range(Rarities.size()):
+			var card_probability = ExpansionData[ExpansionID][ExpansionDataFields.CONTENT_RARITY_ODDS][pack_tier][card_tier]
+			expected_values[card_tier] += pack_probability * pack_card_count * card_probability
+	
+	print("The average pack from ", ExpansionIDs.find_key(ExpansionID), " will contain:")
+	for rarity in Rarities:
+		var r = Rarities[rarity]
+		var str: String = "├─ " if r != Rarities.HOLY_MOLY else "╰─ "
+		print(str, expected_values[r], " ", rarity, " cards")
+	print("and an average of ", array_sum(expected_values), " total cards.\n")
 
 
 ## [b]Purpose[/b]: sums all elements of an array of floats. Used for internal testing.[br]

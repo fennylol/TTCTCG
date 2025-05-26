@@ -1,13 +1,18 @@
 extends MeshInstance3D
 class_name Card
 
+var SetID: int
 var Name: String
+var Type: DATA.ContentTypes
 var Rarity: DATA.Rarities
 var Img: Texture2D
 
-func _init(N: String, R: DATA.Rarities, I: Texture2D) -> void:
+
+func _init(ID: int, N: String, T: DATA.ContentTypes, R: DATA.Rarities, I: Texture2D) -> void:
 	# save information
+	SetID = ID
 	Name = N
+	Type = T
 	Rarity = R
 	Img = I
 	set_name(Name.replace(" ", "_").to_lower()+"_"+str(int(RNG.random_value()*1000)))
