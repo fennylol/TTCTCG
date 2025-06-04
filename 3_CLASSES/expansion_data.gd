@@ -9,7 +9,7 @@ enum ExpansionIDs {TEST_SET}
 ## the fields of [member ExpansionData] 
 enum ExpansionDataFields {PACK_RARITY_ODDS, CONTENT_RARITY_ODDS, PACK_RARITY_CONTENT_COUNTS}
 ## the fields of [member ExpansionContent]
-enum ExpansionContentFields {NAME, TYPE, RARITY, IMAGE}
+enum ExpansionContentFields {NAME, TYPE, IMAGE}
 ## the types of content. 
 enum ContentTypes {CRITTER, WEAPON, CONSUMABLE}
 
@@ -43,13 +43,11 @@ const ExpansionContent: Dictionary = {
 			{
 				ExpansionContentFields.NAME : "Glormpus The Great Frog", 
 				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.RARITY : Rarities.COMMON, 
 				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/0_Common/GlormpusTheGreatFrog.png",
 			},
 			{
 				ExpansionContentFields.NAME : "Rat", 
 				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.RARITY : Rarities.COMMON, 
 				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/0_Common/Rat.png",
 			},
 		],
@@ -57,7 +55,6 @@ const ExpansionContent: Dictionary = {
 			{
 				ExpansionContentFields.NAME : "Greg", 
 				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.RARITY : Rarities.UNCOMMON, 
 				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/1_Uncommon/Greg.png",
 			}
 		],
@@ -65,7 +62,6 @@ const ExpansionContent: Dictionary = {
 			{
 				ExpansionContentFields.NAME : "The Weird Fish", 
 				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.RARITY : Rarities.RARE, 
 				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/2_Rare/Weird_Fish.png",
 			}
 		],
@@ -73,7 +69,6 @@ const ExpansionContent: Dictionary = {
 			{
 				ExpansionContentFields.NAME : "The Weirder Fish", 
 				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.RARITY : Rarities.EPIC, 
 				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/3_Epic/Weirder_Fish.png",
 			}
 		],
@@ -81,7 +76,6 @@ const ExpansionContent: Dictionary = {
 			{
 				ExpansionContentFields.NAME : "Birb", 
 				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.RARITY : Rarities.LEGENDARY, 
 				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/4_Legendary/Birb.png",
 			}
 		],
@@ -89,13 +83,11 @@ const ExpansionContent: Dictionary = {
 			{
 				ExpansionContentFields.NAME : "The Man of Mud", 
 				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.RARITY : Rarities.HOLY_MOLY, 
 				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/5_Holy_Moly/The_Man_of_Mud.png",
 			},
 			{
 				ExpansionContentFields.NAME : "Snel", 
 				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.RARITY : Rarities.HOLY_MOLY, 
 				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/5_Holy_Moly/Snel.png",
 			}
 		]
@@ -145,13 +137,23 @@ static func get_expansion_content_count(ExpansionID : ExpansionIDs, ContentRarit
 static func get_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentIndex : int) -> Card:
 	#return ExpansionContent[ExpansionID][ContentRarity][ContentIndex]
 	var data : Dictionary = ExpansionContent[ExpansionID][ContentRarity][ContentIndex]
-	var c : Card = Card.new(
-		ContentIndex,
-		data[ExpansionContentFields.NAME],
-		data[ExpansionContentFields.TYPE],
-		data[ExpansionContentFields.RARITY],
-		load(data[ExpansionContentFields.IMAGE])
-	)
+	var c : Card 
+	if ContentRarity < Rarities.EPIC:
+		c = Card.new(
+			ContentIndex,
+			data[ExpansionContentFields.NAME],
+			data[ExpansionContentFields.TYPE],
+			ContentRarity,
+			load(data[ExpansionContentFields.IMAGE])
+		)
+	else:
+		c = Card.new(
+			ContentIndex,
+			data[ExpansionContentFields.NAME],
+			data[ExpansionContentFields.TYPE],
+			ContentRarity,
+			load(data[ExpansionContentFields.IMAGE])
+		) 
 	return c
 
 static func DEBUG_print_expansion_EVs(ExpansionID : ExpansionIDs) -> void:

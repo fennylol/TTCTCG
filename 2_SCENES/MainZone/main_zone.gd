@@ -1,18 +1,26 @@
 extends Node3D
 
-var Collection: ContentCollection
+@onready var MainMenu = $MainMenu
 @onready var PackZone = $PackZone
+@onready var CollectionZone = $CollectionZone
 
-func _init() -> void:
-	Collection = ContentCollection.new()
+enum Elements {MAINMENU, PACKZONE, COLLECTIONZONE}
+func set_visible_element(Element: Elements):
+	MainMenu.set_visible(true if Element == Elements.MAINMENU else false)
+	PackZone.set_visible(true if Element == Elements.PACKZONE else false)
+	CollectionZone.set_visible(true if Element == Elements.COLLECTIONZONE else false)
 
-func _ready() -> void:
-	Collection._load()
-	Collection.set_name("WorkingCollection")
-	add_child(Collection)
-	PackZone.Results.connect(Collection.recieve_cards)
+func _ready() -> void: set_visible_element(Elements.MAINMENU)
+func _on_pack_zone_finished() -> void: set_visible_element(Elements.MAINMENU)
+func _on_collection_zone_finished() -> void: set_visible_element(Elements.MAINMENU)
+
+func _on_pack_button_pressed() -> void:
+	set_visible_element(Elements.PACKZONE)
 	PackZone.DEBUG_add_pack()
 
-func _process(delta: float) -> void:
-	if Input.is_action_just_pressed("save"): Collection._save()
-	if Input.is_action_just_pressed("load"): Collection._load()
+func _on_collection_button_pressed() -> void:
+	set_visible_element(Elements.COLLECTIONZONE)
+	CollectionZone.display_collection()
+
+func _on_pack_zone_results(ExpansionID: DATA.ExpansionIDs, CardList: Array[Card]) -> void:
+	CollectionZone.recieve_cards(ExpansionID, CardList)

@@ -1,6 +1,7 @@
 extends Node3D
 
 signal Results(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card])
+signal finished
 
 const STARTING_PACK_HEIGHT: float = 5.0
 
@@ -17,7 +18,7 @@ func DEBUG_add_pack():
 	pack.set_name(DATA.Rarities.find_key(pack_rarity).to_lower()+"_pack_"+str(int(RNG.random_value()*1000)))
 	pack.position.y = STARTING_PACK_HEIGHT
 	add_child(pack)
-	pack.finished.connect(DEBUG_add_pack)
+	pack.finished.connect(finished.emit)
 
 
 ## [b]Purpose[/b]: generates a pack from a requested expansion[br]

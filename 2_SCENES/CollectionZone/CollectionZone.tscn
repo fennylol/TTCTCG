@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://h6ekll5p6ra"]
+
+[ext_resource type="Script" uid="uid://cwy10ug18mnml" path="res://2_SCENES/CollectionZone/collection_zone.gd" id="1_y6mn0"]
+[ext_resource type="PackedScene" uid="uid://280odfhvfqk8" path="res://2_SCENES/CollectionZone/CollectionUI.tscn" id="2_vdifo"]
+
+[node name="CollectionZone" type="Node3D"]
+script = ExtResource("1_y6mn0")
+
+[node name="CollectionUI" parent="." instance=ExtResource("2_vdifo")]
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="DEBUG_reset_button_pressed" from="CollectionUI" to="." method="_on_reset_button_pressed"]
+[connection signal="back_button_pressed" from="CollectionUI" to="." method="_on_back_button_pressed"]
