@@ -11,6 +11,8 @@ var Name: String
 var Type: DATA.ContentTypes
 var Rarity: DATA.Rarities
 var Img: Texture2D
+var Animations := AnimationPlayer.new()
+var Sprite := Sprite3D.new()
 
 func _init(ID: int, N: String, T: DATA.ContentTypes, R: DATA.Rarities, I: Texture2D) -> void:
 	# save information
@@ -25,22 +27,12 @@ func _init(ID: int, N: String, T: DATA.ContentTypes, R: DATA.Rarities, I: Textur
 	set_name(plain_name+"_"+str(int(RNG.random_value()*1000)))
 	
 	# create sprite
-	var S := Sprite3D.new()
-	S.set_name(plain_name+"_sprite")
-	S.set_texture_filter(BaseMaterial3D.TEXTURE_FILTER_NEAREST)
-	S.set_texture(Img)
-	S.set_pixel_size(2.0/Img.get_width())
-	S.position.z = 0.001
-	
-	# create animation player
-	var A = AnimationPlayer.new()
-	A.set_name(plain_name+"_animations")
-	A.add_animation_library("moves", load("res://3_CLASSES/card_anims.res"))
-	A.animation_finished.connect(AnimationComplete.emit)
-	
-	# create mesh 
-	var M: Mesh = load("res://1_ASSETS/cards/basic_card_mesh.tres")
-	
+	Sprite.set_name(plain_name+"_sprite")
+	Sprite.set_texture_filter(BaseMaterial3D.TEXTURE_FILTER_NEAREST)
+	Sprite.set_texture(Img)
+	Sprite.set_pixel_size(2.0/Img.get_width())
+	Sprite.position.z = 0.001
+	Sprite.position.y = 0.625
 	# update card mesh and sprite according to rarity
 	#if Rarity <= DATA.Rarities.UNCOMMON: 
 		#print("added ", Name, ", a basic card, to the tree")
@@ -49,9 +41,22 @@ func _init(ID: int, N: String, T: DATA.ContentTypes, R: DATA.Rarities, I: Textur
 		#print("added ", Name, ", a full art card, to the tree")
 	#else: 
 		#print("added ", Name, ", a rainbow rare, to the tree")
-	S.position.y = 0.625
+	
+	
+	# create animation player
+	Animations.set_name(plain_name+"_animations")
+	Animations.add_animation_library("moves", load("res://1_ASSETS/cards/animations/basic_card_anims.res"))
+	Animations.animation_finished.connect(AnimationComplete.emit)
+	
+	# create mesh 
+	var M: Mesh = load("res://1_ASSETS/cards/basic_card_mesh.tres")
 	
 	set_mesh(M)
-	add_child(A)
-	add_child(S)
+	add_child(Animations)
+	add_child(Sprite)
+
+func play_anim(AnimName : StringName):
+	Animations.play(AnimName)
+
+#func anim_all_done(anim_name: String):
 	

@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://c44pihehepeyk"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_kkhpo"]
+
+[node name="CPUParticles3D" type="CPUParticles3D"]
+emitting = false
+amount = 3000
+lifetime = 3.0
+mesh = SubResource("QuadMesh_kkhpo")
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 0.0
+emission_ring_radius = 1.0
+emission_ring_inner_radius = 0.0
+emission_ring_cone_angle = 0.0
+direction = Vector3(0, 0, 0)
+radial_accel_min = 200.0
+radial_accel_max = 300.0

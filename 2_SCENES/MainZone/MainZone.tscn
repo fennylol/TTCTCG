@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://et816m5b5103"]
+[gd_scene load_steps=9 format=3 uid="uid://et816m5b5103"]
 
 [ext_resource type="Script" uid="uid://h0xltogirjo1" path="res://2_SCENES/MainZone/main_zone.gd" id="1_r44e1"]
 [ext_resource type="PackedScene" uid="uid://8siidudokhoa" path="res://2_SCENES/PackZone/PackZone.tscn" id="2_4v2sq"]
 [ext_resource type="PackedScene" uid="uid://bqvwyy5rimbt2" path="res://2_SCENES/MainZone/MainMenu.tscn" id="2_qsq4q"]
 [ext_resource type="PackedScene" uid="uid://h6ekll5p6ra" path="res://2_SCENES/CollectionZone/CollectionZone.tscn" id="3_4v2sq"]
+[ext_resource type="PackedScene" uid="uid://jowtaswbv01y" path="res://1_ASSETS/casa.glb" id="5_426ms"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r44e1"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -30,9 +31,12 @@ script = ExtResource("1_r44e1")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_4v2sq")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="MainCamera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.999816, 0.0191974, 0, -0.0191974, 0.999816, 0, 0.5, 15)
 fov = 35.0
+
+[node name="casa" parent="." instance=ExtResource("5_426ms")]
+transform = Transform3D(-3.47834, 0, -2.43556, 0, 4.24627, 0, 2.43556, 0, -3.47834, 7.52236, -4.22363, -31.9732)
 
 [connection signal="collection_button_pressed" from="MainMenu" to="." method="_on_collection_button_pressed"]
 [connection signal="pack_button_pressed" from="MainMenu" to="." method="_on_pack_button_pressed"]

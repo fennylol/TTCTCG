@@ -5,13 +5,14 @@ class_name DATA
 ## the rarities for both packs and pack contents
 enum Rarities {COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, HOLY_MOLY}
 ## the internal IDs for each expansion
-enum ExpansionIDs {TEST_SET}
+enum ExpansionIDs {TEST_SET, OTHER_SET}
 ## the fields of [member ExpansionData] 
 enum ExpansionDataFields {PACK_RARITY_ODDS, CONTENT_RARITY_ODDS, PACK_RARITY_CONTENT_COUNTS}
 ## the fields of [member ExpansionContent]
 enum ExpansionContentFields {NAME, TYPE, IMAGE}
 ## the types of content. 
 enum ContentTypes {CRITTER, WEAPON, CONSUMABLE}
+enum ContentSides {ATK, DEF}
 
 ## metadata about expansions. contains pack and content rarity and content count per pack.[br]
 ## see [member ExpansionContent] for pack contents. 
@@ -32,6 +33,18 @@ const ExpansionData: Dictionary = {
 			[0.0, 0.28, 0.15, 0.05, 0.015, 0.505]
 		],
 		ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
+	},
+	ExpansionIDs.OTHER_SET : {
+		ExpansionDataFields.PACK_RARITY_ODDS : [0.5, 0.28, 0.15, 0.05, 0.015, 0.005],
+		ExpansionDataFields.CONTENT_RARITY_ODDS : [
+			[0.5, 0.28, 0.15, 0.05, 0.015, 0.005],
+			[0.4, 0.38, 0.15, 0.05, 0.015, 0.005],
+			[0.3, 0.28, 0.35, 0.05, 0.015, 0.005],
+			[0.2, 0.28, 0.15, 0.35, 0.015, 0.005],
+			[0.1, 0.28, 0.15, 0.05, 0.415, 0.005],
+			[0.0, 0.28, 0.15, 0.05, 0.015, 0.505]
+		],
+		ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
 	}
 }
 
@@ -39,59 +52,294 @@ const ExpansionData: Dictionary = {
 ## for expansion statistics, see [member ExpansionData]
 const ExpansionContent: Dictionary = {
 	ExpansionIDs.TEST_SET : {
-		Rarities.COMMON : [
-			{
-				ExpansionContentFields.NAME : "Glormpus The Great Frog", 
-				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/0_Common/GlormpusTheGreatFrog.png",
-			},
-			{
-				ExpansionContentFields.NAME : "Rat", 
-				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/0_Common/Rat.png",
-			},
-		],
-		Rarities.UNCOMMON : [
-			{
-				ExpansionContentFields.NAME : "Greg", 
-				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/1_Uncommon/Greg.png",
-			}
-		],
-		Rarities.RARE : [
-			{
-				ExpansionContentFields.NAME : "The Weird Fish", 
-				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/2_Rare/Weird_Fish.png",
-			}
-		],
-		Rarities.EPIC : [
-			{
-				ExpansionContentFields.NAME : "The Weirder Fish", 
-				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/3_Epic/Weirder_Fish.png",
-			}
-		],
-		Rarities.LEGENDARY : [
-			{
-				ExpansionContentFields.NAME : "Birb", 
-				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/4_Legendary/Birb.png",
-			}
-		],
-		Rarities.HOLY_MOLY : [
-			{
-				ExpansionContentFields.NAME : "The Man of Mud", 
-				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/5_Holy_Moly/The_Man_of_Mud.png",
-			},
-			{
-				ExpansionContentFields.NAME : "Snel", 
-				ExpansionContentFields.TYPE : ContentTypes.CRITTER,
-				ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/Art/5_Holy_Moly/Snel.png",
-			}
-		]
-	}
+		Rarities.COMMON : {
+			ContentTypes.CRITTER : [
+				{
+					ExpansionContentFields.NAME : "Glormpus The Great Frog", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/TEST_SET/GlormpusTheGreatFrog.png",
+				},
+				{
+					ExpansionContentFields.NAME : "Rat", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/TEST_SET/Rat.png",
+				},
+			],
+			ContentTypes.CONSUMABLE : [
+				{
+					ExpansionContentFields.NAME : "Regular Ol' Cigarette", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/TEST_SET/RegularCigarette.png",
+				}
+			],
+			ContentTypes.WEAPON : [
+				{
+					ExpansionContentFields.NAME : "Baseball Bat", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/TEST_SET/BaseballBat.png",
+				}
+			]
+		},
+		
+		Rarities.UNCOMMON : {
+			ContentTypes.CRITTER : [
+				{
+					ExpansionContentFields.NAME : "Greg", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/1_Uncommon/TEST_SET/Greg.png",
+				}
+			],
+			ContentTypes.CONSUMABLE : [
+				{
+					ExpansionContentFields.NAME : "Menthol Cigarette", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/1_Uncommon/TEST_SET/MentholCigarette.png",
+				}
+			],
+			ContentTypes.WEAPON : [
+				{
+					ExpansionContentFields.NAME : "Body Spray", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/1_Uncommon/TEST_SET/BodySpray.png",
+				}
+			]
+		},
+		
+		Rarities.RARE : {
+			ContentTypes.CRITTER : [
+				{
+					ExpansionContentFields.NAME : "The Weird Fish", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/2_Rare/TEST_SET/Weird_Fish.png",
+				}
+			],
+			ContentTypes.CONSUMABLE : [
+				{
+					ExpansionContentFields.NAME : "Reliable Grenade", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/2_Rare/TEST_SET/ReliableGrenade.png",
+				}
+			],
+			ContentTypes.WEAPON : [
+				{
+					ExpansionContentFields.NAME : "Zipper Lighter", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/2_Rare/TEST_SET/ZipperLighter.png",
+				}
+			]
+		},
+		
+		Rarities.EPIC : {
+			ContentTypes.CRITTER : [
+				{
+					ExpansionContentFields.NAME : "The Weirder Fish", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/3_Epic/TEST_SET/Weirder_Fish.png",
+				}
+			],
+			ContentTypes.CONSUMABLE : [
+				{
+					ExpansionContentFields.NAME : "Molotov Mocktail", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/3_Epic/TEST_SET/MolotovMocktail.png",
+				}
+			],
+			ContentTypes.WEAPON : [
+				{
+					ExpansionContentFields.NAME : "Blood Blade", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/3_Epic/TEST_SET/BloodKnife.png",
+				}
+			]
+		},
+		
+		Rarities.LEGENDARY : {
+			ContentTypes.CRITTER : [
+				{
+					ExpansionContentFields.NAME : "Birb", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/4_Legendary/TEST_SET/Birb.png",
+				}
+			],
+			ContentTypes.CONSUMABLE : [
+				{
+					ExpansionContentFields.NAME : "Lump of Mold", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/4_Legendary/TEST_SET/PileOfMold.png",
+				}
+			],
+			ContentTypes.WEAPON : [
+				{
+					ExpansionContentFields.NAME : "Shrank Ray", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/4_Legendary/TEST_SET/ShrankRay.png",
+				}
+			]
+		},
+		
+		Rarities.HOLY_MOLY : {
+			ContentTypes.CRITTER : [
+				{
+					ExpansionContentFields.NAME : "The Man of Mud", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/TEST_SET/The_Man_of_Mud.png",
+				},
+				{
+					ExpansionContentFields.NAME : "Snel", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/TEST_SET/Snel.png",
+				}
+			],
+			ContentTypes.CONSUMABLE : [
+				{
+					ExpansionContentFields.NAME : "Chicken Nugget Dipped in Mystery Sauce", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/TEST_SET/ChickenNuggetInMysterySauce.png",
+				}
+			],
+			ContentTypes.WEAPON : [
+				{
+					ExpansionContentFields.NAME : "Stank Ray", 
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/TEST_SET/StankRay.png",
+				}
+			]
+		}, 
+	},
+	ExpansionIDs.OTHER_SET : {
+		Rarities.COMMON : {
+			ContentTypes.CRITTER : [
+				{
+					ExpansionContentFields.NAME : "Gumbus Dragon",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/OTHER_SET/gumbus_dragon.png"
+				}
+			],
+			ContentTypes.CONSUMABLE : [
+				{
+					ExpansionContentFields.NAME : "Calming Flower",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/OTHER_SET/calming_flower.png"
+				}
+			],
+			ContentTypes.WEAPON : [
+				{
+					ExpansionContentFields.NAME : "Plain Knife",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/OTHER_SET/plain_knife.png"
+				}
+			]
+		},
+		Rarities.UNCOMMON : {
+			ContentTypes.CRITTER : [
+				{
+					ExpansionContentFields.NAME : "Brootiss",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/1_Uncommon/OTHER_SET/brutiss.png"
+				}
+			],
+			ContentTypes.CONSUMABLE : [
+				{
+					ExpansionContentFields.NAME : "Rock Candy",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/1_Uncommon/OTHER_SET/rock_candy.png"
+				}
+			],
+			ContentTypes.WEAPON : [
+				{
+					ExpansionContentFields.NAME : "Reapers Scythe",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/1_Uncommon/OTHER_SET/reapers_scythe.png"
+				}
+			]
+		},
+		Rarities.RARE : {
+			ContentTypes.CRITTER : [
+				{
+					ExpansionContentFields.NAME : "Stoomp",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/2_Rare/OTHER_SET/stoomp.png"
+				}
+			],
+			ContentTypes.CONSUMABLE : [
+				{
+					ExpansionContentFields.NAME : "Pile of Inordinate Wealth",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/2_Rare/OTHER_SET/pile_of_inordinate_wealth.png"
+				}
+			],
+			ContentTypes.WEAPON : [
+				{
+					ExpansionContentFields.NAME : "Burning Blade",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/2_Rare/OTHER_SET/burning_blade.png"
+				}
+			]
+		},
+		Rarities.EPIC : {
+			ContentTypes.CRITTER : [
+				{
+					ExpansionContentFields.NAME : "Fat FLjck",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/3_Epic/OTHER_SET/fat_fLjck.png"
+				}
+			],
+			ContentTypes.CONSUMABLE : [
+				{
+					ExpansionContentFields.NAME : "Gents Glove",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/3_Epic/OTHER_SET/gents_glove.png"
+				}
+			],
+			ContentTypes.WEAPON : [
+				{
+					ExpansionContentFields.NAME : "Liars Dice",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/3_Epic/OTHER_SET/liars_dice.png"
+				}
+			]
+		},
+		Rarities.LEGENDARY : {
+			ContentTypes.CRITTER : [
+				{
+					ExpansionContentFields.NAME : "Gribble",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/4_Legendary/OTHER_SET/squee.png"
+				}
+			],
+			ContentTypes.CONSUMABLE : [
+				{
+					ExpansionContentFields.NAME : "Flask of Tears",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/4_Legendary/OTHER_SET/flask_of_tears.png"
+				}
+			],
+			ContentTypes.WEAPON : [
+				{
+					ExpansionContentFields.NAME : "Tome of Curses",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/4_Legendary/OTHER_SET/tome_of_curses.png"
+				}
+			]
+		},
+		Rarities.HOLY_MOLY : {
+			ContentTypes.CRITTER : [
+				{
+					ExpansionContentFields.NAME : "Squee",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/OTHER_SET/gribble.png"
+				}
+			],
+			ContentTypes.CONSUMABLE : [
+				{
+					ExpansionContentFields.NAME : "Flask of Beers",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/OTHER_SET/flask_of_beers.png"
+				}
+			],
+			ContentTypes.WEAPON : [
+				{
+					ExpansionContentFields.NAME : "im not even kidding this staff is way too strong for you",
+					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/OTHER_SET/im_not_even_kidding_this_staff_is_way_too_strong_for_you.png"
+				}
+			]
+		}
+	},
+	#ExpansionIDs.OTHER_SET : {
+		#Rarities.COMMON : {
+			#ContentTypes.CRITTER : [{}],
+			#ContentTypes.CONSUMABLE : [{}],
+			#ContentTypes.WEAPON : [{}]
+		#},
+		#Rarities.UNCOMMON : {
+			#ContentTypes.CRITTER : [{}],
+			#ContentTypes.CONSUMABLE : [{}],
+			#ContentTypes.WEAPON : [{}]
+		#},
+		#Rarities.RARE : {
+			#ContentTypes.CRITTER : [{}],
+			#ContentTypes.CONSUMABLE : [{}],
+			#ContentTypes.WEAPON : [{}]
+		#},
+		#Rarities.EPIC : {
+			#ContentTypes.CRITTER : [{}],
+			#ContentTypes.CONSUMABLE : [{}],
+			#ContentTypes.WEAPON : [{}]
+		#},
+		#Rarities.LEGENDARY : {
+			#ContentTypes.CRITTER : [{}],
+			#ContentTypes.CONSUMABLE : [{}],
+			#ContentTypes.WEAPON : [{}]
+		#},
+		#Rarities.HOLY_MOLY : {
+			#ContentTypes.CRITTER : [{}],
+			#ContentTypes.CONSUMABLE : [{}],
+			#ContentTypes.WEAPON : [{}]
+		#}
+	#}
 }
 
 ## [b]Purpose[/b]: gets the odds for each rarity of pack to be generated for a specific expansion [br]
@@ -126,23 +374,23 @@ static func get_pack_content_count(ExpansionID : ExpansionIDs, PackRarity : Rari
 ## [b]Purpose[/b]: gets the number of content contained in an expansion of a specified rarity[br] 
 ## [b]ExpansionID[/b]: the expansion being queried. (See [enum ExpansionIDs])[br]
 ## [b]ContentRarity[/b]: the rarity being queried. (see [enum Rarities])[br]
-static func get_expansion_content_count(ExpansionID : ExpansionIDs, ContentRarity : Rarities) -> int:
-	return ExpansionContent[ExpansionID][ContentRarity].size()
+static func get_expansion_content_count(ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentType : ContentTypes) -> int:
+	return ExpansionContent[ExpansionID][ContentRarity][ContentType].size()
 
 
 ## [b]Purpose[/b]: gets the data for a specified content from an expansion[br] 
 ## [b]ExpansionID[/b]: the expansion of the content being requested. (See [enum ExpansionIDs])[br]
 ## [b]ContentRarity[/b]: the rarity of the content being requested. (see [enum Rarities])[br]
 ## [b]ContentIndex[/b]: the index of the content being requested. (see [method get_expansion_content_count])
-static func get_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentIndex : int) -> Card:
+static func get_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentType : ContentTypes, ContentIndex : int) -> Card:
 	#return ExpansionContent[ExpansionID][ContentRarity][ContentIndex]
-	var data : Dictionary = ExpansionContent[ExpansionID][ContentRarity][ContentIndex]
+	var data : Dictionary = ExpansionContent[ExpansionID][ContentRarity][ContentType][ContentIndex]
 	var c : Card 
 	if ContentRarity < Rarities.EPIC:
 		c = Card.new(
 			ContentIndex,
 			data[ExpansionContentFields.NAME],
-			data[ExpansionContentFields.TYPE],
+			ContentType,
 			ContentRarity,
 			load(data[ExpansionContentFields.IMAGE])
 		)
@@ -150,10 +398,31 @@ static func get_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Ra
 		c = Card.new(
 			ContentIndex,
 			data[ExpansionContentFields.NAME],
-			data[ExpansionContentFields.TYPE],
+			ContentType,
 			ContentRarity,
 			load(data[ExpansionContentFields.IMAGE])
 		) 
+	return c
+
+
+static func get_paired_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentType : ContentTypes, ContentIndex : int, \
+										 DefenseExpansionID : ExpansionIDs, DefenseContentRarity : Rarities, DefenseContentType : ContentTypes, DefenseContentIndex : int) -> PlayablePair:
+	#return ExpansionContent[ExpansionID][ContentRarity][ContentIndex]
+	var data : Dictionary = ExpansionContent[ExpansionID][ContentRarity][ContentType][ContentIndex]
+	var def_data : Dictionary = ExpansionContent[DefenseExpansionID][DefenseContentRarity][DefenseContentType][DefenseContentIndex]
+	
+	var c := PlayablePair.new(
+			ContentIndex,
+			data[ExpansionContentFields.NAME],
+			ContentType,
+			ContentRarity,
+			load(data[ExpansionContentFields.IMAGE]),
+			DefenseContentIndex,
+			def_data[ExpansionContentFields.NAME],
+			DefenseContentType,
+			DefenseContentRarity,
+			load(def_data[ExpansionContentFields.IMAGE])
+		)
 	return c
 
 static func DEBUG_print_expansion_EVs(ExpansionID : ExpansionIDs) -> void:

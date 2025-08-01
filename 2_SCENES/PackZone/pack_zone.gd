@@ -7,18 +7,23 @@ const STARTING_PACK_HEIGHT: float = 5.0
 
 
 func DEBUG_add_pack():
-	var pull: Dictionary = determine_pack_pull(DATA.ExpansionIDs.TEST_SET)
+	var rand = int(floor(RNG.random_value() * DATA.ExpansionIDs.size()))
+	var pull: Dictionary = determine_pack_pull(rand)
 	var pack_rarity: DATA.Rarities = pull["RARITY"]
 	var pack_content: Array[Card] = pull["CONTENT"]
 	
-	print("generated a ", DATA.Rarities.find_key(pack_rarity), " pack")
-	Results.emit(DATA.ExpansionIDs.TEST_SET, pack_content)
+	#var paired_content = Array[PlayablePair]
+	#for 
+	
+	print("generated a ", DATA.Rarities.find_key(pack_rarity), " pack from ", DATA.ExpansionIDs.find_key(rand))
+	Results.emit(rand, pack_content)
 	
 	var pack: Pack = Pack.new(pack_rarity, pack_content)
 	pack.set_name(DATA.Rarities.find_key(pack_rarity).to_lower()+"_pack_"+str(int(RNG.random_value()*1000)))
-	pack.position.y = STARTING_PACK_HEIGHT
+	#pack.position.y = STARTING_PACK_HEIGHT
 	add_child(pack)
 	pack.finished.connect(finished.emit)
+
 
 
 ## [b]Purpose[/b]: generates a pack from a requested expansion[br]
@@ -27,7 +32,8 @@ func DEBUG_add_pack():
 func determine_pack_pull(ExpansionID : DATA.ExpansionIDs) -> Dictionary:
 	var pack_rarity: DATA.Rarities = determine_pack_rarity(ExpansionID)
 	var content_rarities: Array[DATA.Rarities] = determine_pack_content_rarities(ExpansionID, pack_rarity)
-	var content: Array[Card] = determine_pack_contents(ExpansionID, content_rarities)
+	var partner_rarities: Array[DATA.Rarities] = determine_pack_content_rarities(ExpansionID, pack_rarity, false)
+	var content: Array[Card] = determine_pack_contents(ExpansionID, content_rarities, partner_rarities)
 	return {"RARITY":pack_rarity, "CONTENT":content}
 
 ## [b]Purpose[/b]: determines the rarity for a pack from a requested expansion[br]
@@ -48,7 +54,7 @@ func determine_pack_rarity(ExpansionID : DATA.ExpansionIDs) -> DATA.Rarities:
 ## [b]ExpansionID[/b]: the expansion to generate a pack from. (see [enum DATA.ExpansionIDs])[br]
 ## [b]PackRarity[/b]: the rarity of pack to generate content for. (see [enum DATA.Rarities])[br]
 ## [b]Returns[/b]: an sorted array of rarities. (see [enum DATA.Rarities])
-func determine_pack_content_rarities(ExpansionID : DATA.ExpansionIDs, PackRarity : DATA.Rarities) -> Array[DATA.Rarities]:
+func determine_pack_content_rarities(ExpansionID : DATA.ExpansionIDs, PackRarity : DATA.Rarities, Sorted : bool = true) -> Array[DATA.Rarities]:
 	var content_rarity_odds: Array[float] = DATA.get_content_rarity_odds(ExpansionID, PackRarity)
 	var content_count: int = DATA.get_pack_content_count(ExpansionID, PackRarity)
 	
@@ -61,16 +67,29 @@ func determine_pack_content_rarities(ExpansionID : DATA.ExpansionIDs, PackRarity
 				rarities.append(DATA.Rarities[r])
 				break
 	
-	rarities.sort()
+	if Sorted: rarities.sort()
 	return rarities
 
-func determine_pack_contents(ExpansionID : DATA.ExpansionIDs, ContentRarities : Array[DATA.Rarities]) -> Array[Card]:
+func determine_pack_contents(ExpansionID : DATA.ExpansionIDs, ContentRarities : Array[DATA.Rarities], PartnerRarities : Array[DATA.Rarities]) -> Array[Card]:
 	var cards: Array[Card] = []
 	
-	for rarity in ContentRarities:
-		var idx: int = DATA.get_expansion_content_count(ExpansionID, rarity)
-		idx = floor(idx * RNG.random_value())
-		var card: Card = DATA.get_expansion_content(ExpansionID, rarity, idx)
+	for i in ContentRarities.size():
+		var rarity = ContentRarities[i]
+		var partner_rarity = PartnerRarities[i]
+		var type: DATA.ContentTypes = floor(DATA.ContentTypes.size() * RNG.random_value())
+		
+		var type_rarity_count: int = DATA.get_expansion_content_count(ExpansionID, rarity, type)
+		var partner_type_rarity_count: int = DATA.get_expansion_content_count(ExpansionID, partner_rarity, type)
+		
+		var idx = floor(type_rarity_count * RNG.random_value())
+		var partner_idx = floor(partner_type_rarity_count * RNG.random_value())
+		
+		#var pair = DATA.get_paired_expansion_content(ExpansionID, rarity, type, idx, ExpansionID, partner_rarity, type, partner_idx)
+		var card: Card = DATA.get_expansion_content(ExpansionID, rarity, type, idx)
+		var partner_card: Card = DATA.get_expansion_content(ExpansionID, partner_rarity, type, partner_idx)
+		
+		#cards.append(pair)
 		cards.append(card)
+		cards.append(partner_card)
 	
 	return cards

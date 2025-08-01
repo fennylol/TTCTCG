@@ -1,30 +1,86 @@
 extends Node
 class_name ContentCollection
 
-enum SortOrders {EXPANSION, RARITY, COUNT, DISPLAYALL}
-
+enum SortOrders {EXPANSION, TYPE, RARITY, DISPLAYALL}
 # stored at /home/fenny/.local/share/godot/app_userdata/TTCTCG
 const SAVE_LOCATION = "user://DoNotEditOrElseFaceThePenaltyOfDeathSeriouslyBroThatWouldBeVeryUncoolOfYou.cake"
 const VERY_SAFE_ENCRYPTION_KEY = "DoNotEditOrElseFaceThePenaltyOfDeathSeriouslyBroThatWouldBeVeryUncoolOfYouPassword"
 var collection: Dictionary 
 
+var empty_expansion_dict: Dictionary
+
 func _init() -> void:
+	#var rarity_dict: Dictionary = {}
+	#for rarity in DATA.Rarities:
+		#rarity_dict[rarity] = {}
+	
+	#for ID in DATA.ExpansionIDs:
+		#collection[ID] = rarity_dict.duplicate(true)
+	
 	var rarity_dict: Dictionary = {}
 	for rarity in DATA.Rarities:
 		rarity_dict[rarity] = {}
 	
+	var type_dict: Dictionary = {}
+	for type in DATA.ContentTypes:
+		type_dict[type] = rarity_dict.duplicate(true)
+	
+	var sides_dict: Dictionary = {}
+	for side in DATA.ContentSides:
+		sides_dict[side] = type_dict.duplicate(true)
+	
+	var expansion_dict: Dictionary = {}
 	for ID in DATA.ExpansionIDs:
-		collection[ID] = rarity_dict.duplicate(true)
+		expansion_dict[ID] = sides_dict.duplicate(true)
+	
+	empty_expansion_dict = sides_dict.duplicate(true)
+	collection = expansion_dict
+
 
 func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]):
 	var EID = DATA.ExpansionIDs.find_key(ExpansionID)
-	var expansion_dict: Dictionary = collection[EID]
+	var expansion_dict: Dictionary = collection.get_or_add(EID, empty_expansion_dict.duplicate(true))
+	var atk_dict: Dictionary = expansion_dict[DATA.ContentSides.find_key(DATA.ContentSides.ATK)]
+	var def_dict: Dictionary = expansion_dict[DATA.ContentSides.find_key(DATA.ContentSides.DEF)]
 	
-	for card in CardList:
-		var rarity_dict: Dictionary = expansion_dict[DATA.Rarities.find_key(card.Rarity)] 
-		rarity_dict.set(card.SetID, rarity_dict.get_or_add(card.SetID, 0)+1)
+	var atk_cards: Array[Card]
+	var def_cards: Array[Card]
+	for i in range(CardList.size()):
+		if i%2: def_cards.append(CardList[i])
+		else: atk_cards.append(CardList[i])
+	
+	var rarity_dict: Dictionary = {}
+	for rarity in DATA.Rarities:
+		rarity_dict[rarity] = {}
+	
+	for i in range(atk_cards.size()):
+		var atk_card: Card = atk_cards[i]
+		var atk_card_type: DATA.ContentTypes = atk_card.Type
+		var atk_card_rarity: DATA.Rarities = atk_card.Rarity
+		
+		var def_card: Card = def_cards[i]
+		var def_card_type: DATA.ContentTypes = def_card.Type
+		var def_card_rarity: DATA.Rarities = def_card.Rarity
+		
+		var atk_type_rarity_dict: Dictionary = atk_dict[DATA.ContentTypes.find_key(atk_card_type)][DATA.Rarities.find_key(atk_card_rarity)]
+		var atk_card_dict: Dictionary = atk_type_rarity_dict.get_or_add(atk_card.SetID, rarity_dict.duplicate(true))[DATA.Rarities.find_key(def_card_rarity)]
+		atk_card_dict.set(def_card.SetID, atk_card_dict.get_or_add(def_card.SetID, 0)+1)
+		
+		var def_type_rarity_dict: Dictionary = def_dict[DATA.ContentTypes.find_key(def_card_type)][DATA.Rarities.find_key(def_card_rarity)]
+		var def_card_dict: Dictionary = def_type_rarity_dict.get_or_add(def_card.SetID, rarity_dict.duplicate(true))[DATA.Rarities.find_key(atk_card_rarity)]
+		def_card_dict.set(atk_card.SetID, def_card_dict.get_or_add(atk_card.SetID, 0)+1)
 	
 	_save()
+
+#func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]):
+	#var EID = DATA.ExpansionIDs.find_key(ExpansionID)
+	#var expansion_dict: Dictionary = collection[EID]
+	#
+	#for card in CardList:
+		#var rarity_dict: Dictionary = expansion_dict[DATA.Rarities.find_key(card.Rarity)] 
+		#rarity_dict.set(card.SetID, rarity_dict.get_or_add(card.SetID, 0)+1)
+	#
+	#_save()
 
 func _save():
 	var file = FileAccess.open_encrypted_with_pass(SAVE_LOCATION, FileAccess.WRITE, VERY_SAFE_ENCRYPTION_KEY)
@@ -45,7 +101,7 @@ func _load() -> Error:
 		else: return ERR_INVALID_DATA
 		
 		file.close()
-	DEBUG_print_collection()
+	#DEBUG_print_collection()
 	return OK
 
 #func _save_JSON():
@@ -64,7 +120,8 @@ func _load() -> Error:
 func DEBUG_print_collection():
 	for ID in DATA.ExpansionIDs:
 		for rarity in DATA.Rarities:
-			print("\n", ID, " - ", rarity,": ")
-			for key in collection[ID][rarity].keys():
-				print("   ", DATA.get_expansion_content(DATA.ExpansionIDs.get(ID), DATA.Rarities.get(rarity), key).Name, " : ", collection[ID][rarity][key])
+			for type in DATA.ContentTypes:
+				print("\n", ID, " - ", rarity,": ")
+				for key in collection[ID][rarity][type].keys():
+					print("   ", DATA.get_expansion_content(DATA.ExpansionIDs.get(ID), DATA.Rarities.get(rarity), DATA.ContentTypes.get(type), key).Name, " : ", collection[ID][rarity][key])
 	print("\n")
