@@ -25,7 +25,7 @@ func _on_pack_button_pressed() -> void:
 
 func _on_collection_button_pressed() -> void:
 	set_visible_element(Elements.COLLECTIONZONE)
-	CollectionZone.display_collection()
+	CollectionZone.view_collection()
 
 func _on_pack_zone_results(ExpansionID: DATA.ExpansionIDs, CardList: Array[Card]) -> void:
 	CollectionZone.recieve_cards(ExpansionID, CardList)
