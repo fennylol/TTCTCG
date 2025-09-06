@@ -11,7 +11,7 @@ enum ExpansionDataFields {PACK_RARITY_ODDS, CONTENT_RARITY_ODDS, PACK_RARITY_CON
 ## the fields of [member ExpansionContent]
 enum ExpansionContentFields {NAME, TYPE, IMAGE}
 ## the types of content. 
-enum ContentTypes {CRITTER, WEAPON, CONSUMABLE}
+enum ContentTypes {CRITTER, CONSUMABLE, WEAPON}
 enum ContentSides {ATK, DEF}
 
 ## metadata about expansions. contains pack and content rarity and content count per pack.[br]
@@ -389,6 +389,7 @@ static func get_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Ra
 	if ContentRarity < Rarities.EPIC:
 		c = Card.new(
 			ContentIndex,
+			ExpansionID,
 			data[ExpansionContentFields.NAME],
 			ContentType,
 			ContentRarity,
@@ -397,6 +398,7 @@ static func get_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Ra
 	else:
 		c = Card.new(
 			ContentIndex,
+			ExpansionID,
 			data[ExpansionContentFields.NAME],
 			ContentType,
 			ContentRarity,
@@ -405,25 +407,25 @@ static func get_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Ra
 	return c
 
 
-static func get_paired_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentType : ContentTypes, ContentIndex : int, \
-										 DefenseExpansionID : ExpansionIDs, DefenseContentRarity : Rarities, DefenseContentType : ContentTypes, DefenseContentIndex : int) -> PlayablePair:
-	#return ExpansionContent[ExpansionID][ContentRarity][ContentIndex]
-	var data : Dictionary = ExpansionContent[ExpansionID][ContentRarity][ContentType][ContentIndex]
-	var def_data : Dictionary = ExpansionContent[DefenseExpansionID][DefenseContentRarity][DefenseContentType][DefenseContentIndex]
-	
-	var c := PlayablePair.new(
-			ContentIndex,
-			data[ExpansionContentFields.NAME],
-			ContentType,
-			ContentRarity,
-			load(data[ExpansionContentFields.IMAGE]),
-			DefenseContentIndex,
-			def_data[ExpansionContentFields.NAME],
-			DefenseContentType,
-			DefenseContentRarity,
-			load(def_data[ExpansionContentFields.IMAGE])
-		)
-	return c
+#static func get_paired_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentType : ContentTypes, ContentIndex : int, \
+										 #DefenseExpansionID : ExpansionIDs, DefenseContentRarity : Rarities, DefenseContentType : ContentTypes, DefenseContentIndex : int) -> PlayablePair:
+	##return ExpansionContent[ExpansionID][ContentRarity][ContentIndex]
+	#var data : Dictionary = ExpansionContent[ExpansionID][ContentRarity][ContentType][ContentIndex]
+	#var def_data : Dictionary = ExpansionContent[DefenseExpansionID][DefenseContentRarity][DefenseContentType][DefenseContentIndex]
+	#
+	#var c := PlayablePair.new(
+			#ContentIndex,
+			#data[ExpansionContentFields.NAME],
+			#ContentType,
+			#ContentRarity,
+			#load(data[ExpansionContentFields.IMAGE]),
+			#DefenseContentIndex,
+			#def_data[ExpansionContentFields.NAME],
+			#DefenseContentType,
+			#DefenseContentRarity,
+			#load(def_data[ExpansionContentFields.IMAGE])
+		#)
+	#return c
 
 static func DEBUG_print_expansion_EVs(ExpansionID : ExpansionIDs) -> void:
 	var expected_values: Array[float] = [0, 0, 0, 0, 0, 0]
@@ -439,8 +441,8 @@ static func DEBUG_print_expansion_EVs(ExpansionID : ExpansionIDs) -> void:
 	print("The average pack from ", ExpansionIDs.find_key(ExpansionID), " will contain:")
 	for rarity in Rarities:
 		var r = Rarities[rarity]
-		var str: String = "├─ " if r != Rarities.HOLY_MOLY else "╰─ "
-		print(str, expected_values[r], " ", rarity, " cards")
+		var Str: String = "├─ " if r != Rarities.HOLY_MOLY else "╰─ "
+		print(Str, expected_values[r], " ", rarity, " cards")
 	print("and an average of ", array_sum(expected_values), " total cards.\n")
 
 

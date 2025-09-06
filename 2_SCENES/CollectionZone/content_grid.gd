@@ -12,11 +12,13 @@ var DisplayedCount: int = 0
 var DisplayedWidth: int = 3
 
 var ScrollTarget: float = 0.0
-var BuildingDeck: bool = false
+var SlideTarget: float = 0.0
+#var BuildingDeck: bool = false
 
 func _init(DisplayedContent: ContentCollection, RowWidth : int = DisplayedWidth):
 	DisplayedWidth = RowWidth
 	position.x = -(DisplayedWidth-1)/2.0 * (Card.CARD_WIDTH+SPACING_WIDTH)
+	SlideTarget = position.x
 	var collection: Dictionary = DisplayedContent.collection
 	
 	for expansion in DATA.ExpansionIDs:
@@ -24,10 +26,10 @@ func _init(DisplayedContent: ContentCollection, RowWidth : int = DisplayedWidth)
 			for rarity in DATA.Rarities:
 				for content_ID in collection[expansion]["ATK"][type][rarity]:
 					var card: Card = DATA.get_expansion_content(DATA.ExpansionIDs[expansion], DATA.Rarities[rarity], DATA.ContentTypes[type], content_ID)
-					var ch: ContentHolder =  display_content(card, collection)
+					var _ch: ContentHolder =  display_content(card)
 
 
-func display_content(card: Card, collection: Dictionary) -> ContentHolder:
+func display_content(card: Card) -> ContentHolder:
 	var plain_name: String = card.name.replace(" ", "_").to_lower()
 
 	var content_holder := ContentHolder.new(plain_name)
@@ -54,10 +56,17 @@ func _process(delta: float) -> void:
 		
 		var row_count: int = floor(DisplayedCount/DisplayedWidth)
 		var row_height: float = (Card.CARD_HEIGHT+SPACING_HEIGHT)
-		ScrollTarget = max(min(ScrollTarget, (row_count*row_height)-SPACING_HEIGHT), -row_height)
+		ScrollTarget = max(min(ScrollTarget, (row_count*row_height)-SPACING_HEIGHT), 0)
 		
 		position.y = lerpf(position.y, ScrollTarget, delta*SCROLL_SPEED)
+		position.x = lerpf(position.x, SlideTarget, delta*SCROLL_SPEED)
+		
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion and Input.is_action_pressed("Next") and visible:
+		if abs(event.relative.y): 
+			var amount = -event.relative.y * get_process_delta_time()
+			ScrollTarget += amount
 
 
 

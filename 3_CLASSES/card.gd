@@ -7,16 +7,21 @@ const CARD_WIDTH: float = 2.5
 const CARD_HEIGHT: float = 3
 
 var SetID: int
+var ExpansionID: DATA.ExpansionIDs
 var Name: String
 var Type: DATA.ContentTypes
 var Rarity: DATA.Rarities
 var Img: Texture2D
+
 var Animations := AnimationPlayer.new()
 var Sprite := Sprite3D.new()
 
-func _init(ID: int, N: String, T: DATA.ContentTypes, R: DATA.Rarities, I: Texture2D) -> void:
+enum DictGuide {SETID, EXPANSIONID, TYPE, RARITY}
+
+func _init(ID: int, E: DATA.ExpansionIDs, N: String, T: DATA.ContentTypes, R: DATA.Rarities, I: Texture2D) -> void:
 	# save information
 	SetID = ID
+	ExpansionID = E
 	Name = N
 	Type = T
 	Rarity = R

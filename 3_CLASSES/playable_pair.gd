@@ -4,6 +4,7 @@ class_name  PlayablePair
 var ShowingAtk : bool = true
 
 var PairedSetID: int
+var PairedExpansionID: DATA.ExpansionIDs
 var PairedName: String
 var PairedType: DATA.ContentTypes
 var PairedRarity: DATA.Rarities
@@ -13,18 +14,26 @@ var PairedSprite := Sprite3D.new()
 
 const ROT_SPEED : float = 5.0
 
-static func create_from_two_cards(Atk : Card, Def : Card) -> PlayablePair: return PlayablePair.new(Atk.SetID, Atk.Name, Atk.Type, Atk.Rarity, Atk.Img, Def.SetID, Def.Name, Def.Type, Def.Rarity, Def.Img)
+static func create_from_two_cards(Atk : Card, Def : Card) -> PlayablePair: return PlayablePair.new(Atk.SetID, Atk.ExpansionID, Atk.Name, Atk.Type, Atk.Rarity, Atk.Img, Def.SetID, Def.ExpansionID, Def.Name, Def.Type, Def.Rarity, Def.Img)
 
-func _init(ID: int, N: String, T: DATA.ContentTypes, R: DATA.Rarities, I: Texture2D, \
-		   PAIREDID: int, PAIREDN: String, PAIREDT: DATA.ContentTypes, PAIREDR: DATA.Rarities, PAIREDI: Texture2D):
+func to_dict() -> Dictionary:
+	return {
+		"front" : [SetID, ExpansionID, Type, Rarity],
+		"back" : [PairedSetID, PairedExpansionID, PairedType, PairedRarity]
+	}
+	#return [Paired]
+
+func _init(ID: int, E: DATA.ExpansionIDs, N: String, T: DATA.ContentTypes, R: DATA.Rarities, I: Texture2D, \
+		   PAIREDID: int, PAIREDE: DATA.ExpansionIDs, PAIREDN: String, PAIREDT: DATA.ContentTypes, PAIREDR: DATA.Rarities, PAIREDI: Texture2D):
 	
 	PairedSetID = PAIREDID
+	PairedExpansionID = PAIREDE
 	PairedName = PAIREDN
 	PairedType = PAIREDT
 	PairedRarity = PAIREDR
 	PairedImg = PAIREDI
 	
-	super._init(ID, N, T, R, I)
+	super._init(ID, E, N, T, R, I)
 	var plain_name: String = PAIREDN.replace(" ", "_").to_lower()
 	
 	set_name(name+"_"+plain_name+"_"+str(int(RNG.random_value()*1000)))

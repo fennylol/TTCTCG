@@ -2,10 +2,15 @@ extends Node
 class_name ContentCollection
 
 enum SortOrders {EXPANSION, TYPE, RARITY, DISPLAYALL}
+enum VersionLevels {MAJOR, MINOR, PATCH}
+const VERSION: Array[int] = [0,0,0]
+
 # stored at /home/fenny/.local/share/godot/app_userdata/TTCTCG
 const SAVE_LOCATION = "user://DoNotEditOrElseFaceThePenaltyOfDeathSeriouslyBroThatWouldBeVeryUncoolOfYou.cake"
 const VERY_SAFE_ENCRYPTION_KEY = "DoNotEditOrElseFaceThePenaltyOfDeathSeriouslyBroThatWouldBeVeryUncoolOfYouPassword"
 var collection: Dictionary 
+var decks: Array[Deck]
+
 
 var empty_expansion_dict: Dictionary
 
@@ -35,6 +40,7 @@ func _init() -> void:
 	
 	empty_expansion_dict = sides_dict.duplicate(true)
 	collection = expansion_dict
+	decks = []
 
 
 func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]):
@@ -84,24 +90,31 @@ func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]):
 
 func _save():
 	var file = FileAccess.open_encrypted_with_pass(SAVE_LOCATION, FileAccess.WRITE, VERY_SAFE_ENCRYPTION_KEY)
-	file.store_var(collection)
+	if not file: return ERR_FILE_CANT_OPEN
+	
+	var data = {
+		"version" : VERSION,
+		"saved_at" : Time.get_datetime_string_from_system(true),
+		"collection" : collection,
+		"decks" : decks
+	}
+	file.store_var(data)
 	file.close()
 
 func _load() -> Error:
-	if FileAccess.file_exists(SAVE_LOCATION):
-		var file: FileAccess
-		var data: Dictionary
-		
-		file = FileAccess.open_encrypted_with_pass(SAVE_LOCATION, FileAccess.READ, VERY_SAFE_ENCRYPTION_KEY)
-		
-		if file: data = file.get_var()
-		else: return ERR_FILE_CANT_READ
-		
-		if data: collection = data
-		else: return ERR_INVALID_DATA
-		
-		file.close()
-	#DEBUG_print_collection()
+	if not FileAccess.file_exists(SAVE_LOCATION): return ERR_FILE_NOT_FOUND
+	
+	var file: FileAccess
+	var data: Dictionary
+	file = FileAccess.open_encrypted_with_pass(SAVE_LOCATION, FileAccess.READ, VERY_SAFE_ENCRYPTION_KEY)
+	if not file: return ERR_FILE_CANT_READ
+	
+	data = file.get_var()
+	file.close()
+	if not data: return ERR_INVALID_DATA
+	
+	collection = data["collection"]
+	decks = []#Deck.parse_deck_list(data["decks"])
 	return OK
 
 #func _save_JSON():
@@ -116,12 +129,3 @@ func _load() -> Error:
 		#collection = JSON.parse_string(file.get_as_text())
 		#file.close()
 	#DEBUG_print_collection()
-
-func DEBUG_print_collection():
-	for ID in DATA.ExpansionIDs:
-		for rarity in DATA.Rarities:
-			for type in DATA.ContentTypes:
-				print("\n", ID, " - ", rarity,": ")
-				for key in collection[ID][rarity][type].keys():
-					print("   ", DATA.get_expansion_content(DATA.ExpansionIDs.get(ID), DATA.Rarities.get(rarity), DATA.ContentTypes.get(type), key).Name, " : ", collection[ID][rarity][key])
-	print("\n")

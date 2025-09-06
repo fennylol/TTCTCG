@@ -12,4 +12,5 @@ script = ExtResource("1_y6mn0")
 [connection signal="DEBUG_reset_button_pressed" from="CollectionUI" to="." method="_on_reset_button_pressed"]
 [connection signal="back_button_pressed" from="CollectionUI" to="." method="_on_back_button_pressed"]
 [connection signal="building_button_toggled" from="CollectionUI" to="." method="_on_collection_ui_building_button_toggled"]
+[connection signal="deck_selected" from="CollectionUI" to="." method="_on_collection_ui_deck_selected"]
 [connection signal="sorting_by" from="CollectionUI" to="." method="_on_collection_ui_sorting_by"]
