@@ -15,11 +15,22 @@ var PairedSprite := Sprite3D.new()
 const ROT_SPEED : float = 5.0
 
 static func create_from_two_cards(Atk : Card, Def : Card) -> PlayablePair: return PlayablePair.new(Atk.SetID, Atk.ExpansionID, Atk.Name, Atk.Type, Atk.Rarity, Atk.Img, Def.SetID, Def.ExpansionID, Def.Name, Def.Type, Def.Rarity, Def.Img)
+static func parse_dict(dict: Dictionary) -> PlayablePair:
+	assert(dict["front"] is Array)
+	assert(dict["back"] is Array)
+	assert(dict["front"].size() == 4)
+	assert(dict["back"].size() == 4)
+	
+	var front_data: Array = dict["front"]
+	var back_data: Array = dict["back"]
+	var front_card: Card = DATA.get_expansion_content(front_data[0],front_data[1],front_data[2],front_data[3])
+	var back_card: Card = DATA.get_expansion_content(back_data[0] ,back_data[1], back_data[2], back_data[3])
+	return PlayablePair.create_from_two_cards(front_card, back_card)
 
 func to_dict() -> Dictionary:
 	return {
-		"front" : [SetID, ExpansionID, Type, Rarity],
-		"back" : [PairedSetID, PairedExpansionID, PairedType, PairedRarity]
+		"front" : [ExpansionID, Rarity, Type, SetID],
+		"back" : [PairedExpansionID, PairedRarity, PairedType, PairedSetID]
 	}
 	#return [Paired]
 

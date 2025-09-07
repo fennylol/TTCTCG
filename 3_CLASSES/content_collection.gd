@@ -9,7 +9,7 @@ const VERSION: Array[int] = [0,0,0]
 const SAVE_LOCATION = "user://DoNotEditOrElseFaceThePenaltyOfDeathSeriouslyBroThatWouldBeVeryUncoolOfYou.cake"
 const VERY_SAFE_ENCRYPTION_KEY = "DoNotEditOrElseFaceThePenaltyOfDeathSeriouslyBroThatWouldBeVeryUncoolOfYouPassword"
 var collection: Dictionary 
-var decks: Array[Deck]
+var decks: Dictionary
 
 
 var empty_expansion_dict: Dictionary
@@ -40,7 +40,7 @@ func _init() -> void:
 	
 	empty_expansion_dict = sides_dict.duplicate(true)
 	collection = expansion_dict
-	decks = []
+	decks = {}
 
 
 func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]):
@@ -78,15 +78,16 @@ func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]):
 	
 	_save()
 
-#func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]):
-	#var EID = DATA.ExpansionIDs.find_key(ExpansionID)
-	#var expansion_dict: Dictionary = collection[EID]
-	#
-	#for card in CardList:
-		#var rarity_dict: Dictionary = expansion_dict[DATA.Rarities.find_key(card.Rarity)] 
-		#rarity_dict.set(card.SetID, rarity_dict.get_or_add(card.SetID, 0)+1)
-	#
-	#_save()
+
+func recieve_deck(deck: Deck):
+	var deck_dict: Dictionary = deck.to_dict()
+	decks[deck.Name] = deck_dict
+	_save()
+
+func delete_deck(DeckName: String): 
+	decks.erase(DeckName)
+	_save()
+
 
 func _save():
 	var file = FileAccess.open_encrypted_with_pass(SAVE_LOCATION, FileAccess.WRITE, VERY_SAFE_ENCRYPTION_KEY)
@@ -114,7 +115,7 @@ func _load() -> Error:
 	if not data: return ERR_INVALID_DATA
 	
 	collection = data["collection"]
-	decks = []#Deck.parse_deck_list(data["decks"])
+	decks = data["decks"]
 	return OK
 
 #func _save_JSON():

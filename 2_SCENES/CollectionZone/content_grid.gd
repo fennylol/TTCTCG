@@ -13,7 +13,6 @@ var DisplayedWidth: int = 3
 
 var ScrollTarget: float = 0.0
 var SlideTarget: float = 0.0
-#var BuildingDeck: bool = false
 
 func _init(DisplayedContent: ContentCollection, RowWidth : int = DisplayedWidth):
 	DisplayedWidth = RowWidth

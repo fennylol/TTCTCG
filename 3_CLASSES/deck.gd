@@ -1,6 +1,7 @@
 class_name Deck
 
 var Name: String = "New Deck"
+var LastSavedName: String = "New Deck"
 
 var Critters: Array[PlayablePair] = []
 var Consumables: Array[PlayablePair] = []
@@ -12,7 +13,24 @@ static func parse_deck_list(_Dict: Dictionary) -> Array[Deck]:
 	return []
 
 static func parse_single_deck(_Dict: Dictionary) -> Deck:
-	return Deck.new()
+	assert(_Dict["critters"] is Array[Dictionary])
+	assert(_Dict["consumables"] is Array[Dictionary])
+	assert(_Dict["weapons"] is Array[Dictionary])
+	assert(_Dict["wildcards"] is Array[Dictionary])
+	
+	var parsed_deck = Deck.new()
+	var critters: Array[Dictionary] = _Dict["critters"]
+	var consumables: Array[Dictionary] = _Dict["consumables"]
+	var weapons: Array[Dictionary] = _Dict["weapons"]
+	var wildcards: Array[Dictionary] = _Dict["wildcards"]
+	
+	var parse_cards = func(dict: Array[Dictionary]): for pair in dict: parsed_deck.add_to_deck(PlayablePair.parse_dict(pair))
+	parse_cards.call(critters)
+	parse_cards.call(consumables)
+	parse_cards.call(weapons)
+	parse_cards.call(wildcards)
+	
+	return parsed_deck
 
 func to_dict() -> Dictionary:
 	var dict = {}

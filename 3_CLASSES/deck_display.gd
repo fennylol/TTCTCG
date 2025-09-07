@@ -1,10 +1,11 @@
 extends VBoxContainer
 class_name DeckDisplay
 
-signal Save
 signal Back
+signal Save
 signal ChangeName(name : String)
 
+var DeckName := LineEdit.new()
 var Controls := HBoxContainer.new()
 var Critters := HBoxContainer.new()
 var Consumables := HBoxContainer.new()
@@ -42,17 +43,16 @@ func _init() -> void:
 	save_button.button_down.connect(func(): save_button.icon=PRESSEDICON)
 	save_button.button_up.connect(func(): save_button.icon=UNPRESSEDICON)
 	Controls.add_child(save_button)
-	var deck_name := LineEdit.new()
-	deck_name.name="DeckName"
-	deck_name.text="My Awesome New Deck"
-	deck_name.flat = false
-	deck_name.max_length = 21
-	deck_name.alignment = HORIZONTAL_ALIGNMENT_CENTER
-	deck_name.size_flags_horizontal |= Control.SIZE_EXPAND
-	deck_name.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	deck_name.size_flags_stretch_ratio = 10.0
-	deck_name.text_changed.connect(ChangeName.emit)
-	Controls.add_child(deck_name)
+	DeckName.name="DeckName"
+	DeckName.text="My Awesome New Deck"
+	DeckName.flat = false
+	DeckName.max_length = 21
+	DeckName.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	DeckName.size_flags_horizontal |= Control.SIZE_EXPAND
+	DeckName.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	DeckName.size_flags_stretch_ratio = 10.0
+	DeckName.text_changed.connect(ChangeName.emit)
+	Controls.add_child(DeckName)
 	Controls.add_spacer(false)
 	
 	for i in range(5):
@@ -76,6 +76,17 @@ func _init() -> void:
 	add_child(Consumables)
 	add_child(Weapons)
 	add_child(Wildcards)
+
+func recieve_deck(deck: Deck) -> void:
+	var read_array = func(arr: Array[PlayablePair]):
+		for card in arr:
+			recieve_card(card)
+	
+	DeckName.text = deck.Name
+	read_array.call(deck.Critters)
+	read_array.call(deck.Consumables)
+	read_array.call(deck.Weapons)
+	read_array.call(deck.WildCards)
 
 func recieve_card(card: Card) -> void:
 	var target: HBoxContainer = Wildcards

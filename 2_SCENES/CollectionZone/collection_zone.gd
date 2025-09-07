@@ -5,8 +5,6 @@ signal finished
 @onready var UI: Control = $CollectionUI
 const SLIDE_TARGET: float = -5.0
 
-var DEGBUG_CURRENT_DECK: Deck
-
 var WorkingCollection := ContentCollection.new()
 var DisplayGrid := ContentGrid.new(WorkingCollection)
 
@@ -21,6 +19,7 @@ func _ready() -> void:
 		WorkingCollection.set_name("WorkingCollection")
 	else: 
 		printerr("collection failed to load: ", load_err)
+	#UI.delete_deck.connect(func(deck: Deck): WorkingCollection.delete_deck(deck.Name))
 
 
 func new_grid(callback: Callable, SlideToTheSide: bool = false):
@@ -61,18 +60,26 @@ func view_collection():
 func view_decks():
 	ViewState = ViewStates.DECKLIST
 	new_grid(func(_arg1, _arg2): pass, true)
+	
 	UI.recieve_deck_list(WorkingCollection.decks)
 
-func build_deck(deck: Deck):
+func select_deck(deck: Deck):
 	ViewState = ViewStates.DECK
-	DEGBUG_CURRENT_DECK = deck
+	UI.recieve_deck(deck)
 	
+	# attach card -> deck signal pathway
 	var _on_building_deck_card_clicked = func(card: Card, _content_holder: ContentHolder):
-		print("added ", card.name, " to deck.")
 		deck.add_to_deck(PlayablePair.create_from_two_cards(card, card))
 		UI.recieve_card(card)
-	
 	new_grid(_on_building_deck_card_clicked, true)
+	
+	# attach deck -> collection pathway
+	UI.deck_name_changed.connect(func(new_name: String): deck.Name = new_name)
+	UI.save_deck.connect(func():
+							WorkingCollection.recieve_deck(deck)
+							if deck.Name != deck.LastSavedName:
+								WorkingCollection.delete_deck(deck.LastSavedName)
+								deck.LastSavedName = deck.Name)
 
 # ==========
 # ui signals
@@ -83,7 +90,7 @@ func _on_collection_ui_building_button_toggled(state: bool) -> void:
 
 func _on_collection_ui_deck_selected(deck: Deck) -> void:
 	if ViewState == ViewStates.DECKLIST:
-		build_deck(deck)
+		select_deck(deck)
 		
 		if deck.Name == "New Deck":
 			print("making new deck")
