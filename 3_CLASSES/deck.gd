@@ -1,8 +1,8 @@
 class_name Deck
 
 var Name: String = "New Deck"
-var LastSavedName: String = "New Deck"
-
+var LastSavedName: String = Name
+  
 var Critters: Array[PlayablePair] = []
 var Consumables: Array[PlayablePair] = []
 var Weapons: Array[PlayablePair] = []
@@ -73,3 +73,15 @@ func add_to_deck(pair: PlayablePair):
 		WildCards.append(pair)
 	else:
 		print("deck is full")
+
+func remove_from_deck(pair: PlayablePair):
+	var target: Array[PlayablePair] = WildCards
+	match pair.PairedType:
+		DATA.ContentTypes.CRITTER:
+			target = Critters
+		DATA.ContentTypes.CONSUMABLE:
+			target = Consumables
+		DATA.ContentTypes.WEAPON:
+			target = Weapons
+	
+	if target.has(pair): target.erase(pair)

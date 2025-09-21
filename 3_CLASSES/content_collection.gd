@@ -42,7 +42,9 @@ func _init() -> void:
 	collection = expansion_dict
 	decks = {}
 
-
+# ======================= #
+# collection modification #
+# ======================= #
 func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]):
 	var EID = DATA.ExpansionIDs.find_key(ExpansionID)
 	var expansion_dict: Dictionary = collection.get_or_add(EID, empty_expansion_dict.duplicate(true))
@@ -86,9 +88,12 @@ func recieve_deck(deck: Deck):
 
 func delete_deck(DeckName: String): 
 	decks.erase(DeckName)
+	print("removed: ", DeckName)
 	_save()
 
-
+# =========== #
+# file access #
+# =========== #
 func _save():
 	var file = FileAccess.open_encrypted_with_pass(SAVE_LOCATION, FileAccess.WRITE, VERY_SAFE_ENCRYPTION_KEY)
 	if not file: return ERR_FILE_CANT_OPEN

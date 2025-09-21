@@ -71,6 +71,17 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 10.0
 mouse_filter = 2
 
+[node name="ShowSideMenu" type="MenuButton" parent="VBoxContainer/TopBar"]
+layout_mode = 2
+text = "Show Side
+"
+item_count = 2
+popup/item_0/text = "Attack"
+popup/item_0/checked = true
+popup/item_0/id = 0
+popup/item_1/text = "Defense"
+popup/item_1/id = 1
+
 [node name="SortOrderMenu" type="MenuButton" parent="VBoxContainer/TopBar"]
 layout_mode = 2
 text = "Sort By

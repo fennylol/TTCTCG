@@ -13,22 +13,65 @@ var DisplayedWidth: int = 3
 
 var ScrollTarget: float = 0.0
 var SlideTarget: float = 0.0
+#
+#func _init(DisplayedContent: ContentCollection, \
+		   #SortOrder : ContentCollection.SortOrders = ContentCollection.SortOrders.EXPANSION, \
+		   #ShowPrimary : bool = true, \
+		   #RowWidth : int = DisplayedWidth):
+	#
+	#DisplayedWidth = RowWidth
+	#position.x = -(DisplayedWidth-1)/2.0 * (Card.CARD_WIDTH+SPACING_WIDTH)
+	#SlideTarget = position.x
+	#var collection: Dictionary = DisplayedContent.collection
+	#var side: String = "ATK" if ShowPrimary else "DEF"
+	#
+	#match SortOrder:
+		#ContentCollection.SortOrders.EXPANSION:
+			#for expansion in DATA.ExpansionIDs:
+				#for type in DATA.ContentTypes:
+					#for rarity in DATA.Rarities:
+						#for content_ID in collection[expansion][side][type][rarity]:
+							#var card: Card = DATA.get_expansion_content(DATA.ExpansionIDs[expansion], DATA.Rarities[rarity], DATA.ContentTypes[type], content_ID)
+							#for paired_rarity in DATA.Rarities:
+								#for paired_content_ID in collection[expansion][side][type][rarity][content_ID][paired_rarity]:
+									#var paired_card: Card = DATA.get_expansion_content(DATA.ExpansionIDs[expansion], DATA.Rarities[paired_rarity], DATA.ContentTypes[type], paired_content_ID)
+									#var pair := PlayablePair.create_from_two_cards(card, paired_card)
+									#var _ch: ContentHolder = display_content(pair)
+		#ContentCollection.SortOrders.TYPE:
+			#for type in DATA.ContentTypes:
+				#for rarity in DATA.Rarities:
+					#for expansion in DATA.ExpansionIDs:
+						#for content_ID in collection[expansion][side][type][rarity]:
+							#var card: Card = DATA.get_expansion_content(DATA.ExpansionIDs[expansion], DATA.Rarities[rarity], DATA.ContentTypes[type], content_ID)
+							#for paired_rarity in DATA.Rarities:
+								#for paired_content_ID in collection[expansion][side][type][rarity][content_ID][paired_rarity]:
+									#var paired_card: Card = DATA.get_expansion_content(DATA.ExpansionIDs[expansion], DATA.Rarities[paired_rarity], DATA.ContentTypes[type], paired_content_ID)
+									#var pair := PlayablePair.create_from_two_cards(card, paired_card)
+									#var _ch: ContentHolder = display_content(pair)
+		#ContentCollection.SortOrders.RARITY:
+			#for rarity in DATA.Rarities:
+				#for type in DATA.ContentTypes:
+					#for expansion in DATA.ExpansionIDs:
+						#for content_ID in collection[expansion][side][type][rarity]:
+							#var card: Card = DATA.get_expansion_content(DATA.ExpansionIDs[expansion], DATA.Rarities[rarity], DATA.ContentTypes[type], content_ID)
+							#for paired_rarity in DATA.Rarities:
+								#for paired_content_ID in collection[expansion][side][type][rarity][content_ID][paired_rarity]:
+									#var paired_card: Card = DATA.get_expansion_content(DATA.ExpansionIDs[expansion], DATA.Rarities[paired_rarity], DATA.ContentTypes[type], paired_content_ID)
+									#var pair := PlayablePair.create_from_two_cards(card, paired_card)
+									#var _ch: ContentHolder = display_content(pair)
+					##var _ch: ContentHolder =  display_content(card)
 
-func _init(DisplayedContent: ContentCollection, RowWidth : int = DisplayedWidth):
+func _init(DisplayedContent: Array[Card], RowWidth : int = DisplayedWidth):
 	DisplayedWidth = RowWidth
 	position.x = -(DisplayedWidth-1)/2.0 * (Card.CARD_WIDTH+SPACING_WIDTH)
 	SlideTarget = position.x
-	var collection: Dictionary = DisplayedContent.collection
 	
-	for expansion in DATA.ExpansionIDs:
-		for type in DATA.ContentTypes:
-			for rarity in DATA.Rarities:
-				for content_ID in collection[expansion]["ATK"][type][rarity]:
-					var card: Card = DATA.get_expansion_content(DATA.ExpansionIDs[expansion], DATA.Rarities[rarity], DATA.ContentTypes[type], content_ID)
-					var _ch: ContentHolder =  display_content(card)
+	for card in DisplayedContent:
+		var _ch: ContentHolder = display_content(card)
 
 
 func display_content(card: Card) -> ContentHolder:
+	
 	var plain_name: String = card.name.replace(" ", "_").to_lower()
 
 	var content_holder := ContentHolder.new(plain_name)

@@ -3,7 +3,8 @@ class_name DeckDisplay
 
 signal Back
 signal Save
-signal ChangeName(name : String)
+signal ChangeName(new_name : String)
+signal RemoveCard(card : PlayablePair)
 
 var DeckName := LineEdit.new()
 var Controls := HBoxContainer.new()
@@ -105,13 +106,62 @@ func recieve_card(card: Card) -> void:
 				target = Weapons
 	
 	if target != Wildcards or _is_spacer.call(Wildcards.get_child(4)):
+		var img: Texture2D = card.Img 
+		if card is PlayablePair:
+			img = stitch_textures_vertical(card.Img, card.PairedImg)
+		
 		target.remove_child(target.get_child(4))
 		var texture_rect := TextureRect.new()
-		texture_rect.texture = card.Img
+		texture_rect.texture = img
 		texture_rect.expand_mode = TextureRect.EXPAND_FIT_HEIGHT_PROPORTIONAL
 		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		texture_rect.size_flags_horizontal |= Control.SIZE_EXPAND
+		
+		var tex_rect_button := Button.new()
+		tex_rect_button.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+		tex_rect_button.flat = true
+		tex_rect_button.pressed.connect(func(): 
+											texture_rect.queue_free()
+											target.add_spacer(false)
+											target.get_child(5).name = "spacer"+str(randi())
+											RemoveCard.emit(card))
+		texture_rect.add_child(tex_rect_button)
 		target.add_child(texture_rect)
 		target.move_child(texture_rect, 0)
 	else:
 		print("deck is full")
+
+#func remove_card(card: PlayablePair)
+
+func stitch_textures_vertical(top_texture: Texture2D, bottom_texture: Texture2D) -> ImageTexture:
+	# Get images from textures
+	var top_image = top_texture.get_image()
+	var bottom_image = bottom_texture.get_image()
+	assert(top_image.get_format() == bottom_image.get_format())
+	
+	
+	# Get dimensions
+	var top_size = top_image.get_size()
+	var bottom_size = bottom_image.get_size()
+	
+	# Calculate final dimensions (use max width, sum heights)
+	var final_width = max(top_size.x, bottom_size.x)
+	var final_height = top_size.y + bottom_size.y
+	
+	# Create new image with combined dimensions
+	var combined_image = Image.create(final_width, final_height, false, top_image.get_format())
+	
+	# Fill with transparent pixels initially
+	combined_image.fill(Color(0, 0, 0, 0))
+	
+	# Blit top texture at position (0, 0)
+	combined_image.blit_rect(top_image, Rect2i(Vector2i.ZERO, top_size), Vector2i.ZERO)
+	
+	# Blit bottom texture at position (0, top_height)
+	combined_image.blit_rect(bottom_image, Rect2i(Vector2i.ZERO, bottom_size), Vector2i(0, top_size.y))
+	
+	# Create and return new ImageTexture
+	var result_texture = ImageTexture.new()
+	result_texture.set_image(combined_image)
+	
+	return result_texture

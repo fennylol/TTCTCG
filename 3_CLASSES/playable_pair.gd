@@ -15,6 +15,7 @@ var PairedSprite := Sprite3D.new()
 const ROT_SPEED : float = 5.0
 
 static func create_from_two_cards(Atk : Card, Def : Card) -> PlayablePair: return PlayablePair.new(Atk.SetID, Atk.ExpansionID, Atk.Name, Atk.Type, Atk.Rarity, Atk.Img, Def.SetID, Def.ExpansionID, Def.Name, Def.Type, Def.Rarity, Def.Img)
+static func create_flipped_card(card : PlayablePair) -> PlayablePair: return PlayablePair.new(card.PairedSetID, card.PairedExpansionID, card.PairedName, card.PairedType, card.PairedRarity, card.PairedImg, card.PairedSetID, card.ExpansionID, card.Name, card.Type, card.Rarity, card.Img)
 static func parse_dict(dict: Dictionary) -> PlayablePair:
 	assert(dict["front"] is Array)
 	assert(dict["back"] is Array)
