@@ -1,6 +1,10 @@
-[gd_resource type="ArrayMesh" load_steps=3 format=4 uid="uid://drcmqnf8m8o55"]
+[gd_resource type="ArrayMesh" load_steps=4 format=4 uid="uid://drcmqnf8m8o55"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aefce"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8h4is"]
+albedo_texture = null
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0e83"]
+albedo_texture = null
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_cowu4"]
 resource_name = "basic_card_Cube_003"
@@ -9,6 +13,7 @@ _surfaces = [{
 "format": 34359742465,
 "index_count": 84,
 "index_data": PackedByteArray("AAABAAIAAwACAAEAAAAEAAEABAADAAEABQAAAAIABAAAAAUAAwAGAAIABQACAAYABAAHAAMABAAFAAcACAADAAcACQAGAAMACQADAAgACgAFAAYACgAGAAkACwAHAAUACwAFAAoACAAHAAsACQAMAAoACwANAAgACAAOAAkACQAOAAwACAANAA4ACgAMAA8ACgAPAAsADwAMAA4ACwAPAA0ADwAOAA0A"),
+"material": SubResource("StandardMaterial3D_r0e83"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 16,
@@ -24,7 +29,7 @@ _surfaces = [{
 "format": 34359742487,
 "index_count": 84,
 "index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUAGAAZABoAGAAbABkAHAAdAB4AHAAfAB0AIAAhACIAIAAjACEAJAAlACYAJAAnACUAKAApACoAKAArACkALAAtAC4ALAAvAC0AMAAxADIAMAAzADEANAA1ADYANAA3ADUA"),
-"material": SubResource("StandardMaterial3D_aefce"),
+"material": SubResource("StandardMaterial3D_8h4is"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 56,

@@ -131,36 +131,21 @@ func recieve_card(card: Card) -> void:
 	else:
 		print("deck is full")
 
-#func remove_card(card: PlayablePair)
-
 func stitch_textures_vertical(top_texture: Texture2D, bottom_texture: Texture2D) -> ImageTexture:
-	# Get images from textures
 	var top_image = top_texture.get_image()
 	var bottom_image = bottom_texture.get_image()
 	assert(top_image.get_format() == bottom_image.get_format())
 	
-	
-	# Get dimensions
 	var top_size = top_image.get_size()
 	var bottom_size = bottom_image.get_size()
-	
-	# Calculate final dimensions (use max width, sum heights)
 	var final_width = max(top_size.x, bottom_size.x)
 	var final_height = top_size.y + bottom_size.y
-	
-	# Create new image with combined dimensions
 	var combined_image = Image.create(final_width, final_height, false, top_image.get_format())
-	
-	# Fill with transparent pixels initially
+
 	combined_image.fill(Color(0, 0, 0, 0))
-	
-	# Blit top texture at position (0, 0)
 	combined_image.blit_rect(top_image, Rect2i(Vector2i.ZERO, top_size), Vector2i.ZERO)
-	
-	# Blit bottom texture at position (0, top_height)
 	combined_image.blit_rect(bottom_image, Rect2i(Vector2i.ZERO, bottom_size), Vector2i(0, top_size.y))
-	
-	# Create and return new ImageTexture
+
 	var result_texture = ImageTexture.new()
 	result_texture.set_image(combined_image)
 	

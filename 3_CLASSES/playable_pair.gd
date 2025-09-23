@@ -1,8 +1,6 @@
 extends Card
 class_name  PlayablePair
 
-var ShowingAtk : bool = true
-
 var PairedSetID: int
 var PairedExpansionID: DATA.ExpansionIDs
 var PairedName: String
@@ -61,7 +59,7 @@ func _init(ID: int, E: DATA.ExpansionIDs, N: String, T: DATA.ContentTypes, R: DA
 	PairedSprite.rotation.y = PI
 	
 	# create mesh 
-	var M: Mesh = load("res://1_ASSETS/cards/paired_basic_card_mesh.tres")
+	var M: Mesh = load("res://1_ASSETS/cards/pair_with_uv.tres")
 	
 	# update card mesh and sprite according to rarity
 	#if Rarity <= DATA.Rarities.UNCOMMON: 
@@ -74,9 +72,24 @@ func _init(ID: int, E: DATA.ExpansionIDs, N: String, T: DATA.ContentTypes, R: DA
 	
 	set_mesh(M)
 	add_child(PairedSprite)
+	
+	var c1: Color = DATA.get_color_from_rarity(Rarity) 
+	var c2: Color = DATA.get_color_from_rarity(PairedRarity) 
+	set_surface_override_material(0, create_paired_rarity_material(c1, c2))
 
-func _process(delta: float) -> void:
-	if ShowingAtk: 
-		rotation.y = move_toward(rotation.y, 0, ROT_SPEED * delta)
-	else:
-		rotation.y = move_toward(rotation.y, PI, ROT_SPEED * delta)
+func create_paired_rarity_material(front_color: Color, back_color: Color) -> StandardMaterial3D:
+	var img_size: int = 64
+	var image = Image.create(img_size, img_size, false, Image.FORMAT_RGB8)
+	
+	for y in range(img_size): 
+		for x in range(img_size):
+			if x < img_size/2: image.set_pixel(x, y, front_color)
+			else: image.set_pixel(x, y, back_color)
+	
+	var texture = ImageTexture.new()
+	texture.set_image(image)
+	
+	var material = StandardMaterial3D.new()
+	material.albedo_texture = texture
+	
+	return material

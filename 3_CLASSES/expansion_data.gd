@@ -14,6 +14,8 @@ enum ExpansionContentFields {NAME, TYPE, IMAGE}
 enum ContentTypes {CRITTER, CONSUMABLE, WEAPON}
 enum ContentSides {ATK, DEF}
 
+
+
 ## metadata about expansions. contains pack and content rarity and content count per pack.[br]
 ## see [member ExpansionContent] for pack contents. 
 const ExpansionData: Dictionary = {
@@ -406,6 +408,22 @@ static func get_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Ra
 		) 
 	return c
 
+static func get_color_from_rarity(Rarity: Rarities) -> Color:
+	const RARITY_COLOR_S : float = 0.75
+	const RARITY_COLOR_L : float = 0.75
+	var RarityColors: Array[Color]  =  [Color.from_ok_hsl(000.0/360.0,            0.0, RARITY_COLOR_L),
+										Color.from_ok_hsl(140.0/360.0, RARITY_COLOR_S, RARITY_COLOR_L), 
+										Color.from_ok_hsl(215.0/360.0, RARITY_COLOR_S, RARITY_COLOR_L),
+										Color.from_ok_hsl(290.0/360.0, RARITY_COLOR_S, RARITY_COLOR_L),
+										Color.from_ok_hsl(005.0/360.0, RARITY_COLOR_S, RARITY_COLOR_L),
+										Color.from_ok_hsl(080.0/360.0, RARITY_COLOR_S, RARITY_COLOR_L)]
+	#var RarityColors: Array[Color]  =  [Color.from_rgba8(255, 255, 255),
+										#Color.from_rgba8(140, 190, 129), 
+										#Color.from_rgba8(88, 190, 213),
+										#Color.from_rgba8(173, 163, 233),
+										#Color.from_rgba8(228, 147, 165),
+										#Color.from_rgba8(207, 167, 97)]
+	return RarityColors[Rarity]
 
 #static func get_paired_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentType : ContentTypes, ContentIndex : int, \
 										 #DefenseExpansionID : ExpansionIDs, DefenseContentRarity : Rarities, DefenseContentType : ContentTypes, DefenseContentIndex : int) -> PlayablePair:

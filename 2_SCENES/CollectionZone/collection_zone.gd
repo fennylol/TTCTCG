@@ -9,12 +9,13 @@ var WorkingCollection := ContentCollection.new()
 #var DisplayGrid := ContentGrid.new(WorkingCollection)
 var DisplayGrid := ContentGrid.new([])
 
-enum ViewStates {COLLECTION, DECKLIST, DECK}
+enum ViewStates {COLLECTION, DECKLIST, DECK, CARDPAIRS}
 var ViewState: ViewStates = ViewStates.COLLECTION
 
 var SortingBy := ContentCollection.SortOrders.EXPANSION
 var ShowingPrimary : bool = true
 var LastAppliedCallable: Callable 
+var LastCardList: Array[Card]
 
 func _ready() -> void:
 	#return
@@ -26,14 +27,14 @@ func _ready() -> void:
 		printerr("collection failed to load: ", load_err)
 		
 	UI.delete_deck.connect(func(deck: Deck): WorkingCollection.delete_deck(deck.Name))
-	#UI.sorting_by.connect(func(SortOrder: ContentCollection.SortOrders): 
-								#SortingBy = SortOrder
-								#sort_grid())
+	UI.sorting_by.connect(func(SortOrder: ContentCollection.SortOrders): 
+								SortingBy = SortOrder
+								sort_grid())
 	#UI.showing_side.connect(func(Defense: bool): 
 								#ShowingPrimary = !Defense
 								#sort_grid())
 #
-#func sort_grid(): new_grid(LastAppliedCallable, false if ViewState == ViewStates.COLLECTION else true)
+func sort_grid(): new_grid(LastAppliedCallable, create_card_array(SortingBy), false if ViewState == ViewStates.COLLECTION else true)
 
 func new_grid(callback: Callable, CardList: Array[Card], SlideToTheSide: bool = false):
 	LastAppliedCallable = callback
