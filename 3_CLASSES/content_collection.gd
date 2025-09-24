@@ -3,7 +3,7 @@ class_name ContentCollection
 
 enum SortOrders {EXPANSION, TYPE, RARITY, DISPLAYALL}
 enum VersionLevels {MAJOR, MINOR, PATCH}
-const VERSION: Array[int] = [0,0,0]
+const VERSION: Array[int] = [0,0,1]
 
 # stored at /home/fenny/.local/share/godot/app_userdata/TTCTCG
 const SAVE_LOCATION = "user://DoNotEditOrElseFaceThePenaltyOfDeathSeriouslyBroThatWouldBeVeryUncoolOfYou.cake"

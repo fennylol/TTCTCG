@@ -23,6 +23,10 @@ RNG="*res://3_CLASSES/RNG.gd"
 
 gdscript/warnings/integer_division=0
 
+[display]
+
+window/handheld/orientation=6
+
 [importer_defaults]
 
 texture={

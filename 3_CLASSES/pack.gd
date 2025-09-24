@@ -49,15 +49,18 @@ func _init(R : DATA.Rarities, C : Array[Card]) -> void:
 	add_child(PackCam)
 	
 	# TODO: set pack texture
+	var mat: StandardMaterial3D = DATA.create_rarity_material(Rarity)
 	
 	# create pack top mesh
 	PackTop.set_mesh(load("res://1_ASSETS/packs/pack_top_mesh.tres"))
 	PackTop.set_name(plain_name+"_top")
+	PackTop.set_surface_override_material(0, mat)
 	add_child(PackTop)
 	
 	# create pack body mesh
 	PackBody.set_mesh(load("res://1_ASSETS/packs/pack_bottom_mesh.tres"))
 	PackBody.set_name(plain_name+"_bottom")
+	PackBody.set_surface_override_material(0, mat)
 	add_child(PackBody)
 	
 	# create content holder and fill

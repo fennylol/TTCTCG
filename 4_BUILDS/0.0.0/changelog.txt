@@ -1,0 +1,11 @@
+0.0.0 DEV BUILD 0
+
+ADDED
+- Pack opening
+- Collection manager
+- uuuuuhhhhhh the rest of the damn game
+
+REMOVED
+- Herobrine
+
+CHANGED

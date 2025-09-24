@@ -1,0 +1,9 @@
+0.0.1 DEV BUILD 1
+
+ADDED
+- Colored Packed
+
+REMOVED
+
+CHANGED
+- Pack Rarity odds are now exponential and beta based. (based)

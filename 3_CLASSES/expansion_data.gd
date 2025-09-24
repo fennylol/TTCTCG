@@ -15,39 +15,50 @@ enum ContentTypes {CRITTER, CONSUMABLE, WEAPON}
 enum ContentSides {ATK, DEF}
 
 
-
+#ExpansionIDs.TEST_SET : {
+	#ExpansionDataFields.PACK_RARITY_ODDS : [0.5, 0.28, 0.15, 0.05, 0.015, 0.005],
+	#ExpansionDataFields.CONTENT_RARITY_ODDS : [
+		#[0.5, 0.28, 0.15, 0.05, 0.015, 0.005],
+		#[0.4, 0.38, 0.15, 0.05, 0.015, 0.005],
+		#[0.3, 0.28, 0.35, 0.05, 0.015, 0.005],
+		#[0.2, 0.28, 0.15, 0.35, 0.015, 0.005],
+		#[0.1, 0.28, 0.15, 0.05, 0.415, 0.005],
+		#[0.0, 0.28, 0.15, 0.05, 0.015, 0.505]
+	#],
+	#ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
+#}
 ## metadata about expansions. contains pack and content rarity and content count per pack.[br]
 ## see [member ExpansionContent] for pack contents. 
 const ExpansionData: Dictionary = {
+	ExpansionIDs.TEST_SET : {
+		ExpansionDataFields.PACK_RARITY_ODDS : [0.420, 0.252, 0.151, 0.090, 0.054, 0.033], # exponential, B=0.6
+		ExpansionDataFields.CONTENT_RARITY_ODDS : [
+			[0.389, 0.278, 0.179, 0.100, 0.044, 0.010], # beta, A=1.05, S=2
+			[0.275, 0.277, 0.220, 0.142, 0.069, 0.017], # beta, A=1.55, S=2
+			[0.180, 0.257, 0.249, 0.186, 0.101, 0.027], # beta, A=2.05, S=2
+			[0.110, 0.221, 0.263, 0.227, 0.138, 0.041], # beta, A=2.55, S=2
+			[0.063, 0.180, 0.261, 0.261, 0.177, 0.058], # beta, A=3.05, S=2
+			[0.035, 0.139, 0.247, 0.285, 0.216, 0.078]  # beta, A=3.55, S=2
+		],
+		ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
+	},
+	ExpansionIDs.OTHER_SET : {
+		ExpansionDataFields.PACK_RARITY_ODDS : [0.420, 0.252, 0.151, 0.090, 0.054, 0.033], # exponential, B=0.6
+		ExpansionDataFields.CONTENT_RARITY_ODDS : [
+			[0.389, 0.278, 0.179, 0.100, 0.044, 0.010], # beta, A=1.05, S=2
+			[0.275, 0.277, 0.220, 0.142, 0.069, 0.017], # beta, A=1.55, S=2
+			[0.180, 0.257, 0.249, 0.186, 0.101, 0.027], # beta, A=2.05, S=2
+			[0.110, 0.221, 0.263, 0.227, 0.138, 0.041], # beta, A=2.55, S=2
+			[0.063, 0.180, 0.261, 0.261, 0.177, 0.058], # beta, A=3.05, S=2
+			[0.035, 0.139, 0.247, 0.285, 0.216, 0.078]  # beta, A=3.55, S=2
+		],
+		ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
+	}
 	#ExpansionIDs.TEST_SET : {
 		#ExpansionDataFields.PACK_RARITY_ODDS : [],
 		#ExpansionDataFields.CONTENT_RARITY_ODDS : [[],[],[],[],[],[]],
 		#ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS : []
 	#},
-	ExpansionIDs.TEST_SET : {
-		ExpansionDataFields.PACK_RARITY_ODDS : [0.5, 0.28, 0.15, 0.05, 0.015, 0.005],
-		ExpansionDataFields.CONTENT_RARITY_ODDS : [
-			[0.5, 0.28, 0.15, 0.05, 0.015, 0.005],
-			[0.4, 0.38, 0.15, 0.05, 0.015, 0.005],
-			[0.3, 0.28, 0.35, 0.05, 0.015, 0.005],
-			[0.2, 0.28, 0.15, 0.35, 0.015, 0.005],
-			[0.1, 0.28, 0.15, 0.05, 0.415, 0.005],
-			[0.0, 0.28, 0.15, 0.05, 0.015, 0.505]
-		],
-		ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
-	},
-	ExpansionIDs.OTHER_SET : {
-		ExpansionDataFields.PACK_RARITY_ODDS : [0.5, 0.28, 0.15, 0.05, 0.015, 0.005],
-		ExpansionDataFields.CONTENT_RARITY_ODDS : [
-			[0.5, 0.28, 0.15, 0.05, 0.015, 0.005],
-			[0.4, 0.38, 0.15, 0.05, 0.015, 0.005],
-			[0.3, 0.28, 0.35, 0.05, 0.015, 0.005],
-			[0.2, 0.28, 0.15, 0.35, 0.015, 0.005],
-			[0.1, 0.28, 0.15, 0.05, 0.415, 0.005],
-			[0.0, 0.28, 0.15, 0.05, 0.015, 0.505]
-		],
-		ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
-	}
 }
 
 ## data store of content from each expansion. [br]
@@ -351,7 +362,7 @@ const ExpansionContent: Dictionary = {
 ## pulled
 static func get_pack_rarity_odds(ExpansionID : ExpansionIDs) -> Array[float]:
 	var arr: Array[float] = Array(ExpansionData[ExpansionID][ExpansionDataFields.PACK_RARITY_ODDS], TYPE_FLOAT, "", null)
-	assert(array_sum(arr) == 1.0, "pack odds != 1")
+	assert(abs(array_sum(arr)-1.0) <= 0.001, "pack odds != 1, "+ str(array_sum(arr)))
 	return arr
 
 ## [b]Purpose[/b]: gets the odds for each content in a specific rarity of pack to be generated for a[br]
@@ -362,7 +373,7 @@ static func get_pack_rarity_odds(ExpansionID : ExpansionIDs) -> Array[float]:
 ## pulled
 static func get_content_rarity_odds(ExpansionID : ExpansionIDs, PackRarity : Rarities) -> Array[float]: 
 	var arr: Array[float] = Array(ExpansionData[ExpansionID][ExpansionDataFields.CONTENT_RARITY_ODDS][PackRarity], TYPE_FLOAT, "", null)
-	assert(array_sum(arr) == 1.0, "pack content odds != 1")
+	assert(abs(array_sum(arr)-1.0) <= 0.001, "pack content odds != 1, " + str(array_sum(arr)))
 	return arr
 
 
@@ -424,6 +435,43 @@ static func get_color_from_rarity(Rarity: Rarities) -> Color:
 										#Color.from_rgba8(228, 147, 165),
 										#Color.from_rgba8(207, 167, 97)]
 	return RarityColors[Rarity]
+
+static func create_rarity_material(rarity: Rarities) -> StandardMaterial3D:
+	var color: Color = get_color_from_rarity(rarity)
+	var img_size: int = 64
+	var image = Image.create(img_size, img_size, false, Image.FORMAT_RGB8)
+	
+	for y in range(img_size): 
+		for x in range(img_size):
+			image.set_pixel(x, y, color)
+	
+	var texture = ImageTexture.new()
+	texture.set_image(image)
+	
+	var material = StandardMaterial3D.new()
+	material.albedo_texture = texture
+	
+	return material
+
+static func create_paired_rarity_material(front_rarity: Rarities, back_rarity: Rarities) -> StandardMaterial3D:
+	var front_color: Color = get_color_from_rarity(front_rarity)
+	var back_color: Color = get_color_from_rarity(back_rarity)
+	var img_size: int = 64
+	var image = Image.create(img_size, img_size, false, Image.FORMAT_RGB8)
+	
+	for y in range(img_size): 
+		for x in range(img_size):
+			if x < img_size/2: image.set_pixel(x, y, front_color)
+			else: image.set_pixel(x, y, back_color)
+	
+	var texture = ImageTexture.new()
+	texture.set_image(image)
+	
+	var material = StandardMaterial3D.new()
+	material.albedo_texture = texture
+	
+	return material
+
 
 #static func get_paired_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentType : ContentTypes, ContentIndex : int, \
 										 #DefenseExpansionID : ExpansionIDs, DefenseContentRarity : Rarities, DefenseContentType : ContentTypes, DefenseContentIndex : int) -> PlayablePair:

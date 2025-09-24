@@ -60,24 +60,8 @@ func _init(ID: int, E: DATA.ExpansionIDs, N: String, T: DATA.ContentTypes, R: DA
 	add_child(Animations)
 	add_child(Sprite)
 	
-	var c: Color = DATA.get_color_from_rarity(Rarity)
-	set_surface_override_material(0, create_rarity_material(c))
+	var mat: StandardMaterial3D = DATA.create_rarity_material(Rarity)
+	set_surface_override_material(0, mat)
 
 func play_anim(AnimName : StringName):
 	Animations.play(AnimName)
-
-func create_rarity_material(color: Color) -> StandardMaterial3D:
-	var img_size: int = 64
-	var image = Image.create(img_size, img_size, false, Image.FORMAT_RGB8)
-	
-	for y in range(img_size): 
-		for x in range(img_size):
-			image.set_pixel(x, y, color)
-	
-	var texture = ImageTexture.new()
-	texture.set_image(image)
-	
-	var material = StandardMaterial3D.new()
-	material.albedo_texture = texture
-	
-	return material
