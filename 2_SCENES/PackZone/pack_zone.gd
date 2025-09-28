@@ -5,6 +5,35 @@ signal finished
 
 const STARTING_PACK_HEIGHT: float = 5.0
 
+func enter_pack_zone(): DEBUG_add_pack()
+
+func DEBUG_roll_pack_odds(ExpansionID: DATA.ExpansionIDs, num_trials: int = 100) -> Array[int]:
+	var counts: Array[int] = [0,0,0,0,0,0]
+	for i in range(num_trials):
+		var pack_rarity = determine_pack_rarity(ExpansionID)
+		var card_rarities = determine_pack_content_rarities(ExpansionID, pack_rarity)
+		for rarity in card_rarities:
+			counts[rarity]+=1
+	
+	var count_ev: float = 0.0
+	for rarity in DATA.Rarities: count_ev += DATA.get_pack_content_count(ExpansionID, DATA.Rarities[rarity])*DATA.get_pack_rarity_odds(ExpansionID)[DATA.Rarities[rarity]]
+	
+	var total_cards : int = DATA.array_sum_i(counts)
+	var prop_EVs : Array[float] = DATA.calculate_expected_card_proportions_per_pack(ExpansionID)
+	LOGGER.log_msg("RESULTS FOR " + str(num_trials) + " \"PACKS\" OF " + DATA.ExpansionIDs.find_key(ExpansionID))
+	LOGGER.log_msg("total cards:\t", total_cards)
+	LOGGER.log_msg("per pack:\t\t" + str(snappedf(float(total_cards)/float(num_trials), 0.001)) + "\t\t" + str(count_ev) + "\n")
+	
+	LOGGER.log_msg("rarity\t\t|\tcount\t|\tprop\t|\tEV\t\t|\tdiff")
+	for rarity in DATA.Rarities:
+		var count = counts[DATA.Rarities[rarity]]
+		var prop = float(count)/float(total_cards)
+		var prop_EV = prop_EVs[DATA.Rarities[rarity]]
+		var diff = ((float(prop) / prop_EV) - 1) * 100
+		var base_str = "\t\t|\t" if rarity.length() <= 6 else "\t|\t"
+		LOGGER.log_msg(rarity + base_str + str(count) + "\t\t|\t" + str(snappedf(prop, 0.001)) + "\t|\t" + str(snappedf(prop_EV, 0.001)) + "\t|\t"+ " " if diff >=0 else "" + str(snappedf(diff, 0.01)) + "%")
+	LOGGER.log_msg("\n\n")
+	return counts
 
 func DEBUG_add_pack():
 	var rand = int(floor(RNG.random_value() * DATA.ExpansionIDs.size()))
@@ -15,7 +44,7 @@ func DEBUG_add_pack():
 	#var paired_content = Array[PlayablePair]
 	#for 
 	
-	print("generated a ", DATA.Rarities.find_key(pack_rarity), " pack from ", DATA.ExpansionIDs.find_key(rand))
+	LOGGER.log_msg("generated a " + DATA.Rarities.find_key(pack_rarity) + " pack from " + DATA.ExpansionIDs.find_key(rand))
 	Results.emit(rand, pack_content)
 	
 	var pack: Pack = Pack.new(pack_rarity, pack_content)

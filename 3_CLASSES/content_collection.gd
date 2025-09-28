@@ -11,6 +11,9 @@ const VERY_SAFE_ENCRYPTION_KEY = "DoNotEditOrElseFaceThePenaltyOfDeathSeriouslyB
 var collection: Dictionary 
 var decks: Dictionary
 
+var prev_pack_timestamp: float
+var pack_before_that_timestamp: float
+const NEXT_PACK_UNIX_TIME_OFFSET: int = 45#43200
 
 var empty_expansion_dict: Dictionary
 
@@ -46,6 +49,9 @@ func _init() -> void:
 # collection modification #
 # ======================= #
 func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]):
+	pack_before_that_timestamp = prev_pack_timestamp
+	prev_pack_timestamp = Time.get_unix_time_from_system()
+	
 	var EID = DATA.ExpansionIDs.find_key(ExpansionID)
 	var expansion_dict: Dictionary = collection.get_or_add(EID, empty_expansion_dict.duplicate(true))
 	var atk_dict: Dictionary = expansion_dict[DATA.ContentSides.find_key(DATA.ContentSides.ATK)]
@@ -88,7 +94,6 @@ func recieve_deck(deck: Deck):
 
 func delete_deck(DeckName: String): 
 	decks.erase(DeckName)
-	print("removed: ", DeckName)
 	_save()
 
 # =========== #
@@ -100,7 +105,11 @@ func _save():
 	
 	var data = {
 		"version" : VERSION,
-		"saved_at" : Time.get_datetime_string_from_system(true),
+		"saved_at" : Time.get_unix_time_from_system(),
+		
+		"prev_pack_timestamp" : prev_pack_timestamp,
+		"pack_before_that_timestamp" : pack_before_that_timestamp,
+		
 		"collection" : collection,
 		"decks" : decks
 	}
@@ -119,6 +128,32 @@ func _load() -> Error:
 	file.close()
 	if not data: return ERR_INVALID_DATA
 	
+	if not data.keys().has("version"): 
+		LOGGER.log_msg("saved data does not contain \"version\" field", LOGGER.Flags.ERR_STDOUT)
+		return ERR_INVALID_DATA
+	if not data.keys().has("saved_at"): 
+		LOGGER.log_msg("saved data does not contain \"saved_at\" field", LOGGER.Flags.ERR_STDOUT)
+		return ERR_INVALID_DATA
+	if not data.keys().has("prev_pack_timestamp"): 
+		LOGGER.log_msg("saved data does not contain \"prev_pack_timestamp\" field", LOGGER.Flags.ERR_STDOUT)
+		return ERR_INVALID_DATA
+	if not data.keys().has("pack_before_that_timestamp"): 
+		LOGGER.log_msg("saved data does not contain \"pack_before_that_timestamp\" field", LOGGER.Flags.ERR_STDOUT)
+		return ERR_INVALID_DATA
+	if not data.keys().has("collection"): 
+		LOGGER.log_msg("saved data does not contain \"collection\" field", LOGGER.Flags.ERR_STDOUT)
+		return ERR_INVALID_DATA
+	if not data.keys().has("decks"): 
+		LOGGER.log_msg("saved data does not contain \"decks\" field", LOGGER.Flags.ERR_STDOUT)
+		return ERR_INVALID_DATA
+	
+	#if VERSION != data["verison"]: printerr("SAVE FROM PREVIOUS VERSION")
+	if Time.get_unix_time_from_system() < data["saved_at"]: 
+		LOGGER.log_msg("BRUH IS A TIME TRAVELIN' AHH HAHAH", LOGGER.Flags.ERR_STDOUT)
+		return ERR_HELP
+	
+	prev_pack_timestamp = data["prev_pack_timestamp"]
+	pack_before_that_timestamp = data["pack_before_that_timestamp"]
 	collection = data["collection"]
 	decks = data["decks"]
 	return OK

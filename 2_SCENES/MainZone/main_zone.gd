@@ -1,31 +1,44 @@
 extends Node3D
 
-@onready var MainMenu = $MainMenu
-@onready var PackZone = $PackZone
-@onready var CollectionZone = $CollectionZone
 @onready var MainCam = $MainCamera
-
-enum Elements {MAINMENU, PACKZONE, COLLECTIONZONE}
-func set_visible_element(Element: Elements):
-	MainMenu.set_visible(true if Element == Elements.MAINMENU else false)
-	
-	MainCam.set_current(false if Element == Elements.PACKZONE else true)
-	PackZone.set_visible(true if Element == Elements.PACKZONE else false)
-	
-	CollectionZone.set_visible(true if Element == Elements.COLLECTIONZONE else false)
-	#MainCam.set_current(true if Element == Elements.COLLECTIONZONE else false)
+@onready var MainMenu = $MainMenu
+@onready var PackZone = $ZoneZone/PackZone
+@onready var GameZone = $ZoneZone/GameZone
+@onready var CollectionZone = $ZoneZone/CollectionZone
+enum Elements {MAINMENU, PACKZONE, COLLECTIONZONE, GAMEZONE}
 
 func _ready() -> void: set_visible_element(Elements.MAINMENU)
-func _on_pack_zone_finished() -> void: set_visible_element(Elements.MAINMENU)
-func _on_collection_zone_finished() -> void: set_visible_element(Elements.MAINMENU)
-
-func _on_pack_button_pressed() -> void:
+# ========= #
+# pack zone #
+# ========= #
+func _on_main_menu_pack_button_pressed() -> void:
 	set_visible_element(Elements.PACKZONE)
-	PackZone.DEBUG_add_pack()
-
-func _on_collection_button_pressed() -> void:
-	set_visible_element(Elements.COLLECTIONZONE)
-	CollectionZone.begin_viewing_collection()
-
+	PackZone.enter_pack_zone()
 func _on_pack_zone_results(ExpansionID: DATA.ExpansionIDs, CardList: Array[Card]) -> void:
 	CollectionZone.recieve_cards(ExpansionID, CardList)
+func _on_pack_zone_finished() -> void: set_visible_element(Elements.MAINMENU)
+# =============== #
+# collection zone #
+# =============== #
+func _on_main_menu_collection_button_pressed() -> void:
+	set_visible_element(Elements.COLLECTIONZONE)
+	CollectionZone.enter_collection_zone()
+func _on_collection_zone_update_next_pack_timer(prev_pack_time: float, next_pack_time: float) -> void: MainMenu.update_next_pack_timer(prev_pack_time, next_pack_time)
+func _on_collection_zone_finished() -> void: set_visible_element(Elements.MAINMENU)
+# ========= #
+# game zone #
+# ========= #
+func _on_main_menu_play_button_pressed() -> void:
+	set_visible_element(Elements.GAMEZONE)
+	GameZone.enter_game_zone()
+func _on_game_zone_finished() -> void: set_visible_element(Elements.MAINMENU)
+
+# ======= #
+# utility #
+# ======= #
+func set_visible_element(Element: Elements):
+	MainCam.set_current(false if Element == Elements.PACKZONE else true)
+	PackZone.set_visible(true if Element == Elements.PACKZONE else false)
+	CollectionZone.set_visible(true if Element == Elements.COLLECTIONZONE else false)
+	GameZone.set_visible(true if Element == Elements.GAMEZONE else false)
+	MainMenu.set_visible(true if Element == Elements.MAINMENU else false)

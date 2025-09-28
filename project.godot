@@ -12,12 +12,15 @@ config_version=5
 
 config/name="TTCTCG"
 run/main_scene="uid://et816m5b5103"
-config/features=PackedStringArray("4.4", "Forward Plus")
+config/features=PackedStringArray("4.5", "Forward Plus")
+boot_splash/bg_color=Color(0.607843, 0.678431, 0.717647, 1)
+boot_splash/image="uid://bdrvmq4vt623x"
 config/icon="uid://3qx28dhixryw"
 
 [autoload]
 
-RNG="*res://3_CLASSES/RNG.gd"
+RNG="*res://2_SCENES/AutoZone/RNG.gd"
+LOGGER="*res://2_SCENES/AutoZone/LumberJack.gd"
 
 [debug]
 

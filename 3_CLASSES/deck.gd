@@ -72,7 +72,7 @@ func add_to_deck(pair: PlayablePair):
 	elif WildCards.size() < 5:
 		WildCards.append(pair)
 	else:
-		print("deck is full")
+		LOGGER.log_msg("deck is full", LOGGER.Flags.ERR_STDOUT)
 
 func remove_from_deck(pair: PlayablePair):
 	var target: Array[PlayablePair] = WildCards

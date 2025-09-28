@@ -31,7 +31,7 @@ enum ContentSides {ATK, DEF}
 ## see [member ExpansionContent] for pack contents. 
 const ExpansionData: Dictionary = {
 	ExpansionIDs.TEST_SET : {
-		ExpansionDataFields.PACK_RARITY_ODDS : [0.420, 0.252, 0.151, 0.090, 0.054, 0.033], # exponential, B=0.6
+		ExpansionDataFields.PACK_RARITY_ODDS : [0.564, 0.248, 0.109, 0.048, 0.021, 0.010], # exponential, B=0.44
 		ExpansionDataFields.CONTENT_RARITY_ODDS : [
 			[0.389, 0.278, 0.179, 0.100, 0.044, 0.010], # beta, A=1.05, S=2
 			[0.275, 0.277, 0.220, 0.142, 0.069, 0.017], # beta, A=1.55, S=2
@@ -419,6 +419,47 @@ static func get_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Ra
 		) 
 	return c
 
+
+static func calculate_expected_card_proportions_per_pack(expansion_id: ExpansionIDs) -> Array[float]:
+	var pack_rarity_odds = get_pack_rarity_odds(expansion_id)
+	
+	# Get the number of card rarities by checking the first pack's content rarity odds
+	var num_rarities = get_content_rarity_odds(expansion_id, 0 as Rarities).size()
+	var expected_cards_per_rarity: Array[float] = []
+	
+	# Initialize array with zeros
+	for i in range(num_rarities):
+		expected_cards_per_rarity.append(0.0)
+	
+	# For each pack rarity
+	for pack_rarity_int in range(pack_rarity_odds.size()):
+		var pack_rarity = pack_rarity_int as Rarities
+		var pack_probability = pack_rarity_odds[pack_rarity_int]
+		var cards_per_pack = get_pack_content_count(expansion_id, pack_rarity)
+		var content_rarity_odds = get_content_rarity_odds(expansion_id, pack_rarity)
+		
+		# For each card rarity
+		for card_rarity in range(num_rarities):
+			var card_rarity_odds = content_rarity_odds[card_rarity]
+			
+			# Expected number of this rarity cards in this pack type
+			var expected_cards_in_pack = cards_per_pack * card_rarity_odds
+			
+			# Weight by pack probability and add to total
+			expected_cards_per_rarity[card_rarity] += pack_probability * expected_cards_in_pack
+	
+	# Calculate total expected cards per pack to convert to proportions
+	var total_expected_cards = 0.0
+	for expected_count in expected_cards_per_rarity:
+		total_expected_cards += expected_count
+	
+	# Convert to proportions
+	var proportions: Array[float] = []
+	for expected_count in expected_cards_per_rarity:
+		proportions.append(expected_count / total_expected_cards)
+	
+	return proportions
+
 static func get_color_from_rarity(Rarity: Rarities) -> Color:
 	const RARITY_COLOR_S : float = 0.75
 	const RARITY_COLOR_L : float = 0.75
@@ -504,12 +545,12 @@ static func DEBUG_print_expansion_EVs(ExpansionID : ExpansionIDs) -> void:
 			var card_probability = ExpansionData[ExpansionID][ExpansionDataFields.CONTENT_RARITY_ODDS][pack_tier][card_tier]
 			expected_values[card_tier] += pack_probability * pack_card_count * card_probability
 	
-	print("The average pack from ", ExpansionIDs.find_key(ExpansionID), " will contain:")
+	LOGGER.log_msg("The average pack from " + ExpansionIDs.find_key(ExpansionID) + " will contain:")
 	for rarity in Rarities:
 		var r = Rarities[rarity]
 		var Str: String = "├─ " if r != Rarities.HOLY_MOLY else "╰─ "
-		print(Str, expected_values[r], " ", rarity, " cards")
-	print("and an average of ", array_sum(expected_values), " total cards.\n")
+		LOGGER.log_msg(Str + str(expected_values[r]) + " " + rarity + " cards")
+	LOGGER.log_msg("and an average of " + str(array_sum(expected_values)) + " total cards.\n")
 
 
 ## [b]Purpose[/b]: sums all elements of an array of floats. Used for internal testing.[br]
@@ -517,5 +558,10 @@ static func DEBUG_print_expansion_EVs(ExpansionID : ExpansionIDs) -> void:
 ## [b]Returns[/b]: the sum 
 static func array_sum(Arr: Array[float]) -> float:
 	var sum: float = 0.0
+	for f in Arr: sum+=f
+	return sum
+
+static func array_sum_i(Arr: Array[int]) -> int:
+	var sum: int = 0
 	for f in Arr: sum+=f
 	return sum

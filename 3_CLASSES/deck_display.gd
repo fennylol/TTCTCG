@@ -129,7 +129,7 @@ func recieve_card(card: Card) -> void:
 		target.add_child(texture_rect)
 		target.move_child(texture_rect, 0)
 	else:
-		print("deck is full")
+		LOGGER.log_msg("deck is full", LOGGER.Flags.WARN_STDOUT)
 
 func stitch_textures_vertical(top_texture: Texture2D, bottom_texture: Texture2D) -> ImageTexture:
 	var top_image = top_texture.get_image()
