@@ -45,7 +45,7 @@ func _process(delta: float) -> void:
 			MovementBegin = position
 			MovementEnd = position
 	
-	if Input.is_action_just_pressed("Next"):
+	if Input.is_action_just_pressed("Next") and visible:
 		var cam = get_viewport().get_camera_3d()
 		var mouse_pos = get_viewport().get_mouse_position()
 

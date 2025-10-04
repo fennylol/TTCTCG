@@ -1,16 +1,29 @@
-[gd_scene load_steps=3 format=3 uid="uid://h6ekll5p6ra"]
+[gd_scene load_steps=4 format=3 uid="uid://h6ekll5p6ra"]
 
-[ext_resource type="Script" uid="uid://c7vqei6af7kh6" path="res://2_SCENES/CollectionZone/collection_zone2.gd" id="1_vdifo"]
+[ext_resource type="Script" uid="uid://c7vqei6af7kh6" path="res://2_SCENES/CollectionZone/collection_zone.gd" id="1_vdifo"]
 [ext_resource type="PackedScene" uid="uid://280odfhvfqk8" path="res://2_SCENES/CollectionZone/CollectionUI.tscn" id="2_vdifo"]
+[ext_resource type="Script" uid="uid://bphg77tf2cacl" path="res://2_SCENES/CollectionZone/content_grid.gd" id="3_i5sya"]
 
 [node name="CollectionZone" type="Node3D"]
 script = ExtResource("1_vdifo")
 
 [node name="CollectionUI" parent="." instance=ExtResource("2_vdifo")]
+visible = false
+
+[node name="ContentGrid" type="Node3D" parent="."]
+script = ExtResource("3_i5sya")
+metadata/_custom_type_script = "uid://bphg77tf2cacl"
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
-[connection signal="DEBUG_reset_button_pressed" from="CollectionUI" to="." method="_on_reset_button_pressed"]
-[connection signal="back_button_pressed" from="CollectionUI" to="." method="_on_back_button_pressed"]
-[connection signal="building_button_toggled" from="CollectionUI" to="." method="_on_collection_ui_building_button_toggled"]
-[connection signal="deck_selected" from="CollectionUI" to="." method="_on_collection_ui_deck_selected"]
-[connection signal="sorting_by" from="CollectionUI" to="." method="_on_collection_ui_sorting_by"]
+[connection signal="DEBUG_reset_button_pressed" from="CollectionUI" to="." method="_on_ui_DEBUG_reset_button_pressed"]
+[connection signal="back_button_pressed" from="CollectionUI" to="." method="_on_ui_back_button_pressed"]
+[connection signal="passthrough_delete_deck" from="CollectionUI" to="." method="_on_ui_passthrough_delete_deck"]
+[connection signal="passthrough_remove_card_from_deck" from="CollectionUI" to="." method="_on_ui_passthrough_remove_card_from_deck"]
+[connection signal="passthrough_rename_deck" from="CollectionUI" to="." method="_on_ui_passthrough_rename_deck"]
+[connection signal="passthrough_save_deck" from="CollectionUI" to="." method="_on_ui_passthrough_save_deck"]
+[connection signal="passthrough_select_deck" from="CollectionUI" to="." method="_on_ui_passthrough_select_deck"]
+[connection signal="show_collection_button_pressed" from="CollectionUI" to="." method="_on_ui_show_collection_button_pressed"]
+[connection signal="show_decks_button_pressed" from="CollectionUI" to="." method="_on_ui_show_decks_button_pressed"]
+[connection signal="show_side_selected" from="CollectionUI" to="." method="_on_ui_show_side_selected"]
+[connection signal="sort_order_selected" from="CollectionUI" to="." method="_on_ui_sort_order_selected"]
+[connection signal="card_clicked" from="ContentGrid" to="." method="_on_display_grid_card_clicked"]

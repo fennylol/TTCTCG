@@ -43,7 +43,7 @@ const ExpansionData: Dictionary = {
 		ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
 	},
 	ExpansionIDs.OTHER_SET : {
-		ExpansionDataFields.PACK_RARITY_ODDS : [0.420, 0.252, 0.151, 0.090, 0.054, 0.033], # exponential, B=0.6
+		ExpansionDataFields.PACK_RARITY_ODDS : [0.564, 0.248, 0.109, 0.048, 0.021, 0.010], # exponential, B=0.44
 		ExpansionDataFields.CONTENT_RARITY_ODDS : [
 			[0.389, 0.278, 0.179, 0.100, 0.044, 0.010], # beta, A=1.05, S=2
 			[0.275, 0.277, 0.220, 0.142, 0.069, 0.017], # beta, A=1.55, S=2
@@ -468,13 +468,8 @@ static func get_color_from_rarity(Rarity: Rarities) -> Color:
 										Color.from_ok_hsl(215.0/360.0, RARITY_COLOR_S, RARITY_COLOR_L),
 										Color.from_ok_hsl(290.0/360.0, RARITY_COLOR_S, RARITY_COLOR_L),
 										Color.from_ok_hsl(005.0/360.0, RARITY_COLOR_S, RARITY_COLOR_L),
-										Color.from_ok_hsl(080.0/360.0, RARITY_COLOR_S, RARITY_COLOR_L)]
-	#var RarityColors: Array[Color]  =  [Color.from_rgba8(255, 255, 255),
-										#Color.from_rgba8(140, 190, 129), 
-										#Color.from_rgba8(88, 190, 213),
-										#Color.from_rgba8(173, 163, 233),
-										#Color.from_rgba8(228, 147, 165),
-										#Color.from_rgba8(207, 167, 97)]
+										Color.from_ok_hsl(080.0/360.0, RARITY_COLOR_S, RARITY_COLOR_L),
+										Color.from_ok_hsl(000.0/360.0,            0.0,            0.5)]
 	return RarityColors[Rarity]
 
 static func create_rarity_material(rarity: Rarities) -> StandardMaterial3D:

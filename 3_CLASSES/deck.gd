@@ -1,7 +1,6 @@
 class_name Deck
 
 var Name: String = "New Deck"
-var LastSavedName: String = Name
   
 var Critters: Array[PlayablePair] = []
 var Consumables: Array[PlayablePair] = []

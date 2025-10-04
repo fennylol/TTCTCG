@@ -22,7 +22,7 @@ func DEBUG_roll_pack_odds(ExpansionID: DATA.ExpansionIDs, num_trials: int = 100)
 	var prop_EVs : Array[float] = DATA.calculate_expected_card_proportions_per_pack(ExpansionID)
 	LOGGER.log_msg("RESULTS FOR " + str(num_trials) + " \"PACKS\" OF " + DATA.ExpansionIDs.find_key(ExpansionID))
 	LOGGER.log_msg("total cards:\t", total_cards)
-	LOGGER.log_msg("per pack:\t\t" + str(snappedf(float(total_cards)/float(num_trials), 0.001)) + "\t\t" + str(count_ev) + "\n")
+	LOGGER.log_msg("per pack:\t\t" + str(snappedf(float(total_cards)/float(num_trials), 0.001)) + "\t\t" + str(count_ev))
 	
 	LOGGER.log_msg("rarity\t\t|\tcount\t|\tprop\t|\tEV\t\t|\tdiff")
 	for rarity in DATA.Rarities:
@@ -31,8 +31,9 @@ func DEBUG_roll_pack_odds(ExpansionID: DATA.ExpansionIDs, num_trials: int = 100)
 		var prop_EV = prop_EVs[DATA.Rarities[rarity]]
 		var diff = ((float(prop) / prop_EV) - 1) * 100
 		var base_str = "\t\t|\t" if rarity.length() <= 6 else "\t|\t"
-		LOGGER.log_msg(rarity + base_str + str(count) + "\t\t|\t" + str(snappedf(prop, 0.001)) + "\t|\t" + str(snappedf(prop_EV, 0.001)) + "\t|\t"+ " " if diff >=0 else "" + str(snappedf(diff, 0.01)) + "%")
-	LOGGER.log_msg("\n\n")
+		
+		var total_str: String = rarity + base_str + str(count) + "\t\t|\t" + str(snappedf(prop, 0.001)) + "\t|\t" + str(snappedf(prop_EV, 0.001)) + "\t|\t" + (" " if diff >=0 else "") + str(snappedf(diff, 0.01)) + "%"
+		LOGGER.log_msg(total_str)
 	return counts
 
 func DEBUG_add_pack():

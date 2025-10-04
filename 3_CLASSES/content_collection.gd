@@ -18,13 +18,6 @@ const NEXT_PACK_UNIX_TIME_OFFSET: int = 45#43200
 var empty_expansion_dict: Dictionary
 
 func _init() -> void:
-	#var rarity_dict: Dictionary = {}
-	#for rarity in DATA.Rarities:
-		#rarity_dict[rarity] = {}
-	
-	#for ID in DATA.ExpansionIDs:
-		#collection[ID] = rarity_dict.duplicate(true)
-	
 	var rarity_dict: Dictionary = {}
 	for rarity in DATA.Rarities:
 		rarity_dict[rarity] = {}
@@ -46,8 +39,18 @@ func _init() -> void:
 	decks = {}
 
 # ======================= #
-# collection modification #
+# COLLECTION MODIFICATION #
 # ======================= #
+#region
+func recieve_deck(deck: Deck):
+	var deck_dict: Dictionary = deck.to_dict()
+	decks[deck.Name] = deck_dict
+	_save()
+
+func delete_deck(DeckName: String): 
+	decks.erase(DeckName)
+	_save()
+
 func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]):
 	pack_before_that_timestamp = prev_pack_timestamp
 	prev_pack_timestamp = Time.get_unix_time_from_system()
@@ -85,20 +88,12 @@ func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]):
 		def_card_dict.set(atk_card.SetID, def_card_dict.get_or_add(atk_card.SetID, 0)+1)
 	
 	_save()
-
-
-func recieve_deck(deck: Deck):
-	var deck_dict: Dictionary = deck.to_dict()
-	decks[deck.Name] = deck_dict
-	_save()
-
-func delete_deck(DeckName: String): 
-	decks.erase(DeckName)
-	_save()
+#endregion
 
 # =========== #
-# file access #
+# FILE ACCESS #
 # =========== #
+#region
 func _save():
 	var file = FileAccess.open_encrypted_with_pass(SAVE_LOCATION, FileAccess.WRITE, VERY_SAFE_ENCRYPTION_KEY)
 	if not file: return ERR_FILE_CANT_OPEN
@@ -157,16 +152,4 @@ func _load() -> Error:
 	collection = data["collection"]
 	decks = data["decks"]
 	return OK
-
-#func _save_JSON():
-	#var file = FileAccess.open(SAVE_LOCATION, FileAccess.WRITE)
-	#var json := JSON.stringify(collection)
-	#file.store_string(json)
-	#file.close()
-#
-#func _load_JSON():
-	#if FileAccess.file_exists(SAVE_LOCATION):
-		#var file = FileAccess.open(SAVE_LOCATION, FileAccess.READ)
-		#collection = JSON.parse_string(file.get_as_text())
-		#file.close()
-	#DEBUG_print_collection()
+#endregion

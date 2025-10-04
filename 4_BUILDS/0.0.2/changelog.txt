@@ -1,0 +1,12 @@
+0.0.2 DEV BUILD 2: The Great Collection Rewrite
+
+ADDED
+- Proper Corting
+- Deck exclusion (only one card at a time please)
+- more robust logging features
+
+REMOVED
+
+CHANGED
+- Entire collection backend
+- Back button in collection, it actually navigates instead of just sending you to the main menu

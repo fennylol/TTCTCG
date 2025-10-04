@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://280odfhvfqk8"]
+[gd_scene load_steps=4 format=3 uid="uid://bkhgscjcx41s"]
 
-[ext_resource type="Script" uid="uid://bfjyge4onolfe" path="res://2_SCENES/CollectionZone/collection_ui.gd" id="1_dceaw"]
-[ext_resource type="Texture2D" uid="uid://c412f3mqr2lsf" path="res://1_ASSETS/UI/DEBUG_button_pressed.png" id="2_dceaw"]
-[ext_resource type="Texture2D" uid="uid://0irxkqdcs5nx" path="res://1_ASSETS/UI/DEBUG_button.png" id="3_16lt4"]
-[ext_resource type="Script" uid="uid://c07uprgyv6ps3" path="res://3_CLASSES/deck_display.gd" id="4_16lt4"]
+[ext_resource type="Script" uid="uid://bfjyge4onolfe" path="res://2_SCENES/CollectionZone/collection_ui.gd" id="1_4487n"]
+[ext_resource type="Texture2D" uid="uid://c412f3mqr2lsf" path="res://1_ASSETS/UI/DEBUG_button_pressed.png" id="2_20ms5"]
+[ext_resource type="Texture2D" uid="uid://0irxkqdcs5nx" path="res://1_ASSETS/UI/DEBUG_button.png" id="3_bgjdp"]
 
 [node name="CollectionUI" type="Control"]
 layout_mode = 3
@@ -12,7 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_dceaw")
+script = ExtResource("1_4487n")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -51,17 +50,17 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 10.0
 mouse_filter = 2
 
-[node name="ShowCollectionButton" type="Button" parent="VBoxContainer/TopBar"]
+[node name="CardsButton" type="Button" parent="VBoxContainer/TopBar"]
 layout_mode = 2
 text = "Cards"
-icon = ExtResource("2_dceaw")
+icon = ExtResource("2_20ms5")
 flat = true
 icon_alignment = 1
 
-[node name="ShowDecksButton" type="Button" parent="VBoxContainer/TopBar"]
+[node name="DecksButton" type="Button" parent="VBoxContainer/TopBar"]
 layout_mode = 2
 text = "Decks"
-icon = ExtResource("3_16lt4")
+icon = ExtResource("3_bgjdp")
 flat = true
 icon_alignment = 1
 
@@ -108,11 +107,9 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 mouse_filter = 2
 
-[node name="DeckDisplay" type="VBoxContainer" parent="VBoxContainer/CONTENT"]
+[node name="DecksList" type="VBoxContainer" parent="VBoxContainer/CONTENT"]
 layout_mode = 2
 size_flags_horizontal = 3
-script = ExtResource("4_16lt4")
-metadata/_custom_type_script = "uid://c07uprgyv6ps3"
 
 [node name="BottomBar" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -125,12 +122,12 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 11.0
 mouse_filter = 2
 
-[node name="DEBUGResetButton" type="Button" parent="VBoxContainer/BottomBar"]
+[node name="ResetButton" type="Button" parent="VBoxContainer/BottomBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxContainer/BottomBar/DEBUGResetButton"]
+[node name="Label" type="Label" parent="VBoxContainer/BottomBar/ResetButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -142,12 +139,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [connection signal="pressed" from="VBoxContainer/TopBar/BackButton" to="." method="_on_back_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/TopBar/ShowCollectionButton" to="." method="_on_show_collection_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/TopBar/ShowDecksButton" to="." method="_on_show_decks_button_pressed"]
-[connection signal="delete_deck" from="VBoxContainer/CONTENT/DeckDisplay" to="." method="_on_deckdisplay_delete_deck"]
-[connection signal="finished" from="VBoxContainer/CONTENT/DeckDisplay" to="." method="_on_deckdisplay_finished"]
-[connection signal="remove_card_from_deck" from="VBoxContainer/CONTENT/DeckDisplay" to="." method="_on_deckdisplay_remove_card_from_deck"]
-[connection signal="rename_deck" from="VBoxContainer/CONTENT/DeckDisplay" to="." method="_on_deckdisplay_rename_deck"]
-[connection signal="save_deck" from="VBoxContainer/CONTENT/DeckDisplay" to="." method="_on_deckdisplay_save_deck"]
-[connection signal="select_deck" from="VBoxContainer/CONTENT/DeckDisplay" to="." method="_on_deckdisplay_select_deck"]
-[connection signal="pressed" from="VBoxContainer/BottomBar/DEBUGResetButton" to="." method="_on_DEBUG_reset_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/TopBar/CardsButton" to="." method="_on_cards_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/TopBar/DecksButton" to="." method="_on_decks_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/BottomBar/ResetButton" to="." method="_on_reset_button_pressed"]

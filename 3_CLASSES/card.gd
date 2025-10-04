@@ -18,6 +18,8 @@ var Sprite := Sprite3D.new()
 
 enum DictGuide {SETID, EXPANSIONID, TYPE, RARITY}
 
+static func create_from_card(card: Card) -> Card: return Card.new(card.SetID, card.ExpansionID, card.Name, card.Type, card.Rarity, card.Img)
+
 func _init(ID: int, E: DATA.ExpansionIDs, N: String, T: DATA.ContentTypes, R: DATA.Rarities, I: Texture2D) -> void:
 	# save information
 	SetID = ID
@@ -61,6 +63,23 @@ func _init(ID: int, E: DATA.ExpansionIDs, N: String, T: DATA.ContentTypes, R: DA
 	add_child(Sprite)
 	
 	var mat: StandardMaterial3D = DATA.create_rarity_material(Rarity)
+	set_surface_override_material(0, mat)
+
+func _disable():
+	var img = Img.get_image()
+	var width = img.get_width()
+	var height = img.get_height()
+	var bw_img = Image.create(width, height, false, Image.FORMAT_RGBA8)
+	
+	for y in range(height):
+		for x in range(width):
+			var color = img.get_pixel(x, y)
+			var luminance = (color.r * 0.2126 + color.g * 0.7152 + color.b * 0.0722)
+			var bw_color = Color(luminance, luminance, luminance, color.a)
+			bw_img.set_pixel(x, y, bw_color)
+	
+	Sprite.set_texture(ImageTexture.create_from_image(bw_img))
+	var mat: StandardMaterial3D = DATA.create_rarity_material(6)
 	set_surface_override_material(0, mat)
 
 func play_anim(AnimName : StringName):

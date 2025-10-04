@@ -7,7 +7,14 @@ extends Node3D
 @onready var CollectionZone = $ZoneZone/CollectionZone
 enum Elements {MAINMENU, PACKZONE, COLLECTIONZONE, GAMEZONE}
 
-func _ready() -> void: set_visible_element(Elements.MAINMENU)
+func _ready() -> void: 
+	set_visible_element(Elements.MAINMENU)
+	
+	DATA.DEBUG_print_expansion_EVs(DATA.ExpansionIDs.TEST_SET)
+	PackZone.DEBUG_roll_pack_odds(DATA.ExpansionIDs.TEST_SET)
+	
+	DATA.DEBUG_print_expansion_EVs(DATA.ExpansionIDs.OTHER_SET)
+	PackZone.DEBUG_roll_pack_odds(DATA.ExpansionIDs.OTHER_SET)
 # ========= #
 # pack zone #
 # ========= #
@@ -15,7 +22,7 @@ func _on_main_menu_pack_button_pressed() -> void:
 	set_visible_element(Elements.PACKZONE)
 	PackZone.enter_pack_zone()
 func _on_pack_zone_results(ExpansionID: DATA.ExpansionIDs, CardList: Array[Card]) -> void:
-	CollectionZone.recieve_cards(ExpansionID, CardList)
+	CollectionZone._to_content_collection_recieve_cards(ExpansionID, CardList)
 func _on_pack_zone_finished() -> void: set_visible_element(Elements.MAINMENU)
 # =============== #
 # collection zone #

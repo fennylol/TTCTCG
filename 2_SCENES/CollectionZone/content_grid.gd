@@ -1,7 +1,7 @@
 extends Node3D
 class_name ContentGrid
 
-signal CardClicked(card: Card, content_holder: ContentHolder)
+signal card_clicked(card: Card, content_holder: ContentHolder)
 
 const SPACING_WIDTH: float = 0.25
 const SPACING_HEIGHT: float = 0.25
@@ -13,23 +13,58 @@ var DisplayedWidth: int = 3
 
 var ScrollTarget: float = 0.0
 var SlideTarget: float = 0.0
+var UNSLIDE_TARGET: float = 0.0
+const SLIDE_TARGET: float = -5.0
 
-func _init(DisplayedContent: Array[Card], RowWidth : int = DisplayedWidth):
+var ContentList: Array[Card]
+var ExclusionList: Array[Card]
+
+func _init(): 
+	UNSLIDE_TARGET = -(DisplayedWidth-1)/2.0 * (Card.CARD_WIDTH+SPACING_WIDTH)
+	position.x = UNSLIDE_TARGET
+	SlideTarget = UNSLIDE_TARGET
+
+# ============== #
+# CALL RECEPTION #
+# ============== #
+func _recieve_card_list(DisplayedContent: Array[Card]) -> void:
+	ContentList = DisplayedContent
+	display_content_list()
+func _recieve_exclusion_list(ExcludedContent: Array[Card]) -> void:
+	ExclusionList = ExcludedContent
+	display_content_list()
+func _recieve_displayed_width(RowWidth : int) -> void: 
 	DisplayedWidth = RowWidth
-	position.x = -(DisplayedWidth-1)/2.0 * (Card.CARD_WIDTH+SPACING_WIDTH)
-	SlideTarget = position.x
+	UNSLIDE_TARGET = -(DisplayedWidth-1)/2.0 * (Card.CARD_WIDTH+SPACING_WIDTH)
+	display_content_list()
+
+# ================ #
+# INTERNAL UTILITY #
+# ================ #
+func display_content_list() -> void:
+	DisplayedCount = 0
+	kill_the_child()
 	
-	for card in DisplayedContent:
-		var _ch: ContentHolder = display_content(card)
+	for card in ContentList:
+		var card_copy = PlayablePair.create_from_playable_pair(card) if card is PlayablePair else Card.create_from_card(card)
+		var ch: ContentHolder = display_content(card_copy)
+		
+		var excluded: bool = false
+		for excluded_card in ExclusionList:
+			excluded = excluded or (                                                           card.Name       == excluded_card.Name      )
+			excluded = excluded or (card is PlayablePair and                                   card.PairedName == excluded_card.Name      )
+			excluded = excluded or (                         excluded_card is PlayablePair and card.Name       == excluded_card.PairedName)
+			excluded = excluded or (card is PlayablePair and excluded_card is PlayablePair and card.PairedName == excluded_card.PairedName)
+		
+		if excluded: card_copy._disable()
+		else: ch.clicked.connect(func(): card_clicked.emit(card_copy, ch))
+		add_child(ch)
 		DisplayedCount += 1
 
-
 func display_content(card: Card) -> ContentHolder:
-	
 	var plain_name: String = card.name.replace(" ", "_").to_lower()
-
+	
 	var content_holder := ContentHolder.new(plain_name)
-	add_child(content_holder)
 	content_holder.add_child(card)
 
 	var pos := Vector3(0,0,0)
@@ -37,12 +72,17 @@ func display_content(card: Card) -> ContentHolder:
 	pos.y = -(DisplayedCount/DisplayedWidth)*(Card.CARD_HEIGHT+SPACING_HEIGHT)
 	content_holder.position = pos
 	
-	var clickCallback = func(): CardClicked.emit(card, content_holder)
-	content_holder.clicked.connect(clickCallback)
-	
 	return content_holder
 
+func kill_the_child() -> void: 
+	for i in range(get_child_count()): 
+		var node = get_child(0)
+		remove_child(node)
+		node.queue_free()
 
+# ============== #
+# INPUT HANDLING #
+# ============== #
 func _process(delta: float) -> void:
 	if visible:
 		var scroll: float = Input.get_axis("Up", "Down")
@@ -55,46 +95,9 @@ func _process(delta: float) -> void:
 		
 		position.y = lerpf(position.y, ScrollTarget, delta*SCROLL_SPEED)
 		position.x = lerpf(position.x, SlideTarget, delta*SCROLL_SPEED)
-		
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.is_action_pressed("Next") and visible:
 		if abs(event.relative.y): 
 			var amount = -event.relative.y * get_process_delta_time()
 			ScrollTarget += amount
-
-
-
-
-
-
-#match SortOrder:
-		#ContentCollection.SortOrders.EXPANSION:
-			#for expansion in DATA.ExpansionIDs:
-				#for type in DATA.ContentTypes:
-					#for rarity in DATA.Rarities:
-						#for content_ID in collection[expansion]["ATK"][type][rarity]:
-							#var ch: ContentHolder =  display_content(expansion, type, rarity, content_ID, collection, HolderNode)
-							#
-		#ContentCollection.SortOrders.TYPE:
-			#for type in DATA.ContentTypes:
-				#for rarity in DATA.Rarities:
-					#for expansion in DATA.ExpansionIDs:
-						#for content_ID in collection[expansion]["ATK"][type][rarity]:
-							#var ch: ContentHolder = display_content(expansion, type, rarity, content_ID, collection, HolderNode)
-							#
-							#var child_count = 0
-							#var paired_rarities_dict = collection[expansion]["ATK"][type][rarity][content_ID]
-							#for paired_rarity in paired_rarities_dict:
-								#for paired_ID in paired_rarities_dict[paired_rarity]:
-									#child_count += 1
-									#var pair = DATA.get_expansion_content(DATA.ExpansionIDs[expansion], DATA.Rarities[paired_rarity], DATA.ContentTypes[type], paired_ID)
-									#pair.position.z -= 0.5*child_count
-									#ch.add_child(pair)
-							#
-		#ContentCollection.SortOrders.RARITY:
-			#for rarity in DATA.Rarities:
-				#for type in DATA.ContentTypes:
-					#for expansion in DATA.ExpansionIDs:
-						#for content_ID in collection[expansion]["ATK"][type][rarity]:
-							#display_content(expansion, type, rarity, content_ID, collection, HolderNode)

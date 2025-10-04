@@ -3,151 +3,193 @@ extends Node3D
 signal finished
 signal UpdateNextPackTimer(prev_pack_time: float, next_pack_time: float)
 
-@onready var UI: Control = $CollectionUI
-const SLIDE_TARGET: float = -5.0
-
+@onready var DisplayGrid: ContentGrid = $ContentGrid
+@onready var UI: CollectionUIUpdated = $CollectionUI
 var WorkingCollection := ContentCollection.new()
-#var DisplayGrid := ContentGrid.new(WorkingCollection)
-var DisplayGrid := ContentGrid.new([])
 
-enum ViewStates {COLLECTION, DECKLIST, DECK, CARDPAIRS}
+enum ViewStates {COLLECTION, COLLECTIONCARDPAIRS, DECKLIST, DECKLISTCARDPAIRS, DECK, DECKCARDPAIRS, UN_CARD_PAIR_ME = -1}
 var ViewState: ViewStates = ViewStates.COLLECTION
+var WorkingDeck: Deck
 
-var SortingBy := ContentCollection.SortOrders.EXPANSION
-var ShowingPrimary : bool = true
-var LastAppliedCallable: Callable 
-var LastCardList: Array[Card]
-
-
-func enter_collection_zone(): begin_viewing_collection()
+var SortingOrder := ContentCollection.SortOrders.EXPANSION
+var ShowingSecondary: bool = false
 
 func _ready() -> void:
 	#return
 	var load_err: Error = WorkingCollection._load()
 	if load_err == OK:
-		add_child(WorkingCollection)
 		WorkingCollection.set_name("WorkingCollection")
+		add_child(WorkingCollection)
+		_to_display_grid_send_card_list()
 	else: 
 		LOGGER.log_msg("collection failed to load: " + str(load_err), LOGGER.Flags.ERR_STDOUT)
-		
-	UI.delete_deck.connect(func(deck: Deck): WorkingCollection.delete_deck(deck.Name))
-	UI.sorting_by.connect(func(SortOrder: ContentCollection.SortOrders): 
-								SortingBy = SortOrder
-								sort_grid())
-	UI.showing_side.connect(func(Defense: bool): 
-								ShowingPrimary = !Defense
-								sort_grid())
-#
-func sort_grid(): new_grid(LastAppliedCallable, create_card_array(SortingBy), false if ViewState == ViewStates.COLLECTION else true)
 
-func new_grid(callback: Callable, CardList: Array[Card], SlideToTheSide: bool = false):
-	LastAppliedCallable = callback
-	var y_pos = DisplayGrid.ScrollTarget
-	var xStart = DisplayGrid.position.x 
-	
-	DisplayGrid.queue_free()
-	
-	DisplayGrid = ContentGrid.new(CardList)
-	#DisplayGrid = ContentGrid.new(WorkingCollection, SortingBy, ShowingPrimary)
-	
-	DisplayGrid.set_name("DisplayGrid"+str(callback.hash()))
-	DisplayGrid.CardClicked.connect(callback)
-	DisplayGrid.position.y = y_pos
-	DisplayGrid.position.x = xStart
-	DisplayGrid.ScrollTarget = y_pos
-	if SlideToTheSide: DisplayGrid.SlideTarget = SLIDE_TARGET
-	
-	add_child(DisplayGrid)
+func enter_collection_zone():
+	change_view_state(ViewStates.COLLECTION)
+	_to_ui_show_collection()
+	_to_display_grid_send_card_list()
 
-
-var _on_viewing_card_clicked: Callable
-func begin_viewing_collection():
-	ViewState = ViewStates.COLLECTION
-	
-	_on_viewing_card_clicked = func(_card: Card, _content_holder: ContentHolder):
-		var _show_pair = func(card: Card, content_holder: ContentHolder):
-			if card.position.y == 0:
-				var old_pos = content_holder.position.y
-				var return_to_zero = func(_string): 
-					card.position.y = 0
-					content_holder.position.y = old_pos
-					new_grid(_on_viewing_card_clicked, create_card_array(SortingBy))
-				card.play_anim("moves/PairSpin")
-				content_holder.position.y -= 4.5
-				if !card.AnimationComplete.is_connected(return_to_zero):
-					card.AnimationComplete.connect(return_to_zero)
-		new_grid(_show_pair, create_card_array_from_card(_card, SortingBy))
-	new_grid(_on_viewing_card_clicked, create_card_array(SortingBy))
-
-
-func begin_viewing_decks():
-	ViewState = ViewStates.DECKLIST
-	new_grid(func(_arg1, _arg2): pass, create_card_array(SortingBy), true)
-	UI.recieve_deck_list(WorkingCollection.decks)
-
-var _on_deck_building_card_clicked: Callable
-func begin_building_deck(deck: Deck):
-	ViewState = ViewStates.DECK
-	UI.recieve_deck(deck)
-	
-	# attach card -> deck signal pathway
-	_on_deck_building_card_clicked = func(card: Card, _content_holder: ContentHolder):
-		var _select_pair = func(_card: Card, __content_holder: ContentHolder):
-			assert(card is PlayablePair)
-			var flipped_card : PlayablePair = PlayablePair.create_flipped_card(card)
-			deck.add_to_deck(flipped_card)
-			UI.recieve_card(flipped_card)
-			new_grid(_on_deck_building_card_clicked, create_card_array(SortingBy), true)
-		new_grid(_select_pair, create_card_array_from_card(card, SortingBy), true)
-	new_grid(_on_deck_building_card_clicked, create_card_array(SortingBy), true)
-	
-	# attach deck -> collection pathway
-	for connection in UI.deck_name_changed.get_connections(): UI.deck_name_changed.disconnect(connection.callable)
-	UI.deck_name_changed.connect(func(new_name: String): deck.Name = new_name)
-	
-	for connection in UI.save_deck.get_connections(): UI.save_deck.disconnect(connection.callable)
-	UI.save_deck.connect(func():
-							WorkingCollection.recieve_deck(deck)
-							if deck.Name != deck.LastSavedName:
-								WorkingCollection.delete_deck(deck.LastSavedName)
-								deck.LastSavedName = deck.Name)
-	
-	for connection in UI.RemoveCard.get_connections(): UI.RemoveCard.disconnect(connection.callable)
-	UI.RemoveCard.connect(func(card: PlayablePair): deck.remove_from_deck(card))
-
-# ==========
-# ui signals
-# ==========
-func _on_collection_ui_building_button_toggled(state: bool) -> void:
-	if state: begin_viewing_decks()
-	else: begin_viewing_collection()
-
-func _on_collection_ui_deck_selected(deck: Deck) -> void:
-	if ViewState == ViewStates.DECKLIST:
-		begin_building_deck(deck)
-
-func _on_back_button_pressed() -> void: 
-	ViewState = ViewStates.COLLECTION
-	finished.emit()
-
-func _on_reset_button_pressed() -> void:
+# ============== #
+# USER INTERFACE #
+# ============== #
+#region
+func _on_ui_DEBUG_reset_button_pressed() -> void: 
 	WorkingCollection.queue_free()
 	WorkingCollection = ContentCollection.new()
 	add_child(WorkingCollection)
 	WorkingCollection.set_name("WorkingCollection")
 	WorkingCollection._save()
+	enter_collection_zone()
+# SIGNAL RECEPTION
+func _on_ui_back_button_pressed() -> void: 
+	match ViewState:
+		ViewStates.COLLECTION: 
+			change_view_state(ViewStates.COLLECTION)
+			finished.emit()
+		ViewStates.COLLECTIONCARDPAIRS:
+			change_view_state(ViewStates.COLLECTION)
+			_to_ui_show_collection()
+			_to_display_grid_send_card_list()
+		
+		ViewStates.DECKLIST:
+			change_view_state(ViewStates.COLLECTION)
+			_to_ui_show_collection()
+			_to_display_grid_send_card_list()
+		ViewStates.DECKLISTCARDPAIRS:
+			change_view_state(ViewStates.DECKLIST)
+			_to_ui_passthrough_show_decks()
+			_to_display_grid_send_card_list()
+			
+		ViewStates.DECK:
+			change_view_state(ViewStates.DECKLIST)
+			_to_ui_passthrough_show_decks()
+		ViewStates.DECKCARDPAIRS:
+			change_view_state(ViewStates.DECK)
+			_to_display_grid_send_card_list()
+func _on_ui_show_decks_button_pressed()                                   -> void: change_view_state(ViewStates.DECKLIST)   ; _to_ui_passthrough_show_decks() ; _to_display_grid_send_card_list()
+func _on_ui_show_collection_button_pressed()                              -> void: change_view_state(ViewStates.COLLECTION) ; _to_ui_show_collection()        ; _to_display_grid_send_card_list()
+func _on_ui_sort_order_selected(sort_order: ContentCollection.SortOrders) -> void: change_view_state(ViewStates.UN_CARD_PAIR_ME)       ; SortingOrder = sort_order                ; _to_display_grid_send_card_list()
+func _on_ui_show_side_selected(show_secondary: bool)                      -> void: change_view_state(ViewStates.UN_CARD_PAIR_ME)       ; ShowingSecondary = show_secondary        ; _to_display_grid_send_card_list()
+func _on_ui_passthrough_select_deck(deck: Deck)                           -> void: 
+	change_view_state(ViewStates.DECK)
+	WorkingDeck = deck
+	_to_display_grid_send_card_list()
+	_to_ui_passthrough_show_deck_content(deck)
+func _on_ui_passthrough_save_deck()                               -> void: _to_content_collection_save_deck()
+func _on_ui_passthrough_rename_deck(new_name: String)             -> void: _to_content_collection_rename_deck(new_name)
+func _on_ui_passthrough_delete_deck()                             -> void: _to_content_collection_delete_deck()
+func _on_ui_passthrough_remove_card_from_deck(card: PlayablePair) -> void: WorkingDeck.remove_from_deck(card) ; _to_display_grid_send_exclusions()
+# CALL EMISSION
+func _to_ui_show_collection()                         -> void: UI._show_collection()
+func _to_ui_passthrough_show_decks()                  -> void: UI._passthrough_to_deckdisplay_show_decks(WorkingCollection.decks)
+func _to_ui_passthrough_show_deck_content(deck: Deck) -> void: UI._passthrough_to_deckdisplay_show_deck_content(deck)
+func _to_ui_passthrough_add_card_to_deck(card: Card)  -> void: UI._passthrough_to_deckdisplay_add_card_to_deck(card)
+#endregion
+
+# ============ #
+# DISPLAY GRID #
+# ============ #
+#region
+# SIGNAL RECEPTION
+func _on_display_grid_card_clicked(card: Card, content_holder: ContentHolder) -> void: 
+	var card_spin = func(next_view_state: ViewStates):
+		if card.position.y == 0:
+			var old_pos = content_holder.position.y
+			var return_to_zero = func(_string): 
+				card.position.y = 0
+				content_holder.position.y = old_pos
+				change_view_state(next_view_state)
+				_to_display_grid_send_card_list()
+			card.play_anim("moves/PairSpin")
+			content_holder.position.y -= 4.5
+			if !card.AnimationComplete.is_connected(return_to_zero):
+				card.AnimationComplete.connect(return_to_zero)
 	
-	begin_viewing_collection()
+	match ViewState:
+		ViewStates.COLLECTION:
+			change_view_state(ViewStates.COLLECTIONCARDPAIRS)
+			_to_display_grid_send_card_list_from_card(card)
+			LOGGER.log_msg(card.Name + " clicked in COLLECTION", LOGGER.Flags.MSG_STDOUT)
+		ViewStates.COLLECTIONCARDPAIRS:
+			card_spin.call(ViewStates.COLLECTION)
+			LOGGER.log_msg(card.Name + " clicked in COLLECTIONCARDPAIRS", LOGGER.Flags.MSG_STDOUT)
+		
+		ViewStates.DECKLIST:
+			change_view_state(ViewStates.DECKLISTCARDPAIRS)
+			_to_display_grid_send_card_list_from_card(card)
+			LOGGER.log_msg(card.Name + " clicked in DECKLIST",   LOGGER.Flags.MSG_STDOUT)
+		ViewStates.DECKLISTCARDPAIRS:
+			card_spin.call(ViewStates.DECKLIST)
+			LOGGER.log_msg(card.Name + " clicked in DECKLISTCARDPAIRS",   LOGGER.Flags.MSG_STDOUT)
+		
+		ViewStates.DECK:
+			change_view_state(ViewStates.DECKCARDPAIRS)
+			_to_display_grid_send_card_list_from_card(card)
+			LOGGER.log_msg(card.Name + " clicked in DECK",       LOGGER.Flags.MSG_STDOUT)
+		ViewStates.DECKCARDPAIRS:
+			assert(card is PlayablePair, "Clicked card is not PlayablePair")
+			var card_copy = PlayablePair.create_from_playable_pair(card) if ShowingSecondary else PlayablePair.create_flipped_card(card)
+			WorkingDeck.add_to_deck(card_copy)
+			_to_display_grid_send_card_list()
+			change_view_state(ViewStates.DECK)
+			_to_ui_passthrough_add_card_to_deck(card_copy)
+			LOGGER.log_msg(card.Name + " clicked in DECKCARDPAIRS",       LOGGER.Flags.MSG_STDOUT)
+# CALL EMISSION
+func _to_display_grid_send_card_list()                     -> void: DisplayGrid._recieve_card_list(create_card_array())               ; _to_display_grid_send_exclusions() 
+func _to_display_grid_send_card_list_from_card(card: Card) -> void: DisplayGrid._recieve_card_list(create_card_array_from_card(card)) ; _to_display_grid_send_exclusions() 
+func _to_display_grid_send_exclusions()                    -> void: DisplayGrid._recieve_exclusion_list(create_exclusion_list())
+#endregion
 
-func _on_visibility_changed() -> void:
-	UI.set_visible(visible)
+# ================== #
+# CONTENT COLLECTION #
+# ================== #
+#region
+# CALL EMISSION
+func _to_content_collection_recieve_cards(ExpansionID : DATA.ExpansionIDs,
+										  CardList : Array[Card]) -> void: WorkingCollection.recieve_cards(ExpansionID, CardList)
+func _to_content_collection_save_deck()                           -> void: WorkingCollection.recieve_deck(WorkingDeck)
+func _to_content_collection_delete_deck()                         -> void: WorkingCollection.delete_deck(WorkingDeck.Name)
+func _to_content_collection_rename_deck(new_name: String)         -> void: 
+	_to_content_collection_delete_deck()
+	WorkingDeck.Name = new_name
+	_to_content_collection_save_deck()
+#endregion
 
+# ================ #
+# INTERNAL UTILITY #
+# ================ #
+#region
+func _on_visibility_changed() -> void: UI.set_visible(visible)
 
-func create_card_array(SortOrder: ContentCollection.SortOrders) -> Array[Card]:
+func change_view_state(new_state: ViewStates) -> void:
+	if new_state == ViewStates.UN_CARD_PAIR_ME: new_state = ViewStates.COLLECTION if ViewState == ViewStates.COLLECTIONCARDPAIRS else ViewStates.DECKLIST if ViewState == ViewStates.DECKLISTCARDPAIRS else ViewStates.DECK if ViewState == ViewStates.DECKCARDPAIRS else ViewState
+	ViewState = new_state
+	match ViewState:
+		ViewStates.COLLECTION, ViewStates.COLLECTIONCARDPAIRS:
+			DisplayGrid.SlideTarget = DisplayGrid.UNSLIDE_TARGET
+			WorkingDeck = null
+		
+		ViewStates.DECKLIST, ViewStates.DECKLISTCARDPAIRS:
+			DisplayGrid.SlideTarget = DisplayGrid.SLIDE_TARGET
+			WorkingDeck = null
+		
+		ViewStates.DECK, ViewStates.DECKCARDPAIRS:
+			DisplayGrid.SlideTarget = DisplayGrid.SLIDE_TARGET
+
+func create_exclusion_list() -> Array[Card]:
+	var card_array: Array[Card] = []
+	if WorkingDeck:
+		card_array.append_array(WorkingDeck.Critters)
+		card_array.append_array(WorkingDeck.Consumables)
+		card_array.append_array(WorkingDeck.Weapons)
+		card_array.append_array(WorkingDeck.WildCards)
+	return card_array
+
+func create_card_array() -> Array[Card]:
 	var cards : Array[Card] = []
-	var side: String = "ATK" if ShowingPrimary else "DEF"
+	var side: String = "DEF" if ShowingSecondary else "ATK"
 	
-	match SortOrder:
+	match SortingOrder:
 		ContentCollection.SortOrders.EXPANSION:
 			for expansion in DATA.ExpansionIDs:
 				for type in DATA.ContentTypes:
@@ -172,9 +214,9 @@ func create_card_array(SortOrder: ContentCollection.SortOrders) -> Array[Card]:
 	
 	return cards
 
-func create_card_array_from_card(StartingCard: Card, _SortOrder: ContentCollection.SortOrders) -> Array[Card]:
+func create_card_array_from_card(StartingCard: Card) -> Array[Card]:
 	var cards : Array[Card] = []
-	var side: String = "ATK" if ShowingPrimary else "DEF"
+	var side: String =  "DEF" if ShowingSecondary else "ATK"
 	
 	var expansion = DATA.ExpansionIDs.find_key(StartingCard.ExpansionID)
 	var type = DATA.ContentTypes.find_key(StartingCard.Type)
@@ -187,8 +229,4 @@ func create_card_array_from_card(StartingCard: Card, _SortOrder: ContentCollecti
 			cards.append(PlayablePair.create_from_two_cards(paired_card, StartingCard))
 	
 	return cards
-
-## passthrough
-func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]): 
-	WorkingCollection.recieve_cards(ExpansionID, CardList)
-	UpdateNextPackTimer.emit(WorkingCollection.prev_pack_timestamp, WorkingCollection.prev_pack_timestamp+WorkingCollection.NEXT_PACK_UNIX_TIME_OFFSET)
+#endregion
