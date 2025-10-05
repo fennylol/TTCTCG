@@ -5,23 +5,14 @@ signal collection_button_pressed
 signal play_button_pressed
 
 @onready var PackTimer = $VBoxContainer/PackBar/TextureProgressBar
+@onready var PackTimerLabel = $VBoxContainer/PackBar/TextureProgressBar/Label
 var NextPack: float
 var PackAfter: float
 var BarTarget: float
 
 const UNDER_TEX = preload("res://2_SCENES/MainZone/UI_textures/health_prog_loss.png")
 const FIRST_LOADING = preload("res://2_SCENES/MainZone/UI_textures/health_progress.png")
-
 const SECOND_LOADING = preload("res://2_SCENES/MainZone/UI_textures/health_front_color.png")
-
-#const LOADING_FIRST_COVER = preload("res://2_SCENES/MainZone/UI_textures/health_front.png") 
-#const LOADED_FIRST_COVER = preload("res://2_SCENES/MainZone/UI_textures/health_front_color.png")
-#const LOADED_SECOND_COVER = preload("res://2_SCENES/MainZone/UI_textures/stam_front_color.png")
-#
-#const LOADING_FIRST_UNDER = preload("res://2_SCENES/MainZone/UI_textures/health_prog_loss.png")
-#const LOADING_FIRST_BAR = preload("res://2_SCENES/MainZone/UI_textures/health_progress.png") 
-#const LOADING_SECOND_BAR = preload("res://2_SCENES/MainZone/UI_textures/stam_prog.png") 
-
 
 
 func _ready() -> void: 
@@ -33,8 +24,11 @@ func _process(delta: float) -> void:
 	var time_till_charge_after: float = PackAfter-Time.get_unix_time_from_system()
 	
 	var bar_prog: float = ContentCollection.NEXT_PACK_UNIX_TIME_OFFSET-(time_till_next_charge if time_till_next_charge > 0.0 else time_till_charge_after)
-	PackTimer.value = lerp(PackTimer.value, bar_prog, delta)
-	if bar_prog < PackTimer.value: PackTimer.value = bar_prog
+	PackTimer.value = lerp(PackTimer.value, bar_prog, delta) if bar_prog > PackTimer.value else bar_prog
+	
+	var time_string: String = Time.get_time_string_from_unix_time(time_till_next_charge)  if time_till_next_charge  > 0.0 else \
+							  Time.get_time_string_from_unix_time(time_till_charge_after) if time_till_charge_after > 0.0 else ""
+	PackTimerLabel.text = time_string
 	
 	if time_till_next_charge > 0.0:
 		PackTimer.texture_under = UNDER_TEX
@@ -45,10 +39,6 @@ func _process(delta: float) -> void:
 		PackTimer.texture_progress = SECOND_LOADING
 		PackTimer.texture_over = null
 	
-	#BarTarget = min(Time.get_unix_time_from_system()-TrueMin, 2*ContentCollection.NEXT_PACK_UNIX_TIME_OFFSET)
-	#var true_target: float = BarTarget if BarTarget < ContentCollection.NEXT_PACK_UNIX_TIME_OFFSET else BarTarget-ContentCollection.NEXT_PACK_UNIX_TIME_OFFSET
-	#
-	#update_pack_timer_visuals()
 
 # =============== #
 # signal emission #

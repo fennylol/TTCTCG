@@ -6,6 +6,7 @@ ADDED
 - more robust logging features
 - Pack timers YIPPEE
 - Technically you can... play? the game?
+- 0.0.2.1 Timer to the pack bar 
 
 REMOVED
 

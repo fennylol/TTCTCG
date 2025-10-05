@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bqvwyy5rimbt2"]
+[gd_scene load_steps=3 format=3 uid="uid://bqvwyy5rimbt2"]
 
 [ext_resource type="Script" uid="uid://dlthksdt3litj" path="res://2_SCENES/MainZone/main_menu.gd" id="1_ppoxv"]
+[ext_resource type="Texture2D" uid="uid://3ug612rwo1r1" path="res://2_SCENES/MainZone/UI_textures/health_prog_loss.png" id="2_nixcu"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -31,6 +32,17 @@ layout_mode = 2
 layout_mode = 2
 step = 0.001
 value = 10.0
+texture_under = ExtResource("2_nixcu")
+
+[node name="Label" type="Label" parent="VBoxContainer/PackBar/TextureProgressBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Spacer" type="Control" parent="VBoxContainer"]
 layout_mode = 2
