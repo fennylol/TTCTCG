@@ -16,7 +16,7 @@ signal passthrough_remove_card_from_deck
 
 @onready var ShowCollectionButton : Button = $VBoxContainer/TopBar/ShowCollectionButton
 @onready var ShowDecksButton : Button = $VBoxContainer/TopBar/ShowDecksButton
-@onready var DeckDisplaySidebar : DeckDisplay2 = $VBoxContainer/CONTENT/DeckDisplay
+@onready var DeckDisplaySidebar : DeckDisplay = $VBoxContainer/CONTENT/DeckDisplay
 @onready var ShowSideButton : MenuButton = $VBoxContainer/TopBar/ShowSideMenu
 @onready var SortOrderMenuButton : MenuButton = $VBoxContainer/TopBar/SortOrderMenu
 @onready var SortOrderMenu : PopupMenu = SortOrderMenuButton.get_popup()

@@ -1,7 +1,6 @@
 extends Node3D
 
 signal finished
-signal UpdateNextPackTimer(prev_pack_time: float, next_pack_time: float)
 
 @onready var DisplayGrid: ContentGrid = $ContentGrid
 @onready var UI: CollectionUIUpdated = $CollectionUI

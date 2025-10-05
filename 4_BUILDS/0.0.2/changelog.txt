@@ -4,6 +4,8 @@ ADDED
 - Proper Corting
 - Deck exclusion (only one card at a time please)
 - more robust logging features
+- Pack timers YIPPEE
+- Technically you can... play? the game?
 
 REMOVED
 

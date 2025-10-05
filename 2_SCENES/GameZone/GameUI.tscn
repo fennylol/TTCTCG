@@ -1,0 +1,85 @@
+[gd_scene load_steps=3 format=3 uid="uid://du4f80fmx5nae"]
+
+[ext_resource type="Script" uid="uid://npv6opp5nyye" path="res://2_SCENES/GameZone/game_ui.gd" id="1_yv1ro"]
+[ext_resource type="Script" uid="uid://c07uprgyv6ps3" path="res://3_CLASSES/deck_display.gd" id="2_erh52"]
+
+[node name="GameUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yv1ro")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="TopBar" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BackButton" type="Button" parent="VBoxContainer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.5
+
+[node name="Label" type="Label" parent="VBoxContainer/TopBar/BackButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "<- Back"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="VBoxContainer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 35.0
+mouse_filter = 2
+
+[node name="CONTENT" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 10.0
+
+[node name="Spacer" type="Control" parent="VBoxContainer/CONTENT"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+mouse_filter = 2
+
+[node name="DeckDisplay" type="VBoxContainer" parent="VBoxContainer/CONTENT"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_erh52")
+metadata/_custom_type_script = "uid://c07uprgyv6ps3"
+
+[node name="BottomBar" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Spacer" type="Control" parent="VBoxContainer/BottomBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 11.0
+mouse_filter = 2
+
+[connection signal="pressed" from="VBoxContainer/TopBar/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="finished" from="VBoxContainer/CONTENT/DeckDisplay" to="." method="_on_deckdisplay_finished"]
+[connection signal="remove_card_from_deck" from="VBoxContainer/CONTENT/DeckDisplay" to="." method="_on_deckdisplay_remove_card_from_deck"]
+[connection signal="select_deck" from="VBoxContainer/CONTENT/DeckDisplay" to="." method="_on_deckdisplay_select_deck"]

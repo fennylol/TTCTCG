@@ -1,5 +1,5 @@
 extends VBoxContainer
-class_name DeckDisplay2
+class_name DeckDisplay
 
 signal finished
 signal select_deck(deck: Deck)
@@ -8,12 +8,13 @@ signal rename_deck(new_name: String)
 signal delete_deck
 signal remove_card_from_deck(card: PlayablePair)
 
-var DeckName := LineEdit.new()
-var Controls := HBoxContainer.new()
-var Critters := HBoxContainer.new()
+var DeckName    := LineEdit.new()
+var Controls    := HBoxContainer.new()
+var Critters    := HBoxContainer.new()
 var Consumables := HBoxContainer.new()
-var Weapons := HBoxContainer.new()
-var Wildcards := HBoxContainer.new()
+var Weapons     := HBoxContainer.new()
+var Wildcards   := HBoxContainer.new()
+var Editable    := true
 
 const PRESSEDICON = preload("res://1_ASSETS/UI/DEBUG_button_pressed.png")
 const UNPRESSEDICON = preload("res://1_ASSETS/UI/DEBUG_button.png")
@@ -31,9 +32,9 @@ func _show_decks(deck_list: Dictionary):
 					deck.Consumables[0].Img if deck.Consumables.size() > 0 else \
 					deck.Weapons[0].Img if deck.Weapons.size() > 0 else X_ICON
 		deck.Name = deck_name
-		var deck_button = new_deck_button(deck, icon)
+		var deck_button = new_deck_button(deck, icon, Editable)
 		add_child(deck_button)
-	add_child(new_deck_button(Deck.new(), PLUS_ICON, false))
+	if Editable: add_child(new_deck_button(Deck.new(), PLUS_ICON, false))
 func _show_deck_content(deck: Deck): 
 	prepare_deck_display()
 	var read_array = func(arr: Array[PlayablePair]): for card in arr: _add_card_to_deck(card)
@@ -164,16 +165,17 @@ func prepare_deck_display():
 	back_button.button_down.connect(func(): back_button.icon=PRESSEDICON)
 	back_button.button_up.connect(func(): back_button.icon=UNPRESSEDICON)
 	Controls.add_child(back_button)
-	var save_button := Button.new()
-	save_button.name="SaveButton"
-	save_button.text="Save"
-	save_button.flat = true
-	save_button.icon = UNPRESSEDICON
-	save_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	save_button.pressed.connect(save_deck.emit)
-	save_button.button_down.connect(func(): save_button.icon=PRESSEDICON)
-	save_button.button_up.connect(func(): save_button.icon=UNPRESSEDICON)
-	Controls.add_child(save_button)
+	if Editable:
+		var save_button := Button.new()
+		save_button.name="SaveButton"
+		save_button.text="Save"
+		save_button.flat = true
+		save_button.icon = UNPRESSEDICON
+		save_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		save_button.pressed.connect(save_deck.emit)
+		save_button.button_down.connect(func(): save_button.icon=PRESSEDICON)
+		save_button.button_up.connect(func(): save_button.icon=UNPRESSEDICON)
+		Controls.add_child(save_button)
 	DeckName.name="DeckName"
 	DeckName.text="My Awesome New Deck"
 	DeckName.flat = false
@@ -183,6 +185,7 @@ func prepare_deck_display():
 	DeckName.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	DeckName.size_flags_stretch_ratio = 10.0
 	DeckName.text_changed.connect(rename_deck.emit)
+	DeckName.editable = Editable
 	Controls.add_child(DeckName)
 	Controls.add_spacer(false)
 	

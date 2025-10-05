@@ -48,6 +48,5 @@ transform = Transform3D(-3.47834, 0, -2.43556, 0, 4.24627, 0, 2.43556, 0, -3.478
 [connection signal="play_button_pressed" from="MainMenu" to="." method="_on_main_menu_play_button_pressed"]
 [connection signal="Results" from="ZoneZone/PackZone" to="." method="_on_pack_zone_results"]
 [connection signal="finished" from="ZoneZone/PackZone" to="." method="_on_pack_zone_finished"]
-[connection signal="UpdateNextPackTimer" from="ZoneZone/CollectionZone" to="." method="_on_collection_zone_update_next_pack_timer"]
 [connection signal="finished" from="ZoneZone/CollectionZone" to="." method="_on_collection_zone_finished"]
 [connection signal="finished" from="ZoneZone/GameZone" to="." method="_on_game_zone_finished"]

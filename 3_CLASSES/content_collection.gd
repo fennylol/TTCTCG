@@ -3,7 +3,7 @@ class_name ContentCollection
 
 enum SortOrders {EXPANSION, TYPE, RARITY, DISPLAYALL}
 enum VersionLevels {MAJOR, MINOR, PATCH}
-const VERSION: Array[int] = [0,0,1]
+const VERSION: Array[int] = [0,0,2]
 
 # stored at /home/fenny/.local/share/godot/app_userdata/TTCTCG
 const SAVE_LOCATION = "user://DoNotEditOrElseFaceThePenaltyOfDeathSeriouslyBroThatWouldBeVeryUncoolOfYou.cake"
@@ -11,9 +11,9 @@ const VERY_SAFE_ENCRYPTION_KEY = "DoNotEditOrElseFaceThePenaltyOfDeathSeriouslyB
 var collection: Dictionary 
 var decks: Dictionary
 
-var prev_pack_timestamp: float
-var pack_before_that_timestamp: float
-const NEXT_PACK_UNIX_TIME_OFFSET: int = 45#43200
+var next_pack_timestamp: float
+var pack_after_that_timestamp: float
+const NEXT_PACK_UNIX_TIME_OFFSET: int = 43200
 
 var empty_expansion_dict: Dictionary
 
@@ -42,18 +42,18 @@ func _init() -> void:
 # COLLECTION MODIFICATION #
 # ======================= #
 #region
-func recieve_deck(deck: Deck):
+func recieve_deck(deck: Deck) -> void:
 	var deck_dict: Dictionary = deck.to_dict()
 	decks[deck.Name] = deck_dict
 	_save()
 
-func delete_deck(DeckName: String): 
+func delete_deck(DeckName: String) -> void: 
 	decks.erase(DeckName)
 	_save()
 
-func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]):
-	pack_before_that_timestamp = prev_pack_timestamp
-	prev_pack_timestamp = Time.get_unix_time_from_system()
+func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]) -> void:
+	next_pack_timestamp = pack_after_that_timestamp
+	pack_after_that_timestamp = max(Time.get_unix_time_from_system(), next_pack_timestamp)+NEXT_PACK_UNIX_TIME_OFFSET
 	
 	var EID = DATA.ExpansionIDs.find_key(ExpansionID)
 	var expansion_dict: Dictionary = collection.get_or_add(EID, empty_expansion_dict.duplicate(true))
@@ -94,7 +94,7 @@ func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]):
 # FILE ACCESS #
 # =========== #
 #region
-func _save():
+func _save() -> Error:
 	var file = FileAccess.open_encrypted_with_pass(SAVE_LOCATION, FileAccess.WRITE, VERY_SAFE_ENCRYPTION_KEY)
 	if not file: return ERR_FILE_CANT_OPEN
 	
@@ -102,14 +102,15 @@ func _save():
 		"version" : VERSION,
 		"saved_at" : Time.get_unix_time_from_system(),
 		
-		"prev_pack_timestamp" : prev_pack_timestamp,
-		"pack_before_that_timestamp" : pack_before_that_timestamp,
+		"next_pack_timestamp" : next_pack_timestamp,
+		"pack_after_that_timestamp" : pack_after_that_timestamp,
 		
 		"collection" : collection,
 		"decks" : decks
 	}
 	file.store_var(data)
 	file.close()
+	return OK
 
 func _load() -> Error:
 	if not FileAccess.file_exists(SAVE_LOCATION): return ERR_FILE_NOT_FOUND
@@ -129,11 +130,11 @@ func _load() -> Error:
 	if not data.keys().has("saved_at"): 
 		LOGGER.log_msg("saved data does not contain \"saved_at\" field", LOGGER.Flags.ERR_STDOUT)
 		return ERR_INVALID_DATA
-	if not data.keys().has("prev_pack_timestamp"): 
-		LOGGER.log_msg("saved data does not contain \"prev_pack_timestamp\" field", LOGGER.Flags.ERR_STDOUT)
+	if not data.keys().has("next_pack_timestamp"): 
+		LOGGER.log_msg("saved data does not contain \"next_pack_timestamp\" field", LOGGER.Flags.ERR_STDOUT)
 		return ERR_INVALID_DATA
-	if not data.keys().has("pack_before_that_timestamp"): 
-		LOGGER.log_msg("saved data does not contain \"pack_before_that_timestamp\" field", LOGGER.Flags.ERR_STDOUT)
+	if not data.keys().has("pack_after_that_timestamp"): 
+		LOGGER.log_msg("saved data does not contain \"pack_after_that_timestamp\" field", LOGGER.Flags.ERR_STDOUT)
 		return ERR_INVALID_DATA
 	if not data.keys().has("collection"): 
 		LOGGER.log_msg("saved data does not contain \"collection\" field", LOGGER.Flags.ERR_STDOUT)
@@ -147,8 +148,8 @@ func _load() -> Error:
 		LOGGER.log_msg("BRUH IS A TIME TRAVELIN' AHH HAHAH", LOGGER.Flags.ERR_STDOUT)
 		return ERR_HELP
 	
-	prev_pack_timestamp = data["prev_pack_timestamp"]
-	pack_before_that_timestamp = data["pack_before_that_timestamp"]
+	next_pack_timestamp = data["next_pack_timestamp"]
+	pack_after_that_timestamp = data["pack_after_that_timestamp"]
 	collection = data["collection"]
 	decks = data["decks"]
 	return OK
