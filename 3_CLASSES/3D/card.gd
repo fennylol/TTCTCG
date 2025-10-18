@@ -6,28 +6,50 @@ signal AnimationComplete(anim_name: String)
 const CARD_WIDTH: float = 2.5
 const CARD_HEIGHT: float = 3
 
-var SetID: int
 var ExpansionID: DATA.ExpansionIDs
-var Name: String
 var Type: DATA.ContentTypes
 var Rarity: DATA.Rarities
+var ContentIndex: int
+
+var Name: String
 var Img: Texture2D
 
 var Animations : AnimationPlayer
 var Sprite : Sprite3D
 
-enum DictGuide {SETID, EXPANSIONID, TYPE, RARITY}
+enum DictFields {EXPANSIONID, TYPE, RARITY, CONTENTINDEX}
 
-static func create_from_card(card: Card) -> Card: return Card.new(card.SetID, card.ExpansionID, card.Name, card.Type, card.Rarity, card.Img)
+#static func create_from_card(card: Card) -> Card: return Card.new(card.SetID, card.ExpansionID, card.Name, card.Type, card.Rarity, card.Img)
 
-func _init(ID: int, E: DATA.ExpansionIDs, N: String, T: DATA.ContentTypes, R: DATA.Rarities, I: Texture2D) -> void:
+# ====================== #
+# creation & destruction #
+# ====================== #
+func copy_to_dict() -> Dictionary: return { DictFields.EXPANSIONID : ExpansionID, DictFields.TYPE : Type, DictFields.RARITY : Rarity, DictFields.CONTENTINDEX : ContentIndex}
+func reduce_to_dict() -> Dictionary: queue_free(); return copy_to_dict()
+static func restore_from_dict(Dict: Dictionary) -> Card: 
+	if not Dict.keys().has(DictFields.EXPANSIONID):  LOGGER.log_msg("card.gd: cannot restore card from dict with no EXPANSIONID",  LOGGER.Flags.ERR)
+	if not Dict.keys().has(DictFields.TYPE):         LOGGER.log_msg("card.gd: cannot restore card from dict with no TYPE",         LOGGER.Flags.ERR)
+	if not Dict.keys().has(DictFields.RARITY):       LOGGER.log_msg("card.gd: cannot restore card from dict with no RARITY",       LOGGER.Flags.ERR)
+	if not Dict.keys().has(DictFields.CONTENTINDEX): LOGGER.log_msg("card.gd: cannot restore card from dict with no CONTENTINDEX", LOGGER.Flags.ERR)
+	return DATA.get_expansion_content(
+		Dict[DictFields.EXPANSIONID],
+		Dict[DictFields.TYPE],
+		Dict[DictFields.RARITY],
+		Dict[DictFields.CONTENTINDEX]
+	)
+
+#ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentType : ContentTypes, ContentIndex : int
+
+
+func _init(Expansion_ID: DATA.ExpansionIDs, Content_Type: DATA.ContentTypes, Content_Rarity: DATA.Rarities, Content_Idx: int,  Content_Name: String, Content_Img: Texture2D) -> void:
 	# save information
-	SetID = ID
-	ExpansionID = E
-	Name = N
-	Type = T
-	Rarity = R
-	Img = I
+	ExpansionID = Expansion_ID
+	Type = Content_Type
+	Rarity = Content_Rarity
+	ContentIndex = Content_Idx
+	
+	Name = Content_Name
+	Img = Content_Img
 	
 	var plain_name: String = Name.replace(" ", "_").to_lower()
 	
