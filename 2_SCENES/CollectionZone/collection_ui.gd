@@ -40,12 +40,12 @@ func _on_DEBUG_reset_button_pressed()     -> void: DEBUG_reset_button_pressed.em
 # ================== #
 # signal propegation #
 # ================== #
-func _on_deckdisplay_finished()                      -> void: back_button_pressed.emit()
-func _on_deckdisplay_select_deck(deck: Deck)         -> void: passthrough_select_deck.emit(deck)
-func _on_deckdisplay_save_deck()                     -> void: passthrough_save_deck.emit()
-func _on_deckdisplay_rename_deck(new_name: String)   -> void: passthrough_rename_deck.emit(new_name)
-func _on_deckdisplay_delete_deck()                   -> void: passthrough_delete_deck.emit()
-func _on_deckdisplay_select_card(card: PlayablePair) -> void: passthrough_select_card.emit(card)
+func _on_deckdisplay_finished()                    -> void: back_button_pressed.emit()
+func _on_deckdisplay_select_deck(deck: Deck)       -> void: passthrough_select_deck.emit(deck)
+func _on_deckdisplay_save_deck()                   -> void: passthrough_save_deck.emit()
+func _on_deckdisplay_rename_deck(new_name: String) -> void: passthrough_rename_deck.emit(new_name)
+func _on_deckdisplay_delete_deck()                 -> void: passthrough_delete_deck.emit()
+func _on_deckdisplay_select_card(card: Dictionary) -> void: passthrough_select_card.emit(card)
 # ============== #
 # call reception #
 # ============== #
@@ -67,5 +67,5 @@ func _passthrough_to_deckdisplay_show_deck_content(deck: Deck) -> void:
 	ShowDecksButton.icon = PRESSED_ICON
 	DeckDisplaySidebar.visible = true
 	DeckDisplaySidebar._show_deck_content(deck)
-func _passthrough_to_deckdisplay_add_card_to_deck(card: Card)              -> void: DeckDisplaySidebar._add_card_to_deck(card)
-func _passthrough_to_deckdisplay_remove_card_from_deck(card: PlayablePair) -> void: DeckDisplaySidebar._remove_card_from_deck(card)
+func _passthrough_to_deckdisplay_add_card_to_deck(card: Dictionary)      -> void: DeckDisplaySidebar._add_card_to_deck(card)
+func _passthrough_to_deckdisplay_remove_card_from_deck(card: Dictionary) -> void: DeckDisplaySidebar._remove_card_from_deck(card)

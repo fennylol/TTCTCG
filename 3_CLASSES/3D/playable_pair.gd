@@ -1,52 +1,145 @@
 extends Card
 class_name  PlayablePair
 
-var PairedSetID: int
 var PairedExpansionID: DATA.ExpansionIDs
-var PairedName: String
-var PairedType: DATA.ContentTypes
 var PairedRarity: DATA.Rarities
+var PairedIndex: int
+
+var PairedName: String
 var PairedImg: Texture2D
 
 var PairedSprite : Sprite3D
 
-const ROT_SPEED : float = 5.0
+#static func create_from_two_cards(Front : Card, Back : Card) -> PlayablePair: 
+	#return PlayablePair.new(
+		#Front.ExpansionID, 
+		#Front.Type, 
+		#Front.Rarity, 
+		#Front.ContentIndex, 
+		#Front.Name, 
+		#Front.Img, 
+		#Back.ExpansionID, 
+		#Back.Rarity, 
+		#Back.ContentIndex, 
+		#Back.Name, 
+		#Back.Img
+		#)
+##static func create_from_playable_pair(card: PlayablePair) -> PlayablePair: return PlayablePair.new(card.SetID, card.ExpansionID, card.Name, card.Type, card.Rarity, card.Img, card.PairedSetID, card.PairedExpansionID, card.PairedName, card.PairedRarity, card.PairedImg)
+#static func create_flipped_card(card : PlayablePair) -> PlayablePair: return PlayablePair.new(card.PairedSetID, card.PairedExpansionID, card.PairedName, card.PairedType, card.PairedRarity, card.PairedImg, card.SetID, card.ExpansionID, card.Name, card.Type, card.Rarity, card.Img)
+#static func parse_dict(dict: Dictionary) -> PlayablePair:
+	#assert(dict["front"] is Array)
+	#assert(dict["back"] is Array)
+	#assert(dict["front"].size() == 4)
+	#assert(dict["back"].size() == 4)
+	#
+	#var front_data: Array = dict["front"]
+	#var back_data: Array = dict["back"]
+	#var front_card: Card = DATA.get_expansion_content(front_data[0],front_data[1],front_data[2],front_data[3])
+	#var back_card: Card = DATA.get_expansion_content(back_data[0] ,back_data[1], back_data[2], back_data[3])
+	#return PlayablePair.create_from_two_cards(front_card, back_card)
 
-static func create_from_two_cards(Atk : Card, Def : Card) -> PlayablePair: return PlayablePair.new(Atk.SetID, Atk.ExpansionID, Atk.Name, Atk.Type, Atk.Rarity, Atk.Img, Def.SetID, Def.ExpansionID, Def.Name, Def.Type, Def.Rarity, Def.Img)
-static func create_from_playable_pair(card: PlayablePair) -> PlayablePair: return PlayablePair.new(card.SetID, card.ExpansionID, card.Name, card.Type, card.Rarity, card.Img, card.PairedSetID, card.PairedExpansionID, card.PairedName, card.PairedType, card.PairedRarity, card.PairedImg)
-static func create_flipped_card(card : PlayablePair) -> PlayablePair: return PlayablePair.new(card.PairedSetID, card.PairedExpansionID, card.PairedName, card.PairedType, card.PairedRarity, card.PairedImg, card.SetID, card.ExpansionID, card.Name, card.Type, card.Rarity, card.Img)
-static func parse_dict(dict: Dictionary) -> PlayablePair:
-	assert(dict["front"] is Array)
-	assert(dict["back"] is Array)
-	assert(dict["front"].size() == 4)
-	assert(dict["back"].size() == 4)
-	
-	var front_data: Array = dict["front"]
-	var back_data: Array = dict["back"]
-	var front_card: Card = DATA.get_expansion_content(front_data[0],front_data[1],front_data[2],front_data[3])
-	var back_card: Card = DATA.get_expansion_content(back_data[0] ,back_data[1], back_data[2], back_data[3])
-	return PlayablePair.create_from_two_cards(front_card, back_card)
+#func to_dict() -> Dictionary:
+	#return {
+		#"front" : [ExpansionID, Rarity, Type, ContentIndex],
+		#"back" : [PairedExpansionID, PairedRarity, PairedType, PairedContentIndex]
+	#}
+	##return [Paired]
 
-func to_dict() -> Dictionary:
-	return {
-		"front" : [ExpansionID, Rarity, Type, SetID],
-		"back" : [PairedExpansionID, PairedRarity, PairedType, PairedSetID]
+# ====================== #
+# creation & destruction #
+# ====================== #
+func reduce_to_dict(Flipped : bool = false) -> Dictionary: 
+	queue_free()
+	return copy_to_dict(Flipped)
+func copy_to_dict(Flipped : bool = false) -> Dictionary: 
+	var front_dict := super.copy_to_dict()
+	var back_dict := { 
+			DictFields.EXPANSIONID  : PairedExpansionID,
+			DictFields.RARITY       : PairedRarity, 
+			DictFields.CONTENTINDEX : PairedIndex
+		}
+	if Flipped:
+		back_dict[DictFields.TYPE] = front_dict.get(DictFields.TYPE)
+		front_dict.erase(DictFields.TYPE)
+	return { 
+		"FRONT" : front_dict if not Flipped else back_dict,
+		"BACK" : back_dict if not Flipped else front_dict
 	}
-	#return [Paired]
+static func restore_from_dict(Dict: Dictionary) -> PlayablePair: 
+	assert(dict_is_playable_pair(Dict, true), "playable_pair.gd - restore_from_dict(): Dict is not a PlayablePair.")
+	return DATA.get_paired_expansion_content(
+		Dict["FRONT"][DictFields.EXPANSIONID],
+		Dict["FRONT"][DictFields.RARITY],
+		Dict["FRONT"][DictFields.TYPE],
+		Dict["FRONT"][DictFields.CONTENTINDEX],
+		Dict["BACK"][DictFields.EXPANSIONID],
+		Dict["BACK"][DictFields.RARITY],
+		Dict["BACK"][DictFields.CONTENTINDEX]
+	)
+static func create_from_two_cards(Front : Card, Back : Card) -> PlayablePair: 
+	var front_dict := Front.reduce_to_dict()
+	var back_dict := Back.reduce_to_dict()
+	return DATA.get_paired_expansion_content(
+		front_dict[DictFields.EXPANSIONID],
+		front_dict[DictFields.RARITY],
+		front_dict[DictFields.TYPE],
+		front_dict[DictFields.CONTENTINDEX],
+		back_dict[DictFields.EXPANSIONID],
+		back_dict[DictFields.RARITY],
+		back_dict[DictFields.CONTENTINDEX]
+	)
+static func dict_is_playable_pair(Dict: Dictionary, LogResult: bool = false) -> bool:
+	if not Dict.keys().has("FRONT"):                          
+		if LogResult: LOGGER.log_msg("playable_pair.gd - dict_is_playable_pair(): dict is not a PlayablePair, no FRONT",              LOGGER.Flags.WARN)
+		return false
+	if not Dict.keys().has("BACK"):                           
+		if LogResult: LOGGER.log_msg("playable_pair.gd - dict_is_playable_pair(): dict is not a PlayablePair, no BACK",               LOGGER.Flags.WARN)
+		return false
+	if not Dict["FRONT"].keys().has(DictFields.EXPANSIONID):  
+		if LogResult: LOGGER.log_msg("playable_pair.gd - dict_is_playable_pair(): dict is not a PlayablePair, no FRONT/EXPANSIONID",  LOGGER.Flags.WARN)
+		return false
+	if not Dict["FRONT"].keys().has(DictFields.RARITY):       
+		if LogResult: LOGGER.log_msg("playable_pair.gd - dict_is_playable_pair(): dict is not a PlayablePair, no FRONT/RARITY",       LOGGER.Flags.WARN)
+		return false
+	if not Dict["FRONT"].keys().has(DictFields.TYPE):         
+		if LogResult: LOGGER.log_msg("playable_pair.gd - dict_is_playable_pair(): dict is not a PlayablePair, no FRONT/TYPE",         LOGGER.Flags.WARN)
+		return false
+	if not Dict["FRONT"].keys().has(DictFields.CONTENTINDEX): 
+		if LogResult: LOGGER.log_msg("playable_pair.gd - dict_is_playable_pair(): dict is not a PlayablePair, no FRONT/CONTENTINDEX", LOGGER.Flags.WARN)
+		return false
+	if not Dict["BACK"].keys().has(DictFields.EXPANSIONID):   
+		if LogResult: LOGGER.log_msg("playable_pair.gd - dict_is_playable_pair(): dict is not a PlayablePair, no BACK/EXPANSIONID",   LOGGER.Flags.WARN)
+		return false
+	if not Dict["BACK"].keys().has(DictFields.RARITY):        
+		if LogResult: LOGGER.log_msg("playable_pair.gd - dict_is_playable_pair(): dict is not a PlayablePair, no BACK/RARITY",        LOGGER.Flags.WARN)
+		return false
+	if not Dict["BACK"].keys().has(DictFields.CONTENTINDEX):  
+		if LogResult: LOGGER.log_msg("playable_pair.gd - dict_is_playable_pair(): dict is not a PlayablePair, no BACK/CONTENTINDEX",  LOGGER.Flags.WARN)
+		return false
+	return true
+static func dicts_are_eq(D1 : Dictionary, D2: Dictionary) -> bool:
+	if not dict_is_playable_pair(D1) or not dict_is_playable_pair(D2): return false
+	if  D1["FRONT"][DictFields.EXPANSIONID]  == D2["FRONT"][DictFields.EXPANSIONID]  and \
+		D1["FRONT"][DictFields.RARITY]       == D2["FRONT"][DictFields.RARITY]       and \
+		D1["FRONT"][DictFields.TYPE]         == D2["FRONT"][DictFields.TYPE]         and \
+		D1["FRONT"][DictFields.CONTENTINDEX] == D2["FRONT"][DictFields.CONTENTINDEX] and \
+		D1["BACK"][DictFields.EXPANSIONID]   == D2["BACK"][DictFields.EXPANSIONID]   and \
+		D1["BACK"][DictFields.RARITY]        == D2["BACK"][DictFields.RARITY]        and \
+		D1["BACK"][DictFields.CONTENTINDEX]  == D2["BACK"][DictFields.CONTENTINDEX]: return true
+	else: return false
 
-func _init(ID: int, E: DATA.ExpansionIDs, N: String, T: DATA.ContentTypes, R: DATA.Rarities, I: Texture2D, \
-		   PAIREDID: int, PAIREDE: DATA.ExpansionIDs, PAIREDN: String, PAIREDT: DATA.ContentTypes, PAIREDR: DATA.Rarities, PAIREDI: Texture2D):
+func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Content_Type: DATA.ContentTypes, Content_Idx: int,  Content_Name: String, Content_Img: Texture2D, \
+		   Paired_Expansion_ID: DATA.ExpansionIDs, Paired_Rarity: DATA.Rarities, Paired_Idx: int,  Paired_Name: String, Paired_Img: Texture2D):
+	# save information
+	super._init(Expansion_ID, Content_Rarity, Content_Type, Content_Idx,  Content_Name, Content_Img)
+	super._init(Expansion_ID, Content_Rarity, Content_Type, Content_Idx,  Content_Name, Content_Img)
+	PairedExpansionID = Paired_Expansion_ID
+	PairedRarity = Paired_Rarity
+	PairedIndex = Paired_Idx
+	PairedName = Paired_Name
+	PairedImg = Paired_Img
 	
-	PairedSetID = PAIREDID
-	PairedExpansionID = PAIREDE
-	PairedName = PAIREDN
-	PairedType = PAIREDT
-	PairedRarity = PAIREDR
-	PairedImg = PAIREDI
-	
-	super._init(ID, E, N, T, R, I)
-	var plain_name: String = PAIREDN.replace(" ", "_").to_lower()
-	
+	var plain_name: String = PairedName.replace(" ", "_").to_lower()
 	set_name(name+"_"+plain_name+"_"+str(int(RNG.random_value()*1000)))
 	
 	# create sprite
@@ -62,16 +155,6 @@ func _init(ID: int, E: DATA.ExpansionIDs, N: String, T: DATA.ContentTypes, R: DA
 	
 	# create mesh 
 	var M: Mesh = load("res://1_ASSETS/cards/pair_with_uv.tres")
-	
-	# update card mesh and sprite according to rarity
-	#if Rarity <= DATA.Rarities.UNCOMMON: 
-		#print("added ", Name, ", a basic card, to the tree")
-		#S.position.y = 0.625
-	#elif Rarity <= DATA.Rarities.EPIC: 
-		#print("added ", Name, ", a full art card, to the tree")
-	#else: 
-		#print("added ", Name, ", a rainbow rare, to the tree")
-	
 	set_mesh(M)
 	add_child(PairedSprite)
 	

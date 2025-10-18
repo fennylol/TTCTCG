@@ -12,8 +12,8 @@ func _ready() -> void:
 	log_msg(msg, Flags.MSG)
 
 func log_msg(msg: String, flags: Flags = Flags.MSG):
-	var logmsg: String = ("ERROR" if flags == Flags.ERR  or flags == Flags.ERR_FILE  or flags == Flags.ERR_STDOUT  else \
-						"WARNING" if flags == Flags.WARN or flags == Flags.WARN_FILE or flags == Flags.WARN_STDOUT else "") + \
+	var logmsg: String = ("ERROR " if flags == Flags.ERR  or flags == Flags.ERR_FILE  or flags == Flags.ERR_STDOUT  else \
+						"WARNING " if flags == Flags.WARN or flags == Flags.WARN_FILE or flags == Flags.WARN_STDOUT else "") + \
 						get_date() + " " + get_time() + ": " + msg
 	
 	if  flags == Flags.MSG  or flags == Flags.MSG_FILE or \

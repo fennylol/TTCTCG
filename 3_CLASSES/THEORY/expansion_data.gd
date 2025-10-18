@@ -396,28 +396,34 @@ static func get_expansion_content_count(ExpansionID : ExpansionIDs, ContentRarit
 ## [b]ContentRarity[/b]: the rarity of the content being requested. (see [enum Rarities])[br]
 ## [b]ContentIndex[/b]: the index of the content being requested. (see [method get_expansion_content_count])
 static func get_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentType : ContentTypes, ContentIndex : int) -> Card:
-	#return ExpansionContent[ExpansionID][ContentRarity][ContentIndex]
 	var data : Dictionary = ExpansionContent[ExpansionID][ContentRarity][ContentType][ContentIndex]
-	var c : Card 
-	if ContentRarity < Rarities.EPIC:
-		c = Card.new(
-			ContentIndex,
+	return Card.new(
 			ExpansionID,
-			data[ExpansionContentFields.NAME],
-			ContentType,
 			ContentRarity,
+			ContentType,
+			ContentIndex,
+			data[ExpansionContentFields.NAME],
 			load(data[ExpansionContentFields.IMAGE])
 		)
-	else:
-		c = Card.new(
-			ContentIndex,
-			ExpansionID,
-			data[ExpansionContentFields.NAME],
-			ContentType,
-			ContentRarity,
-			load(data[ExpansionContentFields.IMAGE])
-		) 
-	return c
+static func get_paired_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentType : ContentTypes, ContentIndex : int, \
+										 PairedExpansionID : ExpansionIDs, PairedRarity : Rarities, PairedIndex  : int) -> PlayablePair:
+	var data        : Dictionary = ExpansionContent[ExpansionID][ContentRarity][ContentType][ContentIndex]
+	var paired_data : Dictionary = ExpansionContent[ExpansionID][PairedRarity][ContentType][PairedIndex]
+	return PlayablePair.new(
+		ExpansionID,
+		ContentRarity,
+		ContentType,
+		ContentIndex,
+		data[ExpansionContentFields.NAME],
+		load(data[ExpansionContentFields.IMAGE]),
+		
+		PairedExpansionID,
+		PairedRarity,
+		PairedIndex,
+		paired_data[ExpansionContentFields.NAME],
+		load(paired_data[ExpansionContentFields.IMAGE])
+	)
+
 
 
 static func calculate_expected_card_proportions_per_pack(expansion_id: ExpansionIDs) -> Array[float]:

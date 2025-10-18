@@ -7,8 +7,8 @@ const CARD_WIDTH: float = 2.5
 const CARD_HEIGHT: float = 3
 
 var ExpansionID: DATA.ExpansionIDs
-var Type: DATA.ContentTypes
 var Rarity: DATA.Rarities
+var Type: DATA.ContentTypes
 var ContentIndex: int
 
 var Name: String
@@ -17,42 +17,70 @@ var Img: Texture2D
 var Animations : AnimationPlayer
 var Sprite : Sprite3D
 
-enum DictFields {EXPANSIONID, TYPE, RARITY, CONTENTINDEX}
+enum DictFields {EXPANSIONID, RARITY, TYPE, CONTENTINDEX}
 
-#static func create_from_card(card: Card) -> Card: return Card.new(card.SetID, card.ExpansionID, card.Name, card.Type, card.Rarity, card.Img)
 
 # ====================== #
 # creation & destruction #
 # ====================== #
-func copy_to_dict() -> Dictionary: return { DictFields.EXPANSIONID : ExpansionID, DictFields.TYPE : Type, DictFields.RARITY : Rarity, DictFields.CONTENTINDEX : ContentIndex}
-func reduce_to_dict() -> Dictionary: queue_free(); return copy_to_dict()
+func reduce_to_dict() -> Dictionary: 
+	queue_free()
+	return copy_to_dict()
+func copy_to_dict() -> Dictionary: 
+	return { 
+		DictFields.EXPANSIONID  : ExpansionID, 
+		DictFields.RARITY       : Rarity, 
+		DictFields.TYPE         : Type, 
+		DictFields.CONTENTINDEX : ContentIndex
+	}
 static func restore_from_dict(Dict: Dictionary) -> Card: 
-	if not Dict.keys().has(DictFields.EXPANSIONID):  LOGGER.log_msg("card.gd: cannot restore card from dict with no EXPANSIONID",  LOGGER.Flags.ERR)
-	if not Dict.keys().has(DictFields.TYPE):         LOGGER.log_msg("card.gd: cannot restore card from dict with no TYPE",         LOGGER.Flags.ERR)
-	if not Dict.keys().has(DictFields.RARITY):       LOGGER.log_msg("card.gd: cannot restore card from dict with no RARITY",       LOGGER.Flags.ERR)
-	if not Dict.keys().has(DictFields.CONTENTINDEX): LOGGER.log_msg("card.gd: cannot restore card from dict with no CONTENTINDEX", LOGGER.Flags.ERR)
+	assert(dict_is_card(Dict, true), "card.gd - restore_from_dict(): Dict is not a Card")
 	return DATA.get_expansion_content(
 		Dict[DictFields.EXPANSIONID],
-		Dict[DictFields.TYPE],
 		Dict[DictFields.RARITY],
+		Dict[DictFields.TYPE],
 		Dict[DictFields.CONTENTINDEX]
 	)
+static func copy_card(card: Card) -> Card: 
+	var dict := card.copy_to_dict()
+	return restore_from_dict(dict)
+static func dict_is_card(Dict: Dictionary, LogResult: bool = false) -> bool:
+	if not Dict.keys().has(DictFields.EXPANSIONID):  
+		if LogResult: LOGGER.log_msg("card.gd - dict_is_card(): dict is not a Card, no EXPANSIONID",  LOGGER.Flags.WARN)
+		return false
+	if not Dict.keys().has(DictFields.TYPE):         
+		if LogResult: LOGGER.log_msg("card.gd - dict_is_card(): dict is not a Card, no TYPE",         LOGGER.Flags.WARN)
+		return false
+	if not Dict.keys().has(DictFields.RARITY):       
+		if LogResult: LOGGER.log_msg("card.gd - dict_is_card(): dict is not a Card, no RARITY",       LOGGER.Flags.WARN)
+		return false
+	if not Dict.keys().has(DictFields.CONTENTINDEX): 
+		if LogResult: LOGGER.log_msg("card.gd - dict_is_card(): dict is not a Card, no CONTENTINDEX", LOGGER.Flags.WARN)
+		return false
+	return true
+static func dicts_are_eq(D1 : Dictionary, D2: Dictionary) -> bool:
+	if not dict_is_card(D1) or not dict_is_card(D2): return false
+	if  D1[DictFields.EXPANSIONID]  == D2[DictFields.EXPANSIONID] and \
+		D1[DictFields.RARITY]       == D2[DictFields.RARITY]      and \
+		D1[DictFields.TYPE]         == D2[DictFields.TYPE]        and \
+		D1[DictFields.CONTENTINDEX] == D2[DictFields.CONTENTINDEX]: return true
+	else: return false
 
-#ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentType : ContentTypes, ContentIndex : int
 
-
-func _init(Expansion_ID: DATA.ExpansionIDs, Content_Type: DATA.ContentTypes, Content_Rarity: DATA.Rarities, Content_Idx: int,  Content_Name: String, Content_Img: Texture2D) -> void:
+func _notification(what: int) -> void: 
+	if what == NOTIFICATION_PREDELETE:
+		Animations.queue_free()
+		Sprite.queue_free()
+func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Content_Type: DATA.ContentTypes, Content_Idx: int,  Content_Name: String, Content_Img: Texture2D) -> void:
 	# save information
 	ExpansionID = Expansion_ID
-	Type = Content_Type
 	Rarity = Content_Rarity
+	Type = Content_Type
 	ContentIndex = Content_Idx
-	
 	Name = Content_Name
 	Img = Content_Img
 	
 	var plain_name: String = Name.replace(" ", "_").to_lower()
-	
 	set_name(plain_name+"_"+str(int(RNG.random_value()*1000)))
 	
 	# create sprite
@@ -63,15 +91,6 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Type: DATA.ContentTypes, Con
 	Sprite.set_pixel_size(2.0/Img.get_width())
 	Sprite.position.z = 0.001
 	Sprite.position.y = 0.625
-	# update card mesh and sprite according to rarity
-	#if Rarity <= DATA.Rarities.UNCOMMON: 
-		#print("added ", Name, ", a basic card, to the tree")
-		#S.position.y = 0.625
-	#elif Rarity <= DATA.Rarities.EPIC: 
-		#print("added ", Name, ", a full art card, to the tree")
-	#else: 
-		#print("added ", Name, ", a rainbow rare, to the tree")
-	
 	
 	# create animation player
 	Animations = AnimationPlayer.new()
@@ -88,11 +107,6 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Type: DATA.ContentTypes, Con
 	
 	var mat: StandardMaterial3D = DATA.create_rarity_material(Rarity)
 	set_surface_override_material(0, mat)
-
-func _notification(what: int) -> void: 
-	if what == NOTIFICATION_PREDELETE:
-		Animations.queue_free()
-		Sprite.queue_free()
 
 func _disable():
 	var img = Img.get_image()

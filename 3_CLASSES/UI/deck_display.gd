@@ -6,7 +6,7 @@ signal select_deck(deck: Deck)
 signal save_deck
 signal rename_deck(new_name: String)
 signal delete_deck
-signal select_card(card: PlayablePair)
+signal select_card(card: Dictionary)
 
 var DeckName    : LineEdit
 var Controls    : HBoxContainer
@@ -18,8 +18,6 @@ var Editable    := true
 
 const PRESSEDICON = preload("res://1_ASSETS/UI/DEBUG_button_pressed.png")
 const UNPRESSEDICON = preload("res://1_ASSETS/UI/DEBUG_button.png")
-const X_ICON = preload("res://1_ASSETS/UI/X.png")
-const PLUS_ICON = preload("res://1_ASSETS/UI/+.png")
 # ============== #
 # call reception #
 # ============== #
@@ -27,30 +25,31 @@ func _show_decks(deck_list: Dictionary):
 	kill_the_child()
 	for deck_name in deck_list:
 		var dict: Dictionary = deck_list[deck_name]
-		var deck := Deck.parse_single_deck(dict)
-		var icon := deck.Critters[0].Img if deck.Critters.size() > 0 else \
-					deck.Consumables[0].Img if deck.Consumables.size() > 0 else \
-					deck.Weapons[0].Img if deck.Weapons.size() > 0 else X_ICON
-		deck.Name = deck_name
-		var deck_button = DeckButton.new(deck, icon, Editable)
+		var deck := Deck.restore_from_dict(dict)
+		
+		var deck_button = DeckButton.new(deck, Editable)
 		deck_button.selected.connect(func(): select_deck.emit(deck))
 		deck_button.deleted.connect(func(): delete_deck.emit(deck))
 		add_child(deck_button)
 	if Editable: 
 		var new_deck := Deck.new()
-		var new_deck_button := DeckButton.new(new_deck, PLUS_ICON, false)
+		var new_deck_button := DeckButton.new(new_deck, false)
 		new_deck_button.selected.connect(func(): select_deck.emit(new_deck))
 		new_deck_button.deleted.connect(func(): delete_deck.emit(new_deck))
 		add_child(new_deck_button)
 func _show_deck_content(deck: Deck): 
 	prepare_deck_display()
-	var read_array = func(arr: Array[PlayablePair]): for card in arr: _add_card_to_deck(card)
+	var read_array = func(arr: Array[Dictionary]): for card in arr: _add_card_to_deck(card)
 	DeckName.text = deck.Name
 	read_array.call(deck.Critters)
 	read_array.call(deck.Consumables)
 	read_array.call(deck.Weapons)
 	read_array.call(deck.WildCards)
-func _add_card_to_deck(card: Card) -> void:
+func _add_card_to_deck(card_dict: Dictionary) -> void:
+	var card = PlayablePair.restore_from_dict(card_dict) if PlayablePair.dict_is_playable_pair(card_dict) else \
+			   Card.restore_from_dict(card_dict) if Card.dict_is_card(card_dict) else null
+	assert(card, "deck_display.gd - _add_card_to_deck(): card_dict is not valid")
+	
 	var target: HBoxContainer = Wildcards
 	var type: DATA.ContentTypes = card.Type
 	var _is_spacer = func(node) -> bool: return node.name.begins_with("spacer")
@@ -67,11 +66,11 @@ func _add_card_to_deck(card: Card) -> void:
 				target = Weapons
 	
 	if target != Wildcards or _is_spacer.call(Wildcards.get_child(4)):
-		var img: Texture2D = card.Img 
-		if card is PlayablePair:
-			img = stitch_textures_vertical(card.Img, card.PairedImg)
+		var kill : Control = target.get_child(4)
+		target.remove_child(kill)
+		kill.queue_free()
 		
-		target.remove_child(target.get_child(4))
+		var img: Texture2D =  stitch_textures_vertical(card.Img, card.PairedImg) if card is PlayablePair else card.Img 
 		var texture_rect := TextureRect.new()
 		texture_rect.name = card.Name
 		texture_rect.texture = img
@@ -82,13 +81,18 @@ func _add_card_to_deck(card: Card) -> void:
 		var tex_rect_button := Button.new()
 		tex_rect_button.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 		tex_rect_button.flat = true
-		tex_rect_button.pressed.connect(func(): select_card.emit(card))
+		var dict := card.reduce_to_dict()
+		tex_rect_button.pressed.connect(func(): select_card.emit(dict))
 		texture_rect.add_child(tex_rect_button)
 		target.add_child(texture_rect)
 		target.move_child(texture_rect, 0)
 	else:
 		LOGGER.log_msg("deck_display.gd: deck is full", LOGGER.Flags.WARN_STDOUT)
-func _remove_card_from_deck(card: PlayablePair):
+	card.queue_free()
+func _remove_card_from_deck(card_dict: Dictionary):
+	assert(PlayablePair.dict_is_playable_pair(card_dict, true), "deck_display.gd - _remove_card_from_deck(): card_dict is not a PlayablePair")
+	var card: PlayablePair = PlayablePair.restore_from_dict(card_dict)
+	
 	var kill
 	var container
 	for child in Critters.get_children(): 
@@ -122,6 +126,8 @@ func _remove_card_from_deck(card: PlayablePair):
 		kill.queue_free()
 		container.add_spacer(false)
 		container.get_child(5).name = "spacer"+str(randi())
+	
+	card.queue_free()
 
 # ================ #
 # internal utility #

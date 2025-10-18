@@ -16,8 +16,8 @@ var SlideTarget: float = 0.0
 var UNSLIDE_TARGET: float = 0.0
 var SLIDE_TARGET: float = -5.0
 
-var ContentList: Array[Card]
-var ExclusionList: Array[Card]
+var ContentList: Array[Dictionary]
+var ExclusionList: Array[Dictionary]
 
 func _init(): 
 	var scale_factor = 0.5
@@ -26,21 +26,13 @@ func _init():
 	position.x = UNSLIDE_TARGET
 	SlideTarget = UNSLIDE_TARGET
 
-func _notification(what: int) -> void: 
-	if what == NOTIFICATION_PREDELETE:
-		empty_contentlist()
-		empty_exclusionlist()
-func empty_contentlist() -> void: for card in ContentList: card.queue_free()
-func empty_exclusionlist() -> void: for card in ExclusionList: card.queue_free()
 # ============== #
 # call reception #
 # ============== #
-func _recieve_card_list(DisplayedContent: Array[Card]) -> void:
-	empty_contentlist()
+func _recieve_card_list(DisplayedContent: Array[Dictionary]) -> void:
 	ContentList = DisplayedContent
 	display_content_list()
-func _recieve_exclusion_list(ExcludedContent: Array[Card]) -> void:
-	empty_exclusionlist()
+func _recieve_exclusion_list(ExcludedContent: Array[Dictionary]) -> void:
 	ExclusionList = ExcludedContent
 	display_content_list()
 func _recieve_displayed_width(RowWidth : int) -> void: 
@@ -54,21 +46,32 @@ func display_content_list() -> void:
 	DisplayedCount = 0
 	kill_the_children()
 	
-	for card in ContentList:
-		var card_copy = PlayablePair.create_from_playable_pair(card) if card is PlayablePair else Card.create_from_card(card)
-		var ch: ContentHolder = display_content(card_copy)
+	var excludes : Array[Card]
+	for excluded_dict in ExclusionList:
+		if PlayablePair.dict_is_playable_pair(excluded_dict): excludes.append(PlayablePair.restore_from_dict(excluded_dict))
+		elif Card.dict_is_card(excluded_dict): excludes.append(Card.restore_from_dict(excluded_dict))
+		else: LOGGER.log_msg("content_grid.gd - display_content_list(): excluded_dict is not a Card or PlayablePair.", LOGGER.Flags.ERR)
+	
+	for card_dict in ContentList:
+		var card : Card
+		if PlayablePair.dict_is_playable_pair(card_dict): card = PlayablePair.restore_from_dict(card_dict)
+		elif Card.dict_is_card(card_dict): card = Card.restore_from_dict(card_dict)
+		else: LOGGER.log_msg("content_grid.gd - display_content_list(): card_dict is not a Card or PlayablePair.", LOGGER.Flags.ERR)
 		
 		var excluded: bool = false
-		for excluded_card in ExclusionList:
+		for excluded_card in excludes:
 			excluded = excluded or (                                                           card.Name       == excluded_card.Name      )
 			excluded = excluded or (card is PlayablePair and                                   card.PairedName == excluded_card.Name      )
 			excluded = excluded or (                         excluded_card is PlayablePair and card.Name       == excluded_card.PairedName)
 			excluded = excluded or (card is PlayablePair and excluded_card is PlayablePair and card.PairedName == excluded_card.PairedName)
 		
-		if excluded: card_copy._disable()
-		else: ch.clicked.connect(func(): card_clicked.emit(card_copy, ch))
+		var ch: ContentHolder = display_content(card)
+		if excluded: card._disable()
+		else: ch.clicked.connect(func(): card_clicked.emit(card, ch))
 		add_child(ch)
 		DisplayedCount += 1
+	
+	for excluded_card in excludes: excluded_card.queue_free()
 
 func display_content(card: Card) -> ContentHolder:
 	var plain_name: String = card.name.replace(" ", "_").to_lower()

@@ -2,8 +2,8 @@ extends Node
 class_name ContentCollection
 
 enum SortOrders {EXPANSION, TYPE, RARITY, DISPLAYALL}
-enum VersionLevels {MAJOR, MINOR, PATCH}
-const VERSION: Array[int] = [0,0,2]
+enum VersionLevels {EXPANSION, MAJOR, MINOR, PATCH}
+const VERSION: Array[int] = [0,0,2,2]
 
 # stored at /home/fenny/.local/share/godot/app_userdata/TTCTCG
 const SAVE_LOCATION = "user://DoNotEditOrElseFaceThePenaltyOfDeathSeriouslyBroThatWouldBeVeryUncoolOfYou.cake"
@@ -18,17 +18,17 @@ const NEXT_PACK_UNIX_TIME_OFFSET: int = 10#43200
 var empty_expansion_dict: Dictionary
 
 func _init() -> void:
-	var rarity_dict: Dictionary = {}
-	for rarity in DATA.Rarities:
-		rarity_dict[rarity] = {}
-	
 	var type_dict: Dictionary = {}
 	for type in DATA.ContentTypes:
-		type_dict[type] = rarity_dict.duplicate(true)
+		type_dict[type] = {}
+	
+	var rarity_dict: Dictionary = {}
+	for rarity in DATA.Rarities:
+		rarity_dict[rarity] = type_dict.duplicate(true)
 	
 	var sides_dict: Dictionary = {}
 	for side in DATA.ContentSides:
-		sides_dict[side] = type_dict.duplicate(true)
+		sides_dict[side] = rarity_dict.duplicate(true)
 	
 	var expansion_dict: Dictionary = {}
 	for ID in DATA.ExpansionIDs:
@@ -43,7 +43,7 @@ func _init() -> void:
 # ======================= #
 #region
 func recieve_deck(deck: Deck) -> void:
-	var deck_dict: Dictionary = deck.to_dict()
+	var deck_dict: Dictionary = deck.reduce_to_dict()
 	decks[deck.Name] = deck_dict
 	_save()
 
@@ -72,20 +72,20 @@ func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]) -> v
 	
 	for i in range(atk_cards.size()):
 		var atk_card: Card = atk_cards[i]
-		var atk_card_type: DATA.ContentTypes = atk_card.Type
 		var atk_card_rarity: DATA.Rarities = atk_card.Rarity
+		var atk_card_type: DATA.ContentTypes = atk_card.Type
 		
 		var def_card: Card = def_cards[i]
-		var def_card_type: DATA.ContentTypes = def_card.Type
 		var def_card_rarity: DATA.Rarities = def_card.Rarity
+		var def_card_type: DATA.ContentTypes = def_card.Type
 		
-		var atk_type_rarity_dict: Dictionary = atk_dict[DATA.ContentTypes.find_key(atk_card_type)][DATA.Rarities.find_key(atk_card_rarity)]
-		var atk_card_dict: Dictionary = atk_type_rarity_dict.get_or_add(atk_card.SetID, rarity_dict.duplicate(true))[DATA.Rarities.find_key(def_card_rarity)]
-		atk_card_dict.set(def_card.SetID, atk_card_dict.get_or_add(def_card.SetID, 0)+1)
+		var atk_rarity_type_dict: Dictionary = atk_dict[DATA.Rarities.find_key(atk_card_rarity)][DATA.ContentTypes.find_key(atk_card_type)]
+		var atk_card_dict: Dictionary = atk_rarity_type_dict.get_or_add(atk_card.ContentIndex, rarity_dict.duplicate(true))[DATA.Rarities.find_key(def_card_rarity)]
+		atk_card_dict.set(def_card.ContentIndex, atk_card_dict.get_or_add(def_card.ContentIndex, 0)+1)
 		
-		var def_type_rarity_dict: Dictionary = def_dict[DATA.ContentTypes.find_key(def_card_type)][DATA.Rarities.find_key(def_card_rarity)]
-		var def_card_dict: Dictionary = def_type_rarity_dict.get_or_add(def_card.SetID, rarity_dict.duplicate(true))[DATA.Rarities.find_key(atk_card_rarity)]
-		def_card_dict.set(atk_card.SetID, def_card_dict.get_or_add(atk_card.SetID, 0)+1)
+		var def_rarity_type_dict: Dictionary = def_dict[DATA.Rarities.find_key(def_card_rarity)][DATA.ContentTypes.find_key(def_card_type)]
+		var def_card_dict: Dictionary = def_rarity_type_dict.get_or_add(def_card.ContentIndex, rarity_dict.duplicate(true))[DATA.Rarities.find_key(atk_card_rarity)]
+		def_card_dict.set(atk_card.ContentIndex, def_card_dict.get_or_add(atk_card.ContentIndex, 0)+1)
 	
 	_save()
 #endregion

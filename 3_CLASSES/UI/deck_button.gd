@@ -4,10 +4,19 @@ class_name DeckButton
 signal selected
 signal deleted
 
-const X_ICON = preload("res://1_ASSETS/UI/X.png")
+const MINUS_ICON = preload("res://1_ASSETS/UI/-.png")
+const PLUS_ICON =  preload("res://1_ASSETS/UI/+.png")
+const X_ICON =     preload("res://1_ASSETS/UI/X.png")
 
-func _init(deck: Deck, icon: Texture2D, AddDeleteButton: bool = true) -> void:
+func _init(deck: Deck, AddDeleteButton: bool = true) -> void:
 	name = deck.Name.replace(" ", "_").to_lower() + "_list"
+	
+	var first_card := PlayablePair.restore_from_dict(deck.Critters[0])    if deck.Critters.size()    > 0 else \
+					  PlayablePair.restore_from_dict(deck.Consumables[0]) if deck.Consumables.size() > 0 else \
+					  PlayablePair.restore_from_dict(deck.Weapons[0])     if deck.Weapons.size()     > 0 else null
+	var icon := first_card.Img if first_card else PLUS_ICON if deck.Name == "New Deck" else MINUS_ICON 
+
+	if first_card is PlayablePair: first_card.queue_free()
 	
 	var deck_button := TextureButton.new()
 	deck_button.name = "edit_" + deck.Name.replace(" ", "_").to_lower() + "_button"

@@ -73,16 +73,16 @@ func _on_ui_passthrough_select_deck(deck: Deck)                           -> voi
 	WorkingDeck = deck
 	_to_display_grid_send_card_list()
 	_to_ui_passthrough_show_deck_content(deck)
-func _on_ui_passthrough_save_deck()                     -> void: _to_content_collection_save_deck()
-func _on_ui_passthrough_rename_deck(new_name: String)   -> void: _to_content_collection_rename_deck(new_name)
-func _on_ui_passthrough_delete_deck()                   -> void: _to_content_collection_delete_deck()
-func _on_ui_passthrough_select_card(card: PlayablePair) -> void: _to_ui_remove_card_from_deck(card)
+func _on_ui_passthrough_save_deck()                   -> void: _to_content_collection_save_deck()
+func _on_ui_passthrough_rename_deck(new_name: String) -> void: _to_content_collection_rename_deck(new_name)
+func _on_ui_passthrough_delete_deck()                 -> void: _to_content_collection_delete_deck()
+func _on_ui_passthrough_select_card(card: Dictionary) -> void: _to_ui_remove_card_from_deck(card)
 # CALL EMISSION
-func _to_ui_show_collection()                         -> void: UI._show_collection()
-func _to_ui_passthrough_show_decks()                  -> void: UI._passthrough_to_deckdisplay_show_decks(WorkingCollection.decks)
-func _to_ui_passthrough_show_deck_content(deck: Deck) -> void: UI._passthrough_to_deckdisplay_show_deck_content(deck)
-func _to_ui_passthrough_add_card_to_deck(card: Card)  -> void: UI._passthrough_to_deckdisplay_add_card_to_deck(card)
-func _to_ui_remove_card_from_deck(card: PlayablePair) -> void: 
+func _to_ui_show_collection()                              -> void: UI._show_collection()
+func _to_ui_passthrough_show_decks()                       -> void: UI._passthrough_to_deckdisplay_show_decks(WorkingCollection.decks)
+func _to_ui_passthrough_show_deck_content(deck: Deck)      -> void: UI._passthrough_to_deckdisplay_show_deck_content(deck)
+func _to_ui_passthrough_add_card_to_deck(card: Dictionary) -> void: UI._passthrough_to_deckdisplay_add_card_to_deck(card)
+func _to_ui_remove_card_from_deck(card: Dictionary)        -> void: 
 	WorkingDeck.remove_from_deck(card)
 	UI._passthrough_to_deckdisplay_remove_card_from_deck(card)
 	_to_display_grid_send_exclusions()
@@ -117,25 +117,25 @@ func _on_display_grid_card_clicked(card: Card, content_holder: ContentHolder) ->
 			card_spin.call(ViewStates.COLLECTION)
 		
 		ViewStates.DECKLIST:
-			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in DECKLIST",   LOGGER.Flags.MSG_STDOUT)
+			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in DECKLIST", LOGGER.Flags.MSG_STDOUT)
 			change_view_state(ViewStates.DECKLISTCARDPAIRS)
 			_to_display_grid_send_card_list_from_card(card)
 		ViewStates.DECKLISTCARDPAIRS:
-			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in DECKLISTCARDPAIRS",   LOGGER.Flags.MSG_STDOUT)
+			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in DECKLISTCARDPAIRS", LOGGER.Flags.MSG_STDOUT)
 			card_spin.call(ViewStates.DECKLIST)
 		
 		ViewStates.DECK:
-			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in DECK",       LOGGER.Flags.MSG_STDOUT)
+			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in DECK", LOGGER.Flags.MSG_STDOUT)
 			change_view_state(ViewStates.DECKCARDPAIRS)
 			_to_display_grid_send_card_list_from_card(card)
 		ViewStates.DECKCARDPAIRS:
-			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in DECKCARDPAIRS",       LOGGER.Flags.MSG_STDOUT)
+			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in DECKCARDPAIRS", LOGGER.Flags.MSG_STDOUT)
 			assert(card is PlayablePair, "Clicked card is not PlayablePair")
-			var card_copy = PlayablePair.create_from_playable_pair(card) if ShowingSecondary else PlayablePair.create_flipped_card(card)
-			WorkingDeck.add_to_deck(card_copy)
+			var card_dict = (card as PlayablePair).reduce_to_dict() if ShowingSecondary else (card as PlayablePair).reduce_to_dict(true)
+			WorkingDeck.add_to_deck(card_dict)
+			_to_ui_passthrough_add_card_to_deck(card_dict)
 			_to_display_grid_send_card_list()
 			change_view_state(ViewStates.DECK)
-			_to_ui_passthrough_add_card_to_deck(card_copy)
 # CALL EMISSION
 func _to_display_grid_send_card_list()                     -> void: DisplayGrid._recieve_card_list(create_card_array())               ; _to_display_grid_send_exclusions() 
 func _to_display_grid_send_card_list_from_card(card: Card) -> void: DisplayGrid._recieve_card_list(create_card_array_from_card(card)) ; _to_display_grid_send_exclusions() 
@@ -181,8 +181,8 @@ func change_view_state(new_state: ViewStates) -> void:
 			UI._show_deckdisplay(true)
 			DisplayGrid.SlideTarget = DisplayGrid.SLIDE_TARGET
 
-func create_exclusion_list() -> Array[Card]:
-	var card_array: Array[Card] = []
+func create_exclusion_list() -> Array[Dictionary]:
+	var card_array: Array[Dictionary] = []
 	if WorkingDeck:
 		card_array.append_array(WorkingDeck.Critters)
 		card_array.append_array(WorkingDeck.Consumables)
@@ -190,8 +190,8 @@ func create_exclusion_list() -> Array[Card]:
 		card_array.append_array(WorkingDeck.WildCards)
 	return card_array
 
-func create_card_array() -> Array[Card]:
-	var cards : Array[Card] = []
+func create_card_array() -> Array[Dictionary]:
+	var cards : Array[Dictionary] = []
 	var side: String = "DEF" if ShowingSecondary else "ATK"
 	
 	match SortingOrder:
@@ -199,39 +199,62 @@ func create_card_array() -> Array[Card]:
 			for expansion in DATA.ExpansionIDs:
 				for type in DATA.ContentTypes:
 					for rarity in DATA.Rarities:
-						for content_ID in WorkingCollection.collection[expansion][side][type][rarity]:
-							var card: Card = DATA.get_expansion_content(DATA.ExpansionIDs[expansion], DATA.Rarities[rarity], DATA.ContentTypes[type], content_ID)
-							cards.append(card)
+						for content_ID in WorkingCollection.collection[expansion][side][rarity][type]:
+							cards.append({
+								Card.DictFields.EXPANSIONID  : DATA.ExpansionIDs[expansion],
+								Card.DictFields.RARITY       : DATA.Rarities[rarity],
+								Card.DictFields.TYPE         : DATA.ContentTypes[type],
+								Card.DictFields.CONTENTINDEX : content_ID
+							})
 		ContentCollection.SortOrders.TYPE:
 			for type in DATA.ContentTypes:
 				for rarity in DATA.Rarities:
 					for expansion in DATA.ExpansionIDs:
-						for content_ID in WorkingCollection.collection[expansion][side][type][rarity]:
-							var card: Card = DATA.get_expansion_content(DATA.ExpansionIDs[expansion], DATA.Rarities[rarity], DATA.ContentTypes[type], content_ID)
-							cards.append(card)
+						for content_ID in WorkingCollection.collection[expansion][side][rarity][type]:
+							cards.append({
+								Card.DictFields.EXPANSIONID  : DATA.ExpansionIDs[expansion],
+								Card.DictFields.RARITY       : DATA.Rarities[rarity],
+								Card.DictFields.TYPE         : DATA.ContentTypes[type],
+								Card.DictFields.CONTENTINDEX : content_ID
+							})
 		ContentCollection.SortOrders.RARITY:
 			for rarity in DATA.Rarities:
 				for type in DATA.ContentTypes:
 					for expansion in DATA.ExpansionIDs:
-						for content_ID in WorkingCollection.collection[expansion][side][type][rarity]:
-							var card: Card = DATA.get_expansion_content(DATA.ExpansionIDs[expansion], DATA.Rarities[rarity], DATA.ContentTypes[type], content_ID)
-							cards.append(card)
+						for content_ID in WorkingCollection.collection[expansion][side][rarity][type]:
+							cards.append({
+								Card.DictFields.EXPANSIONID  : DATA.ExpansionIDs[expansion],
+								Card.DictFields.RARITY       : DATA.Rarities[rarity],
+								Card.DictFields.TYPE         : DATA.ContentTypes[type],
+								Card.DictFields.CONTENTINDEX : content_ID
+							})
 	
 	return cards
 
-func create_card_array_from_card(StartingCard: Card) -> Array[Card]:
-	var cards : Array[Card] = []
+func create_card_array_from_card(StartingCard: Card) -> Array[Dictionary]:
+	var cards : Array[Dictionary] = []
 	var side: String =  "DEF" if ShowingSecondary else "ATK"
 	
 	var expansion = DATA.ExpansionIDs.find_key(StartingCard.ExpansionID)
-	var type = DATA.ContentTypes.find_key(StartingCard.Type)
 	var rarity = DATA.Rarities.find_key(StartingCard.Rarity)
-	var id = StartingCard.SetID
+	var type = DATA.ContentTypes.find_key(StartingCard.Type)
+	var idx = StartingCard.ContentIndex
 
 	for paired_rarity in DATA.Rarities:
-		for paired_content_ID in WorkingCollection.collection[expansion][side][type][rarity][id][paired_rarity]:
-			var paired_card: Card = DATA.get_expansion_content(DATA.ExpansionIDs[expansion], DATA.Rarities[paired_rarity], DATA.ContentTypes[type], paired_content_ID)
-			cards.append(PlayablePair.create_from_two_cards(paired_card, StartingCard))
+		for paired_content_ID in WorkingCollection.collection[expansion][side][rarity][type][idx][paired_rarity]:
+			cards.append({
+				"FRONT" : {
+					Card.DictFields.EXPANSIONID  : DATA.ExpansionIDs[expansion],
+					Card.DictFields.RARITY       : DATA.Rarities[paired_rarity],
+					Card.DictFields.TYPE         : DATA.ContentTypes[type],
+					Card.DictFields.CONTENTINDEX : paired_content_ID
+				},
+				"BACK" : {
+					Card.DictFields.EXPANSIONID  : DATA.ExpansionIDs[expansion],
+					Card.DictFields.RARITY       : DATA.Rarities[rarity],
+					Card.DictFields.CONTENTINDEX : idx
+				}
+			})
 	
 	return cards
 

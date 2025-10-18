@@ -20,7 +20,7 @@ func _init(Name: String = "content_holder", ContentWidth: float = Card.CARD_WIDT
 	var ch_area := Area3D.new()
 	var cha_collider := CollisionShape3D.new()
 	var chac_shape := BoxShape3D.new()
-	chac_shape.set_size(Vector3(ContentWidth, ContentHeight, 0.01))
+	chac_shape.set_size(Vector3(ContentWidth, ContentHeight, 0.1))
 	cha_collider.set_shape(chac_shape) 
 	ch_area.add_child(cha_collider)
 	add_child(ch_area)
