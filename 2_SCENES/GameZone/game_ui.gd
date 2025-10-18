@@ -1,22 +1,23 @@
 extends Control
+class_name GameUINode
 
 signal back_button_pressed
 signal passthrough_select_deck(deck: Deck)
-signal passthrough_remove_card_from_deck()
+signal passthrough_slect_card(card: PlayablePair)
 
-@onready var DeckDisplaySidebar : DeckDisplay = $VBoxContainer/CONTENT/DeckDisplay
+@onready var DeckDisplaySidebar : DeckDisplay = $VBoxContainer/Body/BodyPanelPadding/BodyPanelContainer/DeckDisplayPadding/DeckDisplay
 
-func _ready()                                                  -> void: DeckDisplaySidebar.Editable = false
+func _ready() -> void: DeckDisplaySidebar.Editable = false
 # =============== #
 # signal emission #
 # =============== #
-func _on_back_button_pressed()                                 -> void: back_button_pressed.emit()
+func _on_back_button_pressed() -> void: back_button_pressed.emit()
 # ================== #
 # signal propegation #
 # ================== #
-func _on_deckdisplay_finished()                                -> void: back_button_pressed.emit()
-func _on_deckdisplay_select_deck(deck: Deck)                   -> void: passthrough_select_deck.emit(deck)
-func _on_deckdisplay_remove_card_from_deck(card: PlayablePair) -> void: passthrough_remove_card_from_deck.emit(card)
+func _on_deckdisplay_finished()                      -> void: back_button_pressed.emit()
+func _on_deckdisplay_select_deck(deck: Deck)         -> void: passthrough_select_deck.emit(deck)
+func _on_deckdisplay_select_card(card: PlayablePair) -> void: passthrough_slect_card.emit(card)
 # ================ #
 # call propegation #
 # ================ #

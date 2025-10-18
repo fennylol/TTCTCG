@@ -1,0 +1,169 @@
+[gd_scene load_steps=4 format=3 uid="uid://bqvwyy5rimbt2"]
+
+[ext_resource type="Theme" uid="uid://bqjv56c2yp8w1" path="res://1_ASSETS/UI/GeneralUITheme.tres" id="1_7g1ey"]
+[ext_resource type="Script" uid="uid://dlthksdt3litj" path="res://2_SCENES/MainZone/main_menu.gd" id="1_ppoxv"]
+[ext_resource type="Texture2D" uid="uid://cjabjcj72u3yy" path="res://2_SCENES/MainZone/UI_textures/large/empty.png" id="2_a0tsp"]
+
+[node name="MainUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_7g1ey")
+script = ExtResource("1_ppoxv")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Spacer" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="PackBar" type="AspectRatioContainer" parent="VBoxContainer"]
+layout_mode = 2
+ratio = 0.25
+stretch_mode = 1
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="VBoxContainer/PackBar"]
+layout_mode = 2
+step = 0.001
+value = 10.0
+texture_under = ExtResource("2_a0tsp")
+
+[node name="Label" type="Label" parent="VBoxContainer/PackBar/TextureProgressBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="PackButtonContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Spacer" type="Control" parent="VBoxContainer/PackButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="PackButton" type="Button" parent="VBoxContainer/PackButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/PackButtonContainer/PackButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "OPEN PACK"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/PackButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="Spacer3" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="CollectionButtonContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Spacer" type="Control" parent="VBoxContainer/CollectionButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="CollectionButton" type="Button" parent="VBoxContainer/CollectionButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/CollectionButtonContainer/CollectionButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "VIEW COLLECTION"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/CollectionButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="Spacer4" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="PlayButtonContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Spacer" type="Control" parent="VBoxContainer/PlayButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="PlayButton" type="Button" parent="VBoxContainer/PlayButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/PlayButtonContainer/PlayButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "PLAY GAME"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/PlayButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="Spacer5" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+
+[connection signal="pressed" from="VBoxContainer/PackButtonContainer/PackButton" to="." method="_on_pack_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/CollectionButtonContainer/CollectionButton" to="." method="_on_collection_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/PlayButtonContainer/PlayButton" to="." method="_on_play_button_pressed"]

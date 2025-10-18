@@ -1,8 +1,8 @@
 [gd_scene load_steps=10 format=3 uid="uid://et816m5b5103"]
 
-[ext_resource type="Script" uid="uid://h0xltogirjo1" path="res://2_SCENES/MainZone/main_zone.gd" id="1_r44e1"]
+[ext_resource type="Script" uid="uid://h0xltogirjo1" path="res://2_SCENES/MainZone/main_ui.gd" id="1_r44e1"]
 [ext_resource type="PackedScene" uid="uid://8siidudokhoa" path="res://2_SCENES/PackZone/PackZone.tscn" id="2_4v2sq"]
-[ext_resource type="PackedScene" uid="uid://bqvwyy5rimbt2" path="res://2_SCENES/MainZone/MainMenu.tscn" id="2_qsq4q"]
+[ext_resource type="PackedScene" uid="uid://bqvwyy5rimbt2" path="res://2_SCENES/MainZone/MainUI.tscn" id="2_qsq4q"]
 [ext_resource type="PackedScene" uid="uid://h6ekll5p6ra" path="res://2_SCENES/CollectionZone/CollectionZone.tscn" id="3_4v2sq"]
 [ext_resource type="PackedScene" uid="uid://jowtaswbv01y" path="res://1_ASSETS/casa.glb" id="5_426ms"]
 [ext_resource type="PackedScene" uid="uid://c7c0gyqoda184" path="res://2_SCENES/GameZone/GameZone.tscn" id="6_onejd"]
@@ -23,7 +23,7 @@ glow_enabled = true
 [node name="MainZone" type="Node3D"]
 script = ExtResource("1_r44e1")
 
-[node name="MainMenu" parent="." instance=ExtResource("2_qsq4q")]
+[node name="MainUI" parent="." instance=ExtResource("2_qsq4q")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_4v2sq")
@@ -43,9 +43,9 @@ transform = Transform3D(-3.47834, 0, -2.43556, 0, 4.24627, 0, 2.43556, 0, -3.478
 
 [node name="GameZone" parent="ZoneZone" instance=ExtResource("6_onejd")]
 
-[connection signal="collection_button_pressed" from="MainMenu" to="." method="_on_main_menu_collection_button_pressed"]
-[connection signal="pack_button_pressed" from="MainMenu" to="." method="_on_main_menu_pack_button_pressed"]
-[connection signal="play_button_pressed" from="MainMenu" to="." method="_on_main_menu_play_button_pressed"]
+[connection signal="collection_button_pressed" from="MainUI" to="." method="_on_main_menu_collection_button_pressed"]
+[connection signal="pack_button_pressed" from="MainUI" to="." method="_on_main_menu_pack_button_pressed"]
+[connection signal="play_button_pressed" from="MainUI" to="." method="_on_main_menu_play_button_pressed"]
 [connection signal="Results" from="ZoneZone/PackZone" to="." method="_on_pack_zone_results"]
 [connection signal="finished" from="ZoneZone/PackZone" to="." method="_on_pack_zone_finished"]
 [connection signal="finished" from="ZoneZone/CollectionZone" to="." method="_on_collection_zone_finished"]

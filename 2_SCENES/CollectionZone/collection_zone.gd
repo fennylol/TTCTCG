@@ -1,9 +1,10 @@
 extends Node3D
+class_name CollectionZoneNode
 
 signal finished
 
 @onready var DisplayGrid: ContentGrid = $ContentGrid
-@onready var UI: CollectionUIUpdated = $CollectionUI
+@onready var UI: CollectionUINode = $CollectionUI
 var WorkingCollection := ContentCollection.new()
 
 enum ViewStates {COLLECTION, COLLECTIONCARDPAIRS, DECKLIST, DECKLISTCARDPAIRS, DECK, DECKCARDPAIRS, UN_CARD_PAIR_ME = -1}
@@ -21,7 +22,7 @@ func _ready() -> void:
 		add_child(WorkingCollection)
 		_to_display_grid_send_card_list()
 	else: 
-		LOGGER.log_msg("collection failed to load: " + str(load_err), LOGGER.Flags.ERR_STDOUT)
+		LOGGER.log_msg("collection_zone.gd: collection failed to load: " + str(load_err), LOGGER.Flags.ERR_STDOUT)
 
 func enter_collection_zone():
 	change_view_state(ViewStates.COLLECTION)
@@ -53,36 +54,38 @@ func _on_ui_back_button_pressed() -> void:
 		ViewStates.DECKLIST:
 			change_view_state(ViewStates.COLLECTION)
 			_to_ui_show_collection()
-			_to_display_grid_send_card_list()
 		ViewStates.DECKLISTCARDPAIRS:
 			change_view_state(ViewStates.DECKLIST)
 			_to_ui_passthrough_show_decks()
-			_to_display_grid_send_card_list()
-			
+		
 		ViewStates.DECK:
 			change_view_state(ViewStates.DECKLIST)
 			_to_ui_passthrough_show_decks()
 		ViewStates.DECKCARDPAIRS:
 			change_view_state(ViewStates.DECK)
-			_to_display_grid_send_card_list()
-func _on_ui_show_decks_button_pressed()                                   -> void: change_view_state(ViewStates.DECKLIST)   ; _to_ui_passthrough_show_decks() ; _to_display_grid_send_card_list()
-func _on_ui_show_collection_button_pressed()                              -> void: change_view_state(ViewStates.COLLECTION) ; _to_ui_show_collection()        ; _to_display_grid_send_card_list()
-func _on_ui_sort_order_selected(sort_order: ContentCollection.SortOrders) -> void: change_view_state(ViewStates.UN_CARD_PAIR_ME)       ; SortingOrder = sort_order                ; _to_display_grid_send_card_list()
-func _on_ui_show_side_selected(show_secondary: bool)                      -> void: change_view_state(ViewStates.UN_CARD_PAIR_ME)       ; ShowingSecondary = show_secondary        ; _to_display_grid_send_card_list()
+	_to_display_grid_send_card_list()
+func _on_ui_show_decks_button_pressed()                                   -> void: change_view_state(ViewStates.DECKLIST)        ; _to_ui_passthrough_show_decks()   ; _to_display_grid_send_card_list()
+func _on_ui_show_collection_button_pressed()                              -> void: change_view_state(ViewStates.COLLECTION)      ; _to_ui_show_collection()          ; _to_display_grid_send_card_list()
+func _on_ui_sort_order_selected(sort_order: ContentCollection.SortOrders) -> void: change_view_state(ViewStates.UN_CARD_PAIR_ME) ; SortingOrder = sort_order         ; _to_display_grid_send_card_list()
+func _on_ui_show_side_selected(show_secondary: bool)                      -> void: change_view_state(ViewStates.UN_CARD_PAIR_ME) ; ShowingSecondary = show_secondary ; _to_display_grid_send_card_list()
 func _on_ui_passthrough_select_deck(deck: Deck)                           -> void: 
 	change_view_state(ViewStates.DECK)
 	WorkingDeck = deck
 	_to_display_grid_send_card_list()
 	_to_ui_passthrough_show_deck_content(deck)
-func _on_ui_passthrough_save_deck()                               -> void: _to_content_collection_save_deck()
-func _on_ui_passthrough_rename_deck(new_name: String)             -> void: _to_content_collection_rename_deck(new_name)
-func _on_ui_passthrough_delete_deck()                             -> void: _to_content_collection_delete_deck()
-func _on_ui_passthrough_remove_card_from_deck(card: PlayablePair) -> void: WorkingDeck.remove_from_deck(card) ; _to_display_grid_send_exclusions()
+func _on_ui_passthrough_save_deck()                     -> void: _to_content_collection_save_deck()
+func _on_ui_passthrough_rename_deck(new_name: String)   -> void: _to_content_collection_rename_deck(new_name)
+func _on_ui_passthrough_delete_deck()                   -> void: _to_content_collection_delete_deck()
+func _on_ui_passthrough_select_card(card: PlayablePair) -> void: _to_ui_remove_card_from_deck(card)
 # CALL EMISSION
 func _to_ui_show_collection()                         -> void: UI._show_collection()
 func _to_ui_passthrough_show_decks()                  -> void: UI._passthrough_to_deckdisplay_show_decks(WorkingCollection.decks)
 func _to_ui_passthrough_show_deck_content(deck: Deck) -> void: UI._passthrough_to_deckdisplay_show_deck_content(deck)
 func _to_ui_passthrough_add_card_to_deck(card: Card)  -> void: UI._passthrough_to_deckdisplay_add_card_to_deck(card)
+func _to_ui_remove_card_from_deck(card: PlayablePair) -> void: 
+	WorkingDeck.remove_from_deck(card)
+	UI._passthrough_to_deckdisplay_remove_card_from_deck(card)
+	_to_display_grid_send_exclusions()
 #endregion
 
 # ============ #
@@ -106,33 +109,33 @@ func _on_display_grid_card_clicked(card: Card, content_holder: ContentHolder) ->
 	
 	match ViewState:
 		ViewStates.COLLECTION:
+			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in COLLECTION", LOGGER.Flags.MSG_STDOUT)
 			change_view_state(ViewStates.COLLECTIONCARDPAIRS)
 			_to_display_grid_send_card_list_from_card(card)
-			LOGGER.log_msg(card.Name + " clicked in COLLECTION", LOGGER.Flags.MSG_STDOUT)
 		ViewStates.COLLECTIONCARDPAIRS:
+			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in COLLECTIONCARDPAIRS", LOGGER.Flags.MSG_STDOUT)
 			card_spin.call(ViewStates.COLLECTION)
-			LOGGER.log_msg(card.Name + " clicked in COLLECTIONCARDPAIRS", LOGGER.Flags.MSG_STDOUT)
 		
 		ViewStates.DECKLIST:
+			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in DECKLIST",   LOGGER.Flags.MSG_STDOUT)
 			change_view_state(ViewStates.DECKLISTCARDPAIRS)
 			_to_display_grid_send_card_list_from_card(card)
-			LOGGER.log_msg(card.Name + " clicked in DECKLIST",   LOGGER.Flags.MSG_STDOUT)
 		ViewStates.DECKLISTCARDPAIRS:
+			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in DECKLISTCARDPAIRS",   LOGGER.Flags.MSG_STDOUT)
 			card_spin.call(ViewStates.DECKLIST)
-			LOGGER.log_msg(card.Name + " clicked in DECKLISTCARDPAIRS",   LOGGER.Flags.MSG_STDOUT)
 		
 		ViewStates.DECK:
+			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in DECK",       LOGGER.Flags.MSG_STDOUT)
 			change_view_state(ViewStates.DECKCARDPAIRS)
 			_to_display_grid_send_card_list_from_card(card)
-			LOGGER.log_msg(card.Name + " clicked in DECK",       LOGGER.Flags.MSG_STDOUT)
 		ViewStates.DECKCARDPAIRS:
+			LOGGER.log_msg("collection_zone.gd: " + card.Name + " clicked in DECKCARDPAIRS",       LOGGER.Flags.MSG_STDOUT)
 			assert(card is PlayablePair, "Clicked card is not PlayablePair")
 			var card_copy = PlayablePair.create_from_playable_pair(card) if ShowingSecondary else PlayablePair.create_flipped_card(card)
 			WorkingDeck.add_to_deck(card_copy)
 			_to_display_grid_send_card_list()
 			change_view_state(ViewStates.DECK)
 			_to_ui_passthrough_add_card_to_deck(card_copy)
-			LOGGER.log_msg(card.Name + " clicked in DECKCARDPAIRS",       LOGGER.Flags.MSG_STDOUT)
 # CALL EMISSION
 func _to_display_grid_send_card_list()                     -> void: DisplayGrid._recieve_card_list(create_card_array())               ; _to_display_grid_send_exclusions() 
 func _to_display_grid_send_card_list_from_card(card: Card) -> void: DisplayGrid._recieve_card_list(create_card_array_from_card(card)) ; _to_display_grid_send_exclusions() 
@@ -165,14 +168,17 @@ func change_view_state(new_state: ViewStates) -> void:
 	ViewState = new_state
 	match ViewState:
 		ViewStates.COLLECTION, ViewStates.COLLECTIONCARDPAIRS:
+			UI._show_deckdisplay(false)
 			DisplayGrid.SlideTarget = DisplayGrid.UNSLIDE_TARGET
 			WorkingDeck = null
 		
 		ViewStates.DECKLIST, ViewStates.DECKLISTCARDPAIRS:
+			UI._show_deckdisplay(true)
 			DisplayGrid.SlideTarget = DisplayGrid.SLIDE_TARGET
 			WorkingDeck = null
 		
 		ViewStates.DECK, ViewStates.DECKCARDPAIRS:
+			UI._show_deckdisplay(true)
 			DisplayGrid.SlideTarget = DisplayGrid.SLIDE_TARGET
 
 func create_exclusion_list() -> Array[Card]:
@@ -228,4 +234,6 @@ func create_card_array_from_card(StartingCard: Card) -> Array[Card]:
 			cards.append(PlayablePair.create_from_two_cards(paired_card, StartingCard))
 	
 	return cards
+
+#func _notification(what: int) -> void: if visible and what == NOTIFICATION_WM_GO_BACK_REQUEST: _on_ui_back_button_pressed()
 #endregion

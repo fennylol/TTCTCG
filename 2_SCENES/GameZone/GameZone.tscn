@@ -25,5 +25,5 @@ mesh = SubResource("TorusMesh_tger7")
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="back_button_pressed" from="GameUI" to="." method="_on_ui_back_button_pressed"]
-[connection signal="passthrough_remove_card_from_deck" from="GameUI" to="." method="_on_ui_passthrough_remove_card_from_deck"]
 [connection signal="passthrough_select_deck" from="GameUI" to="." method="_on_ui_passthrough_select_deck"]
+[connection signal="passthrough_slect_card" from="GameUI" to="." method="_on_ui_passthrough_select_card"]

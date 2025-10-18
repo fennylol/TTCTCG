@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://du4f80fmx5nae"]
+[gd_scene load_steps=6 format=3 uid="uid://du4f80fmx5nae"]
 
+[ext_resource type="Theme" uid="uid://bqjv56c2yp8w1" path="res://1_ASSETS/UI/GeneralUITheme.tres" id="1_erh52"]
 [ext_resource type="Script" uid="uid://npv6opp5nyye" path="res://2_SCENES/GameZone/game_ui.gd" id="1_yv1ro"]
-[ext_resource type="Script" uid="uid://c07uprgyv6ps3" path="res://3_CLASSES/deck_display.gd" id="2_erh52"]
+[ext_resource type="Script" uid="uid://c07uprgyv6ps3" path="res://3_CLASSES/UI/deck_display.gd" id="2_erh52"]
+[ext_resource type="StyleBox" uid="uid://dm5luw5nonptg" path="res://1_ASSETS/UI/Overrides/CollectionUI/TopPanelContainerOverride.tres" id="3_8p03y"]
+[ext_resource type="StyleBox" uid="uid://cxyb4vqr6sd8c" path="res://1_ASSETS/UI/Overrides/CollectionUI/BodyPanelContainerOverride.tres" id="6_xhx48"]
 
 [node name="GameUI" type="Control"]
 layout_mode = 3
@@ -10,6 +13,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_erh52")
 script = ExtResource("1_yv1ro")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -22,55 +26,103 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 4.0
 
-[node name="TopBar" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="BackButton" type="Button" parent="VBoxContainer/TopBar"]
+[node name="Spacer" type="Control" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-size_flags_stretch_ratio = 2.5
-
-[node name="Label" type="Label" parent="VBoxContainer/TopBar/BackButton"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "<- Back"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Spacer" type="Control" parent="VBoxContainer/TopBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-size_flags_stretch_ratio = 35.0
+size_flags_stretch_ratio = 0.05
 mouse_filter = 2
 
-[node name="CONTENT" type="HBoxContainer" parent="VBoxContainer"]
+[node name="TopBar" type="PanelContainer" parent="VBoxContainer"]
+z_index = 10
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 10.0
+size_flags_stretch_ratio = 0.05
+theme_override_styles/panel = ExtResource("3_8p03y")
 
-[node name="Spacer" type="Control" parent="VBoxContainer/CONTENT"]
+[node name="TopBarPadding" type="HBoxContainer" parent="VBoxContainer/TopBar"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Spacer" type="Control" parent="VBoxContainer/TopBar/TopBarPadding"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+mouse_filter = 2
+
+[node name="BackButton" type="Button" parent="VBoxContainer/TopBar/TopBarPadding"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.2
+text = "← Back"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/TopBar/TopBarPadding"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.75
+mouse_filter = 2
+
+[node name="Spacer2" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+mouse_filter = 2
+
+[node name="Body" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.8
+mouse_filter = 2
+
+[node name="BodyPanelPadding" type="HBoxContainer" parent="VBoxContainer/Body"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BodyPanelContainer" type="PanelContainer" parent="VBoxContainer/Body/BodyPanelPadding"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("6_xhx48")
+
+[node name="DeckDisplayPadding" type="HBoxContainer" parent="VBoxContainer/Body/BodyPanelPadding/BodyPanelContainer"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="VBoxContainer/Body/BodyPanelPadding/BodyPanelContainer/DeckDisplayPadding"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+mouse_filter = 2
+
+[node name="DeckDisplay" type="VBoxContainer" parent="VBoxContainer/Body/BodyPanelPadding/BodyPanelContainer/DeckDisplayPadding"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 0
+script = ExtResource("2_erh52")
+metadata/_custom_type_script = "uid://c07uprgyv6ps3"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/Body/BodyPanelPadding/BodyPanelContainer/DeckDisplayPadding"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+mouse_filter = 2
+
+[node name="Spacer" type="Control" parent="VBoxContainer/Body"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 mouse_filter = 2
 
-[node name="DeckDisplay" type="VBoxContainer" parent="VBoxContainer/CONTENT"]
-layout_mode = 2
-size_flags_horizontal = 3
-script = ExtResource("2_erh52")
-metadata/_custom_type_script = "uid://c07uprgyv6ps3"
-
 [node name="BottomBar" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
 
 [node name="Spacer" type="Control" parent="VBoxContainer/BottomBar"]
 layout_mode = 2
@@ -79,7 +131,7 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 11.0
 mouse_filter = 2
 
-[connection signal="pressed" from="VBoxContainer/TopBar/BackButton" to="." method="_on_back_button_pressed"]
-[connection signal="finished" from="VBoxContainer/CONTENT/DeckDisplay" to="." method="_on_deckdisplay_finished"]
-[connection signal="remove_card_from_deck" from="VBoxContainer/CONTENT/DeckDisplay" to="." method="_on_deckdisplay_remove_card_from_deck"]
-[connection signal="select_deck" from="VBoxContainer/CONTENT/DeckDisplay" to="." method="_on_deckdisplay_select_deck"]
+[connection signal="pressed" from="VBoxContainer/TopBar/TopBarPadding/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="finished" from="VBoxContainer/Body/BodyPanelPadding/BodyPanelContainer/DeckDisplayPadding/DeckDisplay" to="." method="_on_deckdisplay_finished"]
+[connection signal="select_card" from="VBoxContainer/Body/BodyPanelPadding/BodyPanelContainer/DeckDisplayPadding/DeckDisplay" to="." method="_on_deckdisplay_select_card"]
+[connection signal="select_deck" from="VBoxContainer/Body/BodyPanelPadding/BodyPanelContainer/DeckDisplayPadding/DeckDisplay" to="." method="_on_deckdisplay_select_deck"]

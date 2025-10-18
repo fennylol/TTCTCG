@@ -1,11 +1,18 @@
 extends Node3D
+class_name PackZoneNode
 
 signal Results(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card])
 signal finished
 
 const STARTING_PACK_HEIGHT: float = 5.0
 
-func enter_pack_zone(): DEBUG_add_pack()
+func enter_pack_zone(): 
+	#while get_child_count() > 0:
+		#var kid: Node = get_child(0)
+		#remove_child(kid)
+		#kid.queue_free()
+		#
+	DEBUG_add_pack()
 
 func DEBUG_roll_pack_odds(ExpansionID: DATA.ExpansionIDs, num_trials: int = 100) -> Array[int]:
 	var counts: Array[int] = [0,0,0,0,0,0]
@@ -45,7 +52,7 @@ func DEBUG_add_pack():
 	#var paired_content = Array[PlayablePair]
 	#for 
 	
-	LOGGER.log_msg("generated a " + DATA.Rarities.find_key(pack_rarity) + " pack from " + DATA.ExpansionIDs.find_key(rand))
+	LOGGER.log_msg("pack_zone.gd: generated a " + DATA.Rarities.find_key(pack_rarity) + " pack from " + DATA.ExpansionIDs.find_key(rand))
 	Results.emit(rand, pack_content)
 	
 	var pack: Pack = Pack.new(pack_rarity, pack_content)
@@ -77,7 +84,8 @@ func determine_pack_rarity(ExpansionID : DATA.ExpansionIDs) -> DATA.Rarities:
 		thresh -= pack_rarity_odds[DATA.Rarities[r]]
 		if thresh <= 0: return DATA.Rarities[r]
 	
-	return -1
+	@warning_ignore("int_as_enum_without_match")
+	return -1 as DATA.Rarities
 
 
 ## [b]Purpose[/b]: determines the rarity for each content in a pack from a requested expansion[br]
@@ -123,3 +131,5 @@ func determine_pack_contents(ExpansionID : DATA.ExpansionIDs, ContentRarities : 
 		cards.append(partner_card)
 	
 	return cards
+
+#func _notification(what: int) -> void: if visible and what == NOTIFICATION_WM_GO_BACK_REQUEST: finished.emit()

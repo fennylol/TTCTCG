@@ -11,8 +11,6 @@ func _ready() -> void:
 	var msg: String = "Session Began"
 	log_msg(msg, Flags.MSG)
 
-func _notification(what): if what == NOTIFICATION_WM_CLOSE_REQUEST: log_msg("Exit Signal Recieved From OS")
-
 func log_msg(msg: String, flags: Flags = Flags.MSG):
 	var logmsg: String = ("ERROR" if flags == Flags.ERR  or flags == Flags.ERR_FILE  or flags == Flags.ERR_STDOUT  else \
 						"WARNING" if flags == Flags.WARN or flags == Flags.WARN_FILE or flags == Flags.WARN_STDOUT else "") + \
