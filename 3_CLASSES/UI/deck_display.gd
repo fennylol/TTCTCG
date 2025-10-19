@@ -8,6 +8,7 @@ signal rename_deck(new_name: String)
 signal delete_deck
 signal select_card(card: Dictionary)
 
+var RealDeckName: String
 var DeckName    : LineEdit
 var Controls    : HBoxContainer
 var Critters    : HBoxContainer
@@ -41,6 +42,7 @@ func _show_deck_content(deck: Deck):
 	prepare_deck_display()
 	var read_array = func(arr: Array[Dictionary]): for card in arr: _add_card_to_deck(card)
 	DeckName.text = deck.Name
+	RealDeckName  = deck.Name
 	read_array.call(deck.Critters)
 	read_array.call(deck.Consumables)
 	read_array.call(deck.Weapons)
@@ -132,6 +134,11 @@ func _remove_card_from_deck(card_dict: Dictionary):
 # ================ #
 # internal utility #
 # ================ #
+func handle_save_deck() -> void:
+	if RealDeckName != DeckName.text:
+		RealDeckName = DeckName.text
+		rename_deck.emit(DeckName.text)
+	else: save_deck.emit()
 func stitch_textures_vertical(top_texture: Texture2D, bottom_texture: Texture2D) -> ImageTexture:
 	var top_image = top_texture.get_image()
 	var bottom_image = bottom_texture.get_image()
@@ -195,7 +202,7 @@ func prepare_deck_display():
 		save_button.flat = true
 		save_button.icon = UNPRESSEDICON
 		save_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		save_button.pressed.connect(save_deck.emit)
+		save_button.pressed.connect(handle_save_deck)
 		save_button.button_down.connect(func(): save_button.icon=PRESSEDICON)
 		save_button.button_up.connect(func(): save_button.icon=UNPRESSEDICON)
 		Controls.add_child(save_button)
@@ -207,7 +214,6 @@ func prepare_deck_display():
 	DeckName.size_flags_horizontal |= Control.SIZE_EXPAND
 	DeckName.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	DeckName.size_flags_stretch_ratio = 10.0
-	DeckName.text_changed.connect(rename_deck.emit)
 	DeckName.editable = Editable
 	Controls.add_child(DeckName)
 	Controls.add_spacer(false)

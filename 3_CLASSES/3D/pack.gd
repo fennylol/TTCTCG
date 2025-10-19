@@ -42,9 +42,10 @@ func _init(R : DATA.Rarities, C : Array[Card]) -> void:
 	
 	# init cam, these are the same settings as the main cam (at time of creation lol)
 	PackCam.set_current(true)
+	PackCam.set_fov(35)
 	PackCam.set_position(PACKCAM_STARTING_POS)
 	PackCam.set_rotation_degrees(PACKCAM_STARTING_ANGLE)
-	PackCam.set_fov(35)
+	PackCam.set_keep_aspect_mode(Camera3D.KEEP_WIDTH)
 	PackCam.set_name(plain_name+"_camera")
 	add_child(PackCam)
 	
@@ -79,6 +80,8 @@ func _init(R : DATA.Rarities, C : Array[Card]) -> void:
 
 
 func _process(delta: float) -> void:
+	if not is_visible_in_tree(): queue_free()
+	
 	# bring packs in from top
 	if ActiveContent < Content.size():
 		#position.y = lerpf(position.y, 0, LERP_SPEED*delta)
@@ -129,16 +132,14 @@ func _process(delta: float) -> void:
 			IsSkipping = false#true
 
 func handle_animation_complete(anim_name: String):
-	if not is_visible_in_tree(): queue_free()
-	
 	if  anim_name == "moves/PrimaryReveal":
 		#IsReady = true
 		ActiveContent += 1
 		Content[ActiveContent].play_anim("moves/SecondaryReveal" if ActiveContent%2 else "moves/PrimaryReveal")
 	elif anim_name == "moves/SecondaryReveal":
-		Content[ActiveContent].play_anim("moves/SecondaryMerge")
-		Content[ActiveContent-1].play_anim("moves/PrimaryMerge")
-	elif anim_name == "moves/SecondaryMerge":
+		Content[ActiveContent].play_anim("moves/NewSecondaryMerge")
+		Content[ActiveContent-1].play_anim("moves/NewPrimaryMerge")
+	elif anim_name == "moves/NewSecondaryMerge":
 		# created PairedContent
 		var pair := PlayablePair.create_from_two_cards(Content[ActiveContent-1], Content[ActiveContent])
 		pair.AnimationComplete.connect(handle_animation_complete)

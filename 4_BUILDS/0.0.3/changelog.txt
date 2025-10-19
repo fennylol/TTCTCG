@@ -1,0 +1,16 @@
+0.0.3 The Portait Mode Update
+
+ADDED
+- Android back button behavior (now it wont just quit the app! yippee)
+- Timer to the pack bar. Hope youre patient!
+
+REMOVED
+- Memory leaks! Object passing backend has been replaced (almost entirely) with string/dictionary passing.
+
+CHANGED
+- Game to be entirely portrait mode.
+  - rewrote UI elements to be portrait friendly
+  - changed pack animations to fit in portrait mode
+  - reworked camera angles to better suit portrait mode (kinda)
+- Accessibility to UI elements- buttons are larger and more expressive! menu items are... actualy clickable
+- How content_grid scrolls to be soft limited, not hard.

@@ -6,11 +6,9 @@ ADDED
 - more robust logging features
 - Pack timers YIPPEE
 - Technically you can... play? the game?
-- 0.0.2.1 Timer to the pack bar 
 
 REMOVED
 
 CHANGED
 - Entire collection backend
 - Back button in collection, it actually navigates instead of just sending you to the main menu
-- 0.0.2.2 Android back button behavior

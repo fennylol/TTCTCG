@@ -14,21 +14,21 @@ var DisplayedWidth: int = 3
 var ScrollTarget: float = 0.0
 var SlideTarget: float = 0.0
 var UNSLIDE_TARGET: float = 0.0
-var SLIDE_TARGET: float = -5.0
+var SLIDE_TARGET: float = -2.5
 
 var ContentList: Array[Dictionary]
 var ExclusionList: Array[Dictionary]
 
 func _init(): 
-	var scale_factor = 0.5
-	scale *= scale_factor
-	UNSLIDE_TARGET = -(DisplayedWidth-1)/2.0 * (Card.CARD_WIDTH+SPACING_WIDTH) * scale_factor
-	position.x = UNSLIDE_TARGET
+	position.x = -(DisplayedWidth-1)/2.0 * (Card.CARD_WIDTH+SPACING_WIDTH)
 	SlideTarget = UNSLIDE_TARGET
 
 # ============== #
 # call reception #
 # ============== #
+func _slide(slide: bool) -> void: 
+	ScrollTarget += SLIDE_TARGET if slide else -SLIDE_TARGET
+	SlideTarget = SLIDE_TARGET if slide else UNSLIDE_TARGET
 func _recieve_card_list(DisplayedContent: Array[Dictionary]) -> void:
 	ContentList = DisplayedContent
 	display_content_list()
@@ -37,7 +37,7 @@ func _recieve_exclusion_list(ExcludedContent: Array[Dictionary]) -> void:
 	display_content_list()
 func _recieve_displayed_width(RowWidth : int) -> void: 
 	DisplayedWidth = RowWidth
-	UNSLIDE_TARGET = -(DisplayedWidth-1)/2.0 * (Card.CARD_WIDTH+SPACING_WIDTH)
+	position.x = -(DisplayedWidth-1)/2.0 * (Card.CARD_WIDTH+SPACING_WIDTH)
 	display_content_list()
 # ================ #
 # internal utility #
@@ -97,15 +97,19 @@ func kill_the_children() -> void:
 # ============== #
 func _process(delta: float) -> void:
 	if is_visible_in_tree():
+		position.y = lerpf(position.y, ScrollTarget, delta*SCROLL_SPEED)
+		
 		var scroll: float = Input.get_axis("Up", "Down")
 		if !scroll: scroll = (float(Input.is_action_just_released("Down"))-float(Input.is_action_just_released("Up")))
 		ScrollTarget += scroll*SCROLL_TARGET_SPEED
 		
 		var row_count: int = floor(DisplayedCount/DisplayedWidth)
 		var row_height: float = (Card.CARD_HEIGHT+SPACING_HEIGHT)
-		ScrollTarget = max(min(ScrollTarget, (row_count*row_height)-SPACING_HEIGHT), SlideTarget)
 		
-		position.y = lerpf(position.y, ScrollTarget, delta*SCROLL_SPEED)
+		var capped_scroll_target = max(min(ScrollTarget-SlideTarget, (row_count*row_height)-SPACING_HEIGHT), SlideTarget)+SlideTarget
+		ScrollTarget = lerpf(ScrollTarget, capped_scroll_target, delta*SCROLL_SPEED*absf(ScrollTarget-capped_scroll_target))
+		
+		#var true_scroll_target = 
 		#position.x = lerpf(position.x, SlideTarget, delta*SCROLL_SPEED)
 
 

@@ -29,7 +29,8 @@ script = ExtResource("1_r44e1")
 environment = SubResource("Environment_4v2sq")
 
 [node name="MainCamera" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.999816, 0.0191974, 0, -0.0191974, 0.999816, 0, 0.5, 15)
+transform = Transform3D(1, 0, 0, 0, 0.9998157, 0.019197397, 0, -0.019197397, 0.9998157, 0, 0.5, 15)
+keep_aspect = 0
 fov = 35.0
 
 [node name="casa" parent="." instance=ExtResource("5_426ms")]

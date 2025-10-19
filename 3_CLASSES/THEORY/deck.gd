@@ -12,10 +12,10 @@ static func restore_from_dict(Dict: Dictionary) -> Deck:
 	assert(dict_is_deck(Dict, true), "deck.gd - restore_from_dict(): Dict is not a Deck")
 	var parsed_deck = Deck.new()
 	parsed_deck.Name        = Dict[DictFields.NAME]
-	parsed_deck.Critters    = Dict[DictFields.CRITTERS]
-	parsed_deck.Consumables = Dict[DictFields.CONSUMABLES]
-	parsed_deck.Weapons     = Dict[DictFields.WEAPONS]
-	parsed_deck.WildCards   = Dict[DictFields.WILDCARDS]
+	parsed_deck.Critters    = Dict[DictFields.CRITTERS].duplicate(true)
+	parsed_deck.Consumables = Dict[DictFields.CONSUMABLES].duplicate(true)
+	parsed_deck.Weapons     = Dict[DictFields.WEAPONS].duplicate(true)
+	parsed_deck.WildCards   = Dict[DictFields.WILDCARDS].duplicate(true)
 	return parsed_deck
 func reduce_to_dict() -> Dictionary:
 	var dict = {}

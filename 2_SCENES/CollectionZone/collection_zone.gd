@@ -22,6 +22,8 @@ func _ready() -> void:
 		add_child(WorkingCollection)
 		_to_display_grid_send_card_list()
 	else: 
+		WorkingCollection.queue_free()
+		WorkingCollection = ContentCollection.new()
 		LOGGER.log_msg("collection_zone.gd: collection failed to load: " + str(load_err), LOGGER.Flags.ERR_STDOUT)
 
 func enter_collection_zone():
@@ -60,6 +62,7 @@ func _on_ui_back_button_pressed() -> void:
 		
 		ViewStates.DECK:
 			change_view_state(ViewStates.DECKLIST)
+			WorkingDeck = null
 			_to_ui_passthrough_show_decks()
 		ViewStates.DECKCARDPAIRS:
 			change_view_state(ViewStates.DECK)
@@ -169,17 +172,17 @@ func change_view_state(new_state: ViewStates) -> void:
 	match ViewState:
 		ViewStates.COLLECTION, ViewStates.COLLECTIONCARDPAIRS:
 			UI._show_deckdisplay(false)
-			DisplayGrid.SlideTarget = DisplayGrid.UNSLIDE_TARGET
+			DisplayGrid._slide(false)
 			WorkingDeck = null
 		
 		ViewStates.DECKLIST, ViewStates.DECKLISTCARDPAIRS:
 			UI._show_deckdisplay(true)
-			DisplayGrid.SlideTarget = DisplayGrid.SLIDE_TARGET
+			DisplayGrid._slide(true)
 			WorkingDeck = null
 		
 		ViewStates.DECK, ViewStates.DECKCARDPAIRS:
 			UI._show_deckdisplay(true)
-			DisplayGrid.SlideTarget = DisplayGrid.SLIDE_TARGET
+			DisplayGrid._slide(true)
 
 func create_exclusion_list() -> Array[Dictionary]:
 	var card_array: Array[Dictionary] = []
