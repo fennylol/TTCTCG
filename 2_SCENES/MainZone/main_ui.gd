@@ -1,86 +1,77 @@
-extends Node3D
+extends Control
+class_name MainUINode
 
-@onready var MainCam = $MainCamera
-@onready var MainMenu: MainUINode = $MainUI
-@onready var PackZone: PackZoneNode = $ZoneZone/PackZone
-@onready var GameZone: GameZoneNode = $ZoneZone/GameZone
-@onready var CollectionZone: CollectionZoneNode = $ZoneZone/CollectionZone
-enum Elements {MAINMENU, PACKZONE, COLLECTIONZONE, GAMEZONE}
+signal pack_button_pressed
+signal collection_button_pressed
+signal play_button_pressed
+
+@onready var PackTimer = $VBoxContainer/PackBar/TextureProgressBar
+@onready var PackTimerLabel = $VBoxContainer/PackBar/TextureProgressBar/Label
+var NextPack: float
+var PackAfter: float
+var BarTarget: float
+
+const UNDER_TEX = preload("res://2_SCENES/MainZone/UI_textures/large/empty.png")
+const FIRST_LOADING = preload("res://2_SCENES/MainZone/UI_textures/large/half_full.png")
+const SECOND_LOADING = preload("res://2_SCENES/MainZone/UI_textures/large/full.png")
+
+
+func _ready() -> void: 
+	PackTimer.max_value = ContentCollection.NEXT_PACK_UNIX_TIME_OFFSET
+	#get_tree().root.size_changed.connect(_on_viewport_size_changed)
+	#_on_viewport_size_changed()
+#
+#func _on_viewport_size_changed():
+	#var root: Window = get_tree().root
+	#
+	#if root.size.y > root.size.x: 
+		#print("babab")
+		##var target_width = floor(root.size.x * 0.8)
+		##var scale_factor = target_width / 1024
+		##PackTimer.scale = Vector2(scale_factor, scale_factor)
+		#var axis = floor(root.size.x * 0.8) 
+		#PackTimer.custom_minimum_size.x = axis
+		#PackTimer.custom_minimum_size.y = axis/4
+	#else:
+		#print("hehehe")
+		##var target_height = floor((root.size.y * 0.8) / 4)
+		##var scale_factor = target_height / 256
+		##PackTimer.scale = Vector2(scale_factor, scale_factor)
+		#var axis = floor((root.size.y*0.8)/4) 
+		#PackTimer.custom_minimum_size.x = axis*4
+		#PackTimer.custom_minimum_size.y = axis
 
 
 func _process(delta: float) -> void:
-	if Input.is_action_just_pressed("DEBUG_ACTION"):
-		print("\n\n\nORPHAMS")
-		print_orphan_nodes()
-
-func _ready() -> void:
-	get_tree().set_quit_on_go_back(false)
-	get_tree().set_auto_accept_quit(false)
-	set_visible_element(Elements.MAINMENU)
-	MainMenu._recieve_pack_timer(CollectionZone.WorkingCollection.next_pack_timestamp, CollectionZone.WorkingCollection.pack_after_that_timestamp)	
-	#DATA.DEBUG_print_expansion_EVs(DATA.ExpansionIDs.TEST_SET)
-	#PackZone.DEBUG_roll_pack_odds(DATA.ExpansionIDs.TEST_SET)
-	#DATA.DEBUG_print_expansion_EVs(DATA.ExpansionIDs.OTHER_SET)
-	#PackZone.DEBUG_roll_pack_odds(DATA.ExpansionIDs.OTHER_SET)
-# ========= #
-# pack zone #
-# ========= #
-func _on_main_menu_pack_button_pressed() -> void:
-	if CollectionZone.WorkingCollection.next_pack_timestamp < Time.get_unix_time_from_system():
-		set_visible_element(Elements.PACKZONE)
-		PackZone.enter_pack_zone()
-func _on_pack_zone_results(ExpansionID: DATA.ExpansionIDs, CardList: Array[Card]) -> void:
-	CollectionZone._to_content_collection_recieve_cards(ExpansionID, CardList)
-	MainMenu._recieve_pack_timer(CollectionZone.WorkingCollection.next_pack_timestamp, CollectionZone.WorkingCollection.pack_after_that_timestamp)
-func _on_pack_zone_finished() -> void: set_visible_element(Elements.MAINMENU)
-# =============== #
-# collection zone #
-# =============== #
-func _on_main_menu_collection_button_pressed() -> void:
-	set_visible_element(Elements.COLLECTIONZONE)
-	CollectionZone.enter_collection_zone()
-func _on_collection_zone_finished() -> void: set_visible_element(Elements.MAINMENU)
-# ========= #
-# game zone #
-# ========= #
-func _on_main_menu_play_button_pressed() -> void:
-	set_visible_element(Elements.GAMEZONE)
-	GameZone.enter_game_zone(CollectionZone.WorkingCollection.decks)
-func _on_game_zone_finished() -> void: set_visible_element(Elements.MAINMENU)
-
-# ======= #
-# utility #
-# ======= #
-func set_visible_element(Element: Elements):
-	MainCam.set_current(false if Element == Elements.PACKZONE else true)
+	var time_till_next_charge: float = NextPack-Time.get_unix_time_from_system()
+	var time_till_charge_after: float = PackAfter-Time.get_unix_time_from_system()
 	
-	PackZone.set_visible(true if Element == Elements.PACKZONE else false)
-	CollectionZone.set_visible(true if Element == Elements.COLLECTIONZONE else false)
-	GameZone.set_visible(true if Element == Elements.GAMEZONE else false)
-	MainMenu.set_visible(true if Element == Elements.MAINMENU else false)
-
-func get_visible_element() -> Elements:
-	if   MainMenu.visible:       return Elements.MAINMENU
-	elif PackZone.visible:       return Elements.PACKZONE
-	elif CollectionZone.visible: return Elements.COLLECTIONZONE
-	elif GameZone.visible:       return Elements.GAMEZONE
+	var bar_prog: float = ContentCollection.NEXT_PACK_UNIX_TIME_OFFSET-(time_till_next_charge if time_till_next_charge > 0.0 else time_till_charge_after)
+	PackTimer.value = lerp(PackTimer.value, bar_prog, delta) if bar_prog > PackTimer.value else bar_prog
+	
+	var time_string: String = Time.get_time_string_from_unix_time(int(time_till_next_charge))  if time_till_next_charge  > 0.0 else \
+							  Time.get_time_string_from_unix_time(int(time_till_charge_after)) if time_till_charge_after > 0.0 else ""
+	PackTimerLabel.text = time_string
+	
+	if time_till_next_charge > 0.0:
+		PackTimer.texture_under = UNDER_TEX
+		PackTimer.texture_progress = FIRST_LOADING
+		PackTimer.texture_over = null
 	else:
-		@warning_ignore("int_as_enum_without_match")
-		return -1 as Elements
-
-func _notification(what: int) -> void: 
-	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
-			if MainMenu.visible:
-				LOGGER.log_msg("main_zone.gd: Quitting by back button request.")
-				get_tree().quit()
-			elif PackZone.visible:
-				PackZone.finished.emit()
-			elif CollectionZone.visible:
-				CollectionZone._on_ui_back_button_pressed()
-			elif GameZone.visible:
-				GameZone.finished.emit()
-		
-	elif what == NOTIFICATION_WM_CLOSE_REQUEST:
-		LOGGER.log_msg("main_zone.gd: Quitting normally.")
-		get_tree().quit()
-		print_orphan_nodes()
+		PackTimer.texture_under = FIRST_LOADING
+		PackTimer.texture_progress = SECOND_LOADING
+		PackTimer.texture_over = null
+# =============== #
+# signal emission #
+# =============== #
+func _on_pack_button_pressed() -> void: pack_button_pressed.emit()
+func _on_collection_button_pressed() -> void: collection_button_pressed.emit()
+func _on_play_button_pressed() -> void: play_button_pressed.emit()
+# ============== #
+# call reception #
+# ============== #
+func _recieve_pack_timer(next_pack: float, pack_after: float) -> void: 
+	NextPack = next_pack
+	PackAfter = pack_after
+	#PackTimer.value = Time.get_unix_time_from_system()-NextPack
+	#update_pack_timer_visuals()

@@ -7,43 +7,9 @@ var PairedIndex: int
 
 var PairedName: String
 var PairedImg: Texture2D
+var PairedStats: Dictionary
 
 var PairedSprite : Sprite3D
-
-#static func create_from_two_cards(Front : Card, Back : Card) -> PlayablePair: 
-	#return PlayablePair.new(
-		#Front.ExpansionID, 
-		#Front.Type, 
-		#Front.Rarity, 
-		#Front.ContentIndex, 
-		#Front.Name, 
-		#Front.Img, 
-		#Back.ExpansionID, 
-		#Back.Rarity, 
-		#Back.ContentIndex, 
-		#Back.Name, 
-		#Back.Img
-		#)
-##static func create_from_playable_pair(card: PlayablePair) -> PlayablePair: return PlayablePair.new(card.SetID, card.ExpansionID, card.Name, card.Type, card.Rarity, card.Img, card.PairedSetID, card.PairedExpansionID, card.PairedName, card.PairedRarity, card.PairedImg)
-#static func create_flipped_card(card : PlayablePair) -> PlayablePair: return PlayablePair.new(card.PairedSetID, card.PairedExpansionID, card.PairedName, card.PairedType, card.PairedRarity, card.PairedImg, card.SetID, card.ExpansionID, card.Name, card.Type, card.Rarity, card.Img)
-#static func parse_dict(dict: Dictionary) -> PlayablePair:
-	#assert(dict["front"] is Array)
-	#assert(dict["back"] is Array)
-	#assert(dict["front"].size() == 4)
-	#assert(dict["back"].size() == 4)
-	#
-	#var front_data: Array = dict["front"]
-	#var back_data: Array = dict["back"]
-	#var front_card: Card = DATA.get_expansion_content(front_data[0],front_data[1],front_data[2],front_data[3])
-	#var back_card: Card = DATA.get_expansion_content(back_data[0] ,back_data[1], back_data[2], back_data[3])
-	#return PlayablePair.create_from_two_cards(front_card, back_card)
-
-#func to_dict() -> Dictionary:
-	#return {
-		#"front" : [ExpansionID, Rarity, Type, ContentIndex],
-		#"back" : [PairedExpansionID, PairedRarity, PairedType, PairedContentIndex]
-	#}
-	##return [Paired]
 
 # ====================== #
 # creation & destruction #
@@ -132,15 +98,42 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 		   Paired_Expansion_ID: DATA.ExpansionIDs, Paired_Rarity: DATA.Rarities, Paired_Idx: int,  Paired_Name: String, Paired_Img: Texture2D):
 	# save information
 	super._init(Expansion_ID, Content_Rarity, Content_Type, Content_Idx,  Content_Name, Content_Img)
-	super._init(Expansion_ID, Content_Rarity, Content_Type, Content_Idx,  Content_Name, Content_Img)
 	PairedExpansionID = Paired_Expansion_ID
 	PairedRarity = Paired_Rarity
 	PairedIndex = Paired_Idx
 	PairedName = Paired_Name
 	PairedImg = Paired_Img
+	PairedStats = DATA.get_content_stats(Expansion_ID, Paired_Rarity, Content_Type, Paired_Idx)
 	
 	var plain_name: String = PairedName.replace(" ", "_").to_lower()
 	set_name(name+"_"+plain_name+"_"+str(int(RNG.random_value()*1000)))
+	
+	# create card text
+	var name_label = Label3D.new()
+	name_label.set_text(Paired_Name)
+	name_label.set_name(plain_name+"_name")
+	name_label.rotation.y = PI
+	name_label.position.y = -0.3
+	name_label.position.z = -0.011
+	
+	
+	var flavor_label = Label3D.new()
+	flavor_label.set_text(Stats[DATA.CritterDescriptionFields.FLAVOR])
+	flavor_label.set_name(plain_name+"_flavor")
+	flavor_label.set_pixel_size(0.003)
+	flavor_label.set_width(700.0)
+	flavor_label.set_vertical_alignment(VERTICAL_ALIGNMENT_TOP)
+	flavor_label.set_autowrap_mode(TextServer.AUTOWRAP_WORD)
+	flavor_label.font = load("res://1_ASSETS/UI/italicize.tres")
+	flavor_label.position.y = -0.45
+	flavor_label.position.z = -0.011
+	flavor_label.rotation.y = PI
+	
+	var stats_display = StatsDisplay.new(Type, Stats)
+	stats_display.set_name(plain_name+"_stats")
+	stats_display.position.y = -1.25
+	stats_display.position.z = -0.011
+	stats_display.rotation.y = PI
 	
 	# create sprite
 	PairedSprite = Sprite3D.new()
@@ -157,6 +150,9 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	var M: Mesh = load("res://1_ASSETS/cards/pair_with_uv.tres")
 	set_mesh(M)
 	add_child(PairedSprite)
+	add_child(name_label)
+	add_child(flavor_label)
+	add_child(stats_display)
 	
 	var mat: StandardMaterial3D = DATA.create_paired_rarity_material(Rarity, PairedRarity) 
 	set_surface_override_material(0, mat)

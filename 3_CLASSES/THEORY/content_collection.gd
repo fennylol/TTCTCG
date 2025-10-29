@@ -3,7 +3,7 @@ class_name ContentCollection
 
 enum SortOrders {EXPANSION, TYPE, RARITY, DISPLAYALL}
 enum VersionLevels {EXPANSION, MAJOR, MINOR, PATCH}
-const VERSION: Array[int] = [0,0,2,2]
+const VERSION: Array[int] = [0,0,3,0]
 
 # stored at /home/fenny/.local/share/godot/app_userdata/TTCTCG
 const SAVE_LOCATION = "user://DoNotEditOrElseFaceThePenaltyOfDeathSeriouslyBroThatWouldBeVeryUncoolOfYou.cake"
@@ -39,7 +39,7 @@ func _init() -> void:
 	decks = {}
 
 # ======================= #
-# COLLECTION MODIFICATION #
+# collection modification #
 # ======================= #
 #region
 func recieve_deck(deck: Deck) -> void:
@@ -91,7 +91,7 @@ func recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]) -> v
 #endregion
 
 # =========== #
-# FILE ACCESS #
+# file access #
 # =========== #
 #region
 func _save() -> Error:
@@ -147,10 +147,24 @@ func _load() -> Error:
 	if Time.get_unix_time_from_system() < data["saved_at"]: 
 		LOGGER.log_msg("content_collection.gd: BRUH IS A TIME TRAVELIN' AHH HAHAH", LOGGER.Flags.ERR_STDOUT)
 		return ERR_HELP
-	
-	next_pack_timestamp = data["next_pack_timestamp"]
-	pack_after_that_timestamp = data["pack_after_that_timestamp"]
-	collection = data["collection"]
-	decks = data["decks"]
+	if not is_same_version(data["version"]):
+		next_pack_timestamp       = 0
+		pack_after_that_timestamp = 0
+		_save()
+		LOGGER.log_msg("content_collection.gd: incompatible version. resetting collection.", LOGGER.Flags.WARN)
+	else:
+		next_pack_timestamp       = data["next_pack_timestamp"]
+		pack_after_that_timestamp = data["pack_after_that_timestamp"]
+		collection                = data["collection"]
+		decks                     = data["decks"]
+		LOGGER.log_msg("content_collection.gd: compatible version. loaded collection successfully.")
 	return OK
 #endregion
+
+func is_same_version(version: Array[int]) -> bool:
+	if version.size() != VERSION.size():
+		return false
+	for level in version:
+		if version[level] != VERSION[level]:
+			return false
+	return true

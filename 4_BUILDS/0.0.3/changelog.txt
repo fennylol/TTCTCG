@@ -3,6 +3,8 @@
 ADDED
 - Android back button behavior (now it wont just quit the app! yippee)
 - Timer to the pack bar. Hope youre patient!
+- The ability to actually choose what expansion pack to open!
+- WHOA and an entire* new expansion to pull!
 
 REMOVED
 - Memory leaks! Object passing backend has been replaced (almost entirely) with string/dictionary passing.

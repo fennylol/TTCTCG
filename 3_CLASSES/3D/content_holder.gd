@@ -69,6 +69,7 @@ func _process(_delta: float) -> void:
 		var result = space_state.intersect_ray(query)
 		if result and result.has("collider"):
 			if result.collider.get_parent() == self and not _check_node_blocks_mouse(get_tree().root, mouse_pos):
+				Input.vibrate_handheld(25,1)
 				clicked.emit()
 				#DragBegin = result.position
 				#FollowingMouse = !RotationLocked

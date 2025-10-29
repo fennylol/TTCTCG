@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cd7hjag6nfdpp"]
+[gd_scene load_steps=3 format=3 uid="uid://cd7hjag6nfdpp"]
 
 [ext_resource type="PackedScene" uid="uid://280odfhvfqk8" path="res://2_SCENES/CollectionZone/CollectionUI.tscn" id="1_guyeb"]
+[ext_resource type="PackedScene" uid="uid://dgfk33enfx6j0" path="res://dbug.tscn" id="2_gffto"]
 
 [node name="ARtester" type="AspectRatioContainer"]
 custom_minimum_size = Vector2(1080, 2400)
@@ -13,4 +14,8 @@ grow_vertical = 2
 ratio = 0.4286
 
 [node name="CollectionUI" parent="." instance=ExtResource("1_guyeb")]
+visible = false
+layout_mode = 2
+
+[node name="CollectionUI2" parent="." instance=ExtResource("2_gffto")]
 layout_mode = 2

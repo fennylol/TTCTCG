@@ -1,6 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://8siidudokhoa"]
+[gd_scene load_steps=3 format=3 uid="uid://8siidudokhoa"]
 
 [ext_resource type="Script" uid="uid://bxptlx1fkf07e" path="res://2_SCENES/PackZone/pack_zone.gd" id="1_2y5ru"]
+[ext_resource type="PackedScene" uid="uid://dcef8fnkuexo1" path="res://2_SCENES/PackZone/PackUI.tscn" id="2_68amo"]
 
 [node name="PackZone" type="Node3D"]
 script = ExtResource("1_2y5ru")
+
+[node name="PackUI" parent="." instance=ExtResource("2_68amo")]
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="back_button_pressed" from="PackUI" to="." method="_on_ui_back_button_pressed"]
+[connection signal="expansion_selected" from="PackUI" to="." method="_on_ui_expansion_selected"]

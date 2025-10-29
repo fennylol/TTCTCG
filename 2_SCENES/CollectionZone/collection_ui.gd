@@ -14,15 +14,15 @@ signal passthrough_rename_deck
 signal passthrough_delete_deck(deck: Deck)
 signal passthrough_select_card(card: PlayablePair)
 
-@onready var ShowCollectionButton : Button = $VBoxContainer/TopBar/TopBarPadding/ShowCollectionButton
-@onready var ShowDecksButton      : Button = $VBoxContainer/TopBar/TopBarPadding/ShowDecksButton
+@onready var ShowCollectionButton : Button     = $VBoxContainer/TopBar/TopBarPadding/ShowCollectionButton
+@onready var ShowDecksButton      : Button     = $VBoxContainer/TopBar/TopBarPadding/ShowDecksButton
 @onready var ShowSideButton       : MenuButton = $VBoxContainer/TopBar/TopBarPadding/ShowSideMenu
 @onready var SortOrderMenuButton  : MenuButton = $VBoxContainer/TopBar/TopBarPadding/SortOrderMenu
-@onready var SortOrderMenu        : PopupMenu = SortOrderMenuButton.get_popup()
-@onready var ShowSideMenu         : PopupMenu = ShowSideButton.get_popup()
+@onready var SortOrderMenu        : PopupMenu  = SortOrderMenuButton.get_popup()
+@onready var ShowSideMenu         : PopupMenu  = ShowSideButton.get_popup()
 
 @onready var BodyContents         : HBoxContainer = $VBoxContainer/Body/BodyPanelPadding
-@onready var DeckDisplaySidebar   : DeckDisplay = $VBoxContainer/Body/BodyPanelPadding/BodyPanelContainer/DeckDisplayPadding/DeckDisplay
+@onready var DeckDisplaySidebar   : DeckDisplay   = $VBoxContainer/Body/BodyPanelPadding/BodyPanelContainer/DeckDisplayPadding/DeckDisplay
 
 
 const PRESSED_ICON = preload("res://1_ASSETS/UI/DEBUG_button_pressed.png")
@@ -44,7 +44,7 @@ func _on_deckdisplay_finished()                    -> void: back_button_pressed.
 func _on_deckdisplay_select_deck(deck: Deck)       -> void: passthrough_select_deck.emit(deck)
 func _on_deckdisplay_save_deck()                   -> void: passthrough_save_deck.emit()
 func _on_deckdisplay_rename_deck(new_name: String) -> void: passthrough_rename_deck.emit(new_name)
-func _on_deckdisplay_delete_deck()                 -> void: passthrough_delete_deck.emit()
+func _on_deckdisplay_delete_deck(deck: Deck)       -> void: passthrough_delete_deck.emit(deck)
 func _on_deckdisplay_select_card(card: Dictionary) -> void: passthrough_select_card.emit(card)
 # ============== #
 # call reception #

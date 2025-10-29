@@ -11,26 +11,32 @@ const SCROLL_SPEED: float = 5
 var DisplayedCount: int = 0
 var DisplayedWidth: int = 3
 
-var ScrollTarget: float = 0.0
-var SlideTarget: float = 0.0
-var UNSLIDE_TARGET: float = 0.0
-var SLIDE_TARGET: float = -2.5
+var ScrollTarget:  float = 0.0
+var MinimumScroll: float = 0.0
+var MaximumScroll: float = 0.0
+
+var UNSCROLL_MODIFIER: float = 0.0
+var SCROLL_MODIFIER:   float = -2.5
 
 var ContentList: Array[Dictionary]
 var ExclusionList: Array[Dictionary]
 
+
 func _init(): 
 	position.x = -(DisplayedWidth-1)/2.0 * (Card.CARD_WIDTH+SPACING_WIDTH)
-	SlideTarget = UNSLIDE_TARGET
+	MinimumScroll = UNSCROLL_MODIFIER
 
 # ============== #
 # call reception #
 # ============== #
-func _slide(slide: bool) -> void: 
-	ScrollTarget += SLIDE_TARGET if slide else -SLIDE_TARGET
-	SlideTarget = SLIDE_TARGET if slide else UNSLIDE_TARGET
-func _recieve_card_list(DisplayedContent: Array[Dictionary]) -> void:
+func _modify_scroll(add_modifier: bool) -> void: 
+	MinimumScroll = SCROLL_MODIFIER if add_modifier else UNSCROLL_MODIFIER
+func _recieve_content_list(DisplayedContent: Array[Dictionary]) -> void:
+	if ContentList.size() != DisplayedContent.size(): 
+		ScrollTarget = MinimumScroll
+		position.y = MinimumScroll
 	ContentList = DisplayedContent
+	set_maximum_scroll()
 	display_content_list()
 func _recieve_exclusion_list(ExcludedContent: Array[Dictionary]) -> void:
 	ExclusionList = ExcludedContent
@@ -38,7 +44,12 @@ func _recieve_exclusion_list(ExcludedContent: Array[Dictionary]) -> void:
 func _recieve_displayed_width(RowWidth : int) -> void: 
 	DisplayedWidth = RowWidth
 	position.x = -(DisplayedWidth-1)/2.0 * (Card.CARD_WIDTH+SPACING_WIDTH)
+	set_maximum_scroll()
 	display_content_list()
+func set_maximum_scroll() -> void:
+	var row_count: int = floor(ContentList.size()/DisplayedWidth)
+	var row_height: float = Card.CARD_HEIGHT+SPACING_HEIGHT
+	MaximumScroll = (row_count*row_height)-SPACING_HEIGHT
 # ================ #
 # internal utility #
 # ================ #
@@ -53,6 +64,12 @@ func display_content_list() -> void:
 		else: LOGGER.log_msg("content_grid.gd - display_content_list(): excluded_dict is not a Card or PlayablePair.", LOGGER.Flags.ERR)
 	
 	for card_dict in ContentList:
+	#for info_dict in ContentList:
+		#if not info_dict.keys().has("COUNT"): pass
+		#if not info_dict.keys().has("CARD"): pass
+		#
+		#var count: int = info_dict["COUNT"]
+		#var card_dict: Dictionary = info_dict["CARD"]
 		var card : Card
 		if PlayablePair.dict_is_playable_pair(card_dict): card = PlayablePair.restore_from_dict(card_dict)
 		elif Card.dict_is_card(card_dict): card = Card.restore_from_dict(card_dict)
@@ -73,12 +90,12 @@ func display_content_list() -> void:
 	
 	for excluded_card in excludes: excluded_card.queue_free()
 
-func display_content(card: Card) -> ContentHolder:
+func display_content(card: Card, _count: int = 1) -> ContentHolder:
 	var plain_name: String = card.name.replace(" ", "_").to_lower()
 	
 	var content_holder := ContentHolder.new(plain_name)
 	content_holder.add_child(card)
-
+	
 	var pos := Vector3(0,0,0)
 	pos.x = (DisplayedCount%DisplayedWidth)*(Card.CARD_WIDTH+SPACING_WIDTH)
 	pos.y = -(DisplayedCount/DisplayedWidth)*(Card.CARD_HEIGHT+SPACING_HEIGHT)
@@ -103,14 +120,14 @@ func _process(delta: float) -> void:
 		if !scroll: scroll = (float(Input.is_action_just_released("Down"))-float(Input.is_action_just_released("Up")))
 		ScrollTarget += scroll*SCROLL_TARGET_SPEED
 		
-		var row_count: int = floor(DisplayedCount/DisplayedWidth)
-		var row_height: float = (Card.CARD_HEIGHT+SPACING_HEIGHT)
+		if ScrollTarget < MinimumScroll:
+			ScrollTarget = lerpf(ScrollTarget, MinimumScroll, delta*SCROLL_SPEED*(MinimumScroll-ScrollTarget))
+		if ScrollTarget > MaximumScroll:
+			ScrollTarget = lerpf(ScrollTarget, MaximumScroll, delta*SCROLL_SPEED*(ScrollTarget-MaximumScroll))
+		#var capped_scroll_target = max(min(ScrollTarget-SlideTarget, (row_count*row_height)-SPACING_HEIGHT), SlideTarget)+SlideTarget
 		
-		var capped_scroll_target = max(min(ScrollTarget-SlideTarget, (row_count*row_height)-SPACING_HEIGHT), SlideTarget)+SlideTarget
-		ScrollTarget = lerpf(ScrollTarget, capped_scroll_target, delta*SCROLL_SPEED*absf(ScrollTarget-capped_scroll_target))
-		
-		#var true_scroll_target = 
-		#position.x = lerpf(position.x, SlideTarget, delta*SCROLL_SPEED)
+		#ScrollTarget = lerpf(ScrollTarget, capped_scroll_target, delta*SCROLL_SPEED*absf(ScrollTarget-capped_scroll_target))
+
 
 
 func _input(event: InputEvent) -> void:

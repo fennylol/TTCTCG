@@ -4,6 +4,7 @@ class_name CollectionZoneNode
 signal finished
 
 @onready var DisplayGrid: ContentGrid = $ContentGrid
+@onready var DisplayCase: Node3D = $DisplayCase
 @onready var UI: CollectionUINode = $CollectionUI
 var WorkingCollection := ContentCollection.new()
 
@@ -78,7 +79,7 @@ func _on_ui_passthrough_select_deck(deck: Deck)                           -> voi
 	_to_ui_passthrough_show_deck_content(deck)
 func _on_ui_passthrough_save_deck()                   -> void: _to_content_collection_save_deck()
 func _on_ui_passthrough_rename_deck(new_name: String) -> void: _to_content_collection_rename_deck(new_name)
-func _on_ui_passthrough_delete_deck()                 -> void: _to_content_collection_delete_deck()
+func _on_ui_passthrough_delete_deck(deck: Deck)       -> void: _to_content_collection_delete_deck(deck)
 func _on_ui_passthrough_select_card(card: Dictionary) -> void: _to_ui_remove_card_from_deck(card)
 # CALL EMISSION
 func _to_ui_show_collection()                              -> void: UI._show_collection()
@@ -140,8 +141,8 @@ func _on_display_grid_card_clicked(card: Card, content_holder: ContentHolder) ->
 			_to_display_grid_send_card_list()
 			change_view_state(ViewStates.DECK)
 # CALL EMISSION
-func _to_display_grid_send_card_list()                     -> void: DisplayGrid._recieve_card_list(create_card_array())               ; _to_display_grid_send_exclusions() 
-func _to_display_grid_send_card_list_from_card(card: Card) -> void: DisplayGrid._recieve_card_list(create_card_array_from_card(card)) ; _to_display_grid_send_exclusions() 
+func _to_display_grid_send_card_list()                     -> void: DisplayGrid._recieve_content_list(create_card_array())               ; _to_display_grid_send_exclusions() ; #if DisplayCase.get_child_count() > 0: DisplayCase.get_child(0).queue_free() 
+func _to_display_grid_send_card_list_from_card(card: Card) -> void: DisplayGrid._recieve_content_list(create_card_array_from_card(card)) ; _to_display_grid_send_exclusions() ; #DisplayCase.add_child(card.duplicate())
 func _to_display_grid_send_exclusions()                    -> void: DisplayGrid._recieve_exclusion_list(create_exclusion_list())
 #endregion
 
@@ -153,9 +154,9 @@ func _to_display_grid_send_exclusions()                    -> void: DisplayGrid.
 func _to_content_collection_recieve_cards(ExpansionID : DATA.ExpansionIDs,
 										  CardList : Array[Card]) -> void: WorkingCollection.recieve_cards(ExpansionID, CardList)
 func _to_content_collection_save_deck()                           -> void: WorkingCollection.recieve_deck(WorkingDeck)
-func _to_content_collection_delete_deck()                         -> void: WorkingCollection.delete_deck(WorkingDeck.Name)
+func _to_content_collection_delete_deck(deck: Deck)               -> void: WorkingCollection.delete_deck(deck.Name) ; if deck != WorkingDeck: _to_ui_passthrough_show_decks()
 func _to_content_collection_rename_deck(new_name: String)         -> void: 
-	_to_content_collection_delete_deck()
+	_to_content_collection_delete_deck(WorkingDeck)
 	WorkingDeck.Name = new_name
 	_to_content_collection_save_deck()
 #endregion
@@ -172,17 +173,17 @@ func change_view_state(new_state: ViewStates) -> void:
 	match ViewState:
 		ViewStates.COLLECTION, ViewStates.COLLECTIONCARDPAIRS:
 			UI._show_deckdisplay(false)
-			DisplayGrid._slide(false)
+			DisplayGrid._modify_scroll(false)
 			WorkingDeck = null
 		
 		ViewStates.DECKLIST, ViewStates.DECKLISTCARDPAIRS:
 			UI._show_deckdisplay(true)
-			DisplayGrid._slide(true)
+			DisplayGrid._modify_scroll(true)
 			WorkingDeck = null
 		
 		ViewStates.DECK, ViewStates.DECKCARDPAIRS:
 			UI._show_deckdisplay(true)
-			DisplayGrid._slide(true)
+			DisplayGrid._modify_scroll(true)
 
 func create_exclusion_list() -> Array[Dictionary]:
 	var card_array: Array[Dictionary] = []
@@ -203,6 +204,20 @@ func create_card_array() -> Array[Dictionary]:
 				for type in DATA.ContentTypes:
 					for rarity in DATA.Rarities:
 						for content_ID in WorkingCollection.collection[expansion][side][rarity][type]:
+							#var count: int = 0
+							#for paired_rarity in WorkingCollection.collection[expansion][side][rarity][type][content_ID]:
+								#for paired_ID in WorkingCollection.collection[expansion][side][rarity][type][content_ID][paired_rarity]:
+									#count += WorkingCollection.collection[expansion][side][rarity][type][content_ID][paired_rarity][paired_ID]
+							#
+							#cards.append({
+								#"COUNT" : count,
+								#"CARD"  : {
+									#Card.DictFields.EXPANSIONID  : DATA.ExpansionIDs[expansion],
+									#Card.DictFields.RARITY       : DATA.Rarities[rarity],
+									#Card.DictFields.TYPE         : DATA.ContentTypes[type],
+									#Card.DictFields.CONTENTINDEX : content_ID
+								#}
+							#})
 							cards.append({
 								Card.DictFields.EXPANSIONID  : DATA.ExpansionIDs[expansion],
 								Card.DictFields.RARITY       : DATA.Rarities[rarity],

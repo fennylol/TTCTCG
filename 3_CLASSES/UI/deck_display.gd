@@ -5,7 +5,7 @@ signal finished
 signal select_deck(deck: Deck)
 signal save_deck
 signal rename_deck(new_name: String)
-signal delete_deck
+signal delete_deck(deck: Deck)
 signal select_card(card: Dictionary)
 
 var RealDeckName: String

@@ -1,0 +1,10 @@
+0.0.4 The Game(?)Play(🤨) Groundwork Update
+
+ADDED
+- Card title, stats, and descriptions! Whoa... maybe that will be useful somewhere?
+
+REMOVED
+-
+
+CHANGED
+- 
