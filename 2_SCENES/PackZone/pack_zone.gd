@@ -86,6 +86,8 @@ func pull_single_pack(ExpansionID: DATA.ExpansionIDs) -> void:
 
 
 func pull_booster_box(ExpansionID: DATA.ExpansionIDs):
+	_start()
+	
 	var packs  : Array[Pack] = []
 	var results: Array[Card] = []
 	var counts : Array[int]  = [0,0,0]
