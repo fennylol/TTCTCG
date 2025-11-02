@@ -14,10 +14,10 @@ var timer_charges: int
 
 var next_pack_timestamp: float
 var pack_after_that_timestamp: float
-#const NEXT_PACK_UNIX_TIME_OFFSET: int = 43200
-#const TIMER_CHARGE_VALUE: int = 3600
-const NEXT_PACK_UNIX_TIME_OFFSET: int = 120
-const TIMER_CHARGE_VALUE: int = 60
+const NEXT_PACK_UNIX_TIME_OFFSET: int = 43200
+const TIMER_CHARGE_VALUE: int = 3600
+#const NEXT_PACK_UNIX_TIME_OFFSET: int = 120
+#const TIMER_CHARGE_VALUE: int = 60
 
 var empty_expansion_dict: Dictionary
 
@@ -49,7 +49,7 @@ func _init() -> void:
 func DEBUG_reset() -> void:
 	next_pack_timestamp       = 0
 	pack_after_that_timestamp = 0
-	timer_charges             = 0
+	timer_charges             = 96
 	collection                = {}
 	decks                     = {}
 	for ID in DATA.ExpansionIDs:

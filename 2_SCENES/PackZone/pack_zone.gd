@@ -39,7 +39,7 @@ func _on_ui_expansion_selected(ExpansionID: DATA.ExpansionIDs, SinglePack: bool)
 			var time_diff: float = COLLECTION.next_pack_timestamp - Time.get_unix_time_from_system()
 			var needed_charges: int = ceil(time_diff/COLLECTION.TIMER_CHARGE_VALUE)
 			
-			if needed_charges < COLLECTION.timer_charges:
+			if needed_charges <= COLLECTION.timer_charges:
 				var popup = PopUpConfirm.new("spend " + str(needed_charges) + " timer charges to refill pack bar?\n" + "you currently own " + str(COLLECTION.timer_charges))
 				popup.confirm.connect(func():
 					COLLECTION._spend_timer_charges(needed_charges)
@@ -52,12 +52,12 @@ func _on_ui_expansion_selected(ExpansionID: DATA.ExpansionIDs, SinglePack: bool)
 				LOGGER.post_msg_board_message(msg, 5)
 
 	else:
-		var PACK_IN_LARGE_PULL: int   = 10
-		var time_diff         : float = max(max(COLLECTION.next_pack_timestamp+COLLECTION.NEXT_PACK_UNIX_TIME_OFFSET,COLLECTION.next_pack_timestamp)-Time.get_unix_time_from_system(), 0)
-		var price_in_seconds  : float = (COLLECTION.NEXT_PACK_UNIX_TIME_OFFSET * (PACK_IN_LARGE_PULL-2)) + time_diff
-		var needed_charges    : int   = ceil(price_in_seconds/COLLECTION.TIMER_CHARGE_VALUE)
+		var value_in_packs   : int   = 10
+		var time_diff        : float = max(max(COLLECTION.next_pack_timestamp+COLLECTION.NEXT_PACK_UNIX_TIME_OFFSET,COLLECTION.next_pack_timestamp)-Time.get_unix_time_from_system(), 0)
+		var price_in_seconds : float = (COLLECTION.NEXT_PACK_UNIX_TIME_OFFSET * (value_in_packs-2)) + time_diff
+		var needed_charges   : int   = ceil(price_in_seconds/COLLECTION.TIMER_CHARGE_VALUE)
 		
-		if needed_charges < COLLECTION.timer_charges:
+		if needed_charges <= COLLECTION.timer_charges:
 			var popup = PopUpConfirm.new("spend " + str(needed_charges) + " timer charges to refill pack bar?\n" + "you currently own " + str(COLLECTION.timer_charges))
 			popup.confirm.connect(func():
 				COLLECTION._spend_timer_charges(needed_charges)
