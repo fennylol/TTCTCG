@@ -5,11 +5,12 @@ signal finished
 
 # consts
 const PARTICLES = preload("res://1_ASSETS/cards/animations/merge_particles.tscn")
-const LOWERED_PACK_HEIGHT: float = -4.5
-const RAISED_CONTENT_HEIGHT: float = 4.5
-const LERP_SPEED: float = 1.0
-const SKIP_SPEED_MULT: float = 15.0
-const KILL_TIMER: float = 1.5
+const LOWERED_PACK_HEIGHT   : float =-4.5
+const RAISED_CONTENT_HEIGHT : float = 4.5
+const LERP_SPEED            : float = 1.0
+const SKIP_ANIM_SPEED       : float = 3.0
+const NORMAL_ANIM_SPEED     : float = 1.0
+#const KILL_TIMER: float = 1.5
 const SLOWMODE_FINISHED_DIST: float = 1
 
 const PACKCAM_STARTING_POS := Vector3(0, 0.5, 15)
@@ -30,7 +31,6 @@ var RarePullEffect: Callable
 
 # opening state
 var IsReady: bool = true
-var IsSkipping: bool = false
 var ActiveContent: int = ActiveContentStates.SEALED
 enum ActiveContentStates {SEALED = -2, OPEN = -1}#, LOWERED = 0}
 
@@ -119,7 +119,6 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("Next"): 
 		# start the next mover moving
 		if IsReady:
-			IsSkipping = false
 			IsReady = false
 			ActiveContent += 1
 			
@@ -128,13 +127,14 @@ func _process(delta: float) -> void:
 			if ActiveContent >= 0 and ActiveContent < Content.size():
 				Content[ActiveContent].play_anim("moves/SecondaryReveal" if ActiveContent%2 else "moves/PrimaryReveal")
 		# or begin skipping
-		elif !IsReady:
-			IsSkipping = false#true
+		elif !IsReady and Content.size() > ActiveContent and Content[ActiveContent]:
+			Content[ActiveContent].set_anim_speed(SKIP_ANIM_SPEED)
 
 func handle_animation_complete(anim_name: String):
 	if  anim_name == "moves/PrimaryReveal":
-		#IsReady = true
+		var old_speed: float = Content[ActiveContent].get_anim_speed()
 		ActiveContent += 1
+		Content[ActiveContent].set_anim_speed(old_speed)
 		Content[ActiveContent].play_anim("moves/SecondaryReveal" if ActiveContent%2 else "moves/PrimaryReveal")
 	elif anim_name == "moves/SecondaryReveal":
 		Content[ActiveContent].play_anim("moves/NewSecondaryMerge")
@@ -149,8 +149,11 @@ func handle_animation_complete(anim_name: String):
 		# manage old and new content
 		Holder.add_child(pair)
 		PairedContent.append(pair)
+		
+		var old_speed: float = Content[ActiveContent].get_anim_speed()
 		Content[ActiveContent].queue_free()
 		Content[ActiveContent-1].queue_free()
+		pair.set_anim_speed(old_speed)
 		
 		var particles = load("res://1_ASSETS/cards/animations/merge_particles.tscn").instantiate()
 		pair.add_child(particles)
@@ -167,63 +170,3 @@ func handle_animation_complete(anim_name: String):
 		 anim_name == "moves/PairLeaveRight":
 			PairedContent[floor(ActiveContent/2)].set_visible(false)
 			IsReady = true
-				
-
-#func _process(delta: float) -> void:
-	## bring packs in from top
-	#if position.y > 0:
-		#position.y = lerpf(position.y, 0, LERP_SPEED*delta)
-	#
-	## move top once OPENED
-	#if ActiveContent > ActiveContentStates.SEALED:
-		#PackTop.position.y = lerpf(PackTop.position.y, -LOWERED_PACK_HEIGHT, LERP_SPEED*delta)
-		#PackTop.position.x = lerpf(PackTop.position.x, -LOWERED_PACK_HEIGHT*2, LERP_SPEED*delta)
-	#
-	## move body once LOWERED and cards once displayed
-	#if ActiveContent >= ActiveContentStates.LOWERED:
-		## move pack body
-		#PackBody.position.y = lerpf(PackBody.position.y, LOWERED_PACK_HEIGHT, LERP_SPEED*delta)
-		## move content
-		#for i in range(min(ActiveContent, Content.size())):
-			#Content[i].position.y = lerpf(Content[i].position.y, LOWERED_PACK_HEIGHT, LERP_SPEED*delta)
-	#
-	## move everything once finished
-	#if ActiveContent > Content.size():
-		#position.y = lerpf(position.y, LOWERED_PACK_HEIGHT, LERP_SPEED*delta)
-		## kill pack once lowered
-		#if position.y - LOWERED_PACK_HEIGHT < SLOWMODE_FINISHED_DIST:
-			#self.queue_free()
-			#finished.emit()
-	#
-	## select proper moving part, if null, it is the entire pack
-	#var mover = PackTop if ActiveContent == ActiveContentStates.OPEN else \
-				#PackBody if ActiveContent == ActiveContentStates.LOWERED else \
-				#Content[ActiveContent-1] if ActiveContent <= Content.size() and ActiveContent >= 0 \
-				#else null
-	#
-	## slow mode check to re-ready if progressed enough
-	#if mover: # anything besides the pack itself
-		## move the content faster if skipping
-		#if IsSkipping: mover.position.y = move_toward(mover.position.y, LOWERED_PACK_HEIGHT, SKIP_SPEED_MULT*LERP_SPEED*delta)
-		## ready for next motion if within SLOWMODE_FINISHED_DIST of LOWERED_PACK_HEIGHT
-		#if (mover.position.y - LOWERED_PACK_HEIGHT < SLOWMODE_FINISHED_DIST) or mover == PackTop: IsReady = true
-	#else: # the pack itself
-		## move the pack faster if skipping
-		#if IsSkipping:
-			## move from above to 0, or from 0 to LOWERED_PACK_HEIGHT
-			#if ActiveContent > Content.size(): position.y = move_toward(position.y, LOWERED_PACK_HEIGHT, SKIP_SPEED_MULT*LERP_SPEED*delta)
-			#else: position.y = move_toward(position.y, 0, SKIP_SPEED_MULT*LERP_SPEED*delta)
-		## ready for next motion if within SLOWMODE_FINISHED_DIST of 0, only if starting
-		#if ActiveContent <= ActiveContentStates.SEALED and position.y < SLOWMODE_FINISHED_DIST: IsReady = true
-	#
-	#
-	## when a Next comes in
-	#if Input.is_action_just_pressed("Next"): 
-		## start the next mover moving
-		#if IsReady:
-			#IsSkipping = false
-			#IsReady = false
-			#ActiveContent += 1
-		## or begin skipping
-		#elif !IsReady:
-			#IsSkipping = true

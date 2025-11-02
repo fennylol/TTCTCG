@@ -31,7 +31,7 @@ size_flags_stretch_ratio = 4.0
 [node name="TopBar" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.1
+size_flags_stretch_ratio = 0.75
 
 [node name="Spacer" type="Control" parent="VBoxContainer/TopBar"]
 layout_mode = 2
@@ -51,20 +51,40 @@ text = "← Back"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.75
+size_flags_stretch_ratio = 0.5
+mouse_filter = 2
+
+[node name="TimerChargeLabel" type="Label" parent="VBoxContainer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+size_flags_stretch_ratio = 0.4
+text = "20 Charges"
+horizontal_alignment = 1
+
+[node name="Spacer3" type="Control" parent="VBoxContainer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+mouse_filter = 2
+
+[node name="Spacer2" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 2
 
 [node name="Body" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.8
+size_flags_stretch_ratio = 8.25
 mouse_filter = 2
 
 [node name="LabelPadding" type="HBoxContainer" parent="VBoxContainer/Body"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.1
 mouse_filter = 2
 
 [node name="Spacer" type="Control" parent="VBoxContainer/Body/LabelPadding"]
@@ -91,7 +111,7 @@ mouse_filter = 2
 [node name="ExpansionButtonPadding" type="HBoxContainer" parent="VBoxContainer/Body"]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.8
+size_flags_stretch_ratio = 7.0
 
 [node name="Spacer" type="Control" parent="VBoxContainer/Body/ExpansionButtonPadding"]
 layout_mode = 2
@@ -104,7 +124,13 @@ mouse_filter = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.8
+size_flags_stretch_ratio = 0.5
+
+[node name="ExpansionBoosterButtons" type="GridContainer" parent="VBoxContainer/Body/ExpansionButtonPadding"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.3
 
 [node name="Spacer2" type="Control" parent="VBoxContainer/Body/ExpansionButtonPadding"]
 layout_mode = 2
@@ -117,12 +143,41 @@ mouse_filter = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.1
+size_flags_stretch_ratio = 0.25
 mouse_filter = 2
 
-[node name="BottomBar" type="HBoxContainer" parent="VBoxContainer"]
+[node name="StoreButtonPadding" type="HBoxContainer" parent="VBoxContainer/Body"]
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.1
+mouse_filter = 2
+
+[node name="Spacer" type="Control" parent="VBoxContainer/Body/StoreButtonPadding"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.33
+mouse_filter = 2
+
+[node name="StoreTimeButton" type="Button" parent="VBoxContainer/Body/StoreButtonPadding"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.33
+text = "STORE TIME"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/Body/StoreButtonPadding"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.33
+mouse_filter = 2
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.75
+mouse_filter = 2
 
 [connection signal="pressed" from="VBoxContainer/TopBar/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/Body/StoreButtonPadding/StoreTimeButton" to="." method="_on_store_time_button_pressed"]

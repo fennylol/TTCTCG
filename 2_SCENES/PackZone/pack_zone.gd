@@ -3,37 +3,120 @@ class_name PackZoneNode
 
 @onready var UI: PackUINode = $PackUI
 
+signal starting
 signal finished
 signal pack_pull_results(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card])
 
-var MainCamera: Camera3D
-
 const STARTING_PACK_HEIGHT: float = 5.0
+# =============== #
+# signal emission #
+# =============== #
+func _start() -> void:
+	COLLECTION._update_pack_timers()
+	starting.emit()
+	UI._update_timer_charge_count()
+	UI.set_visible(false)
 # ================ #
 # signal reception #
 # ================ #
-func _on_visibility_changed()     -> void: UI.set_visible(visible)
-func _on_ui_back_button_pressed() -> void: finished.emit()
-func _on_ui_expansion_selected(ExpansionID: DATA.ExpansionIDs) -> void:
-	UI.set_visible(false)
-	MainCamera.set_current(false)
+func _on_visibility_changed()      -> void: UI.set_visible(visible)
+func _on_ui_back_button_pressed()  -> void: finished.emit()
+func _on_ui_store_button_pressed() -> void: 
+	if COLLECTION.next_pack_timestamp < Time.get_unix_time_from_system():
+		COLLECTION._recieve_timer_charges(12)
+		COLLECTION._update_pack_timers()
+		UI._update_timer_charge_count()
+	else:
+		var time_str: String = Time.get_time_string_from_unix_time(int(COLLECTION.next_pack_timestamp-Time.get_unix_time_from_system()))
+		LOGGER.log_msg("please wait " + time_str, LOGGER.Flags.TOAST)
+
+
+func _on_ui_expansion_selected(ExpansionID: DATA.ExpansionIDs, SinglePack: bool) -> void:
+	if SinglePack:
+		if COLLECTION.next_pack_timestamp < Time.get_unix_time_from_system(): 
+			pull_single_pack(ExpansionID)
+		else:
+			var time_diff: float = COLLECTION.next_pack_timestamp - Time.get_unix_time_from_system()
+			var needed_charges: int = ceil(time_diff/COLLECTION.TIMER_CHARGE_VALUE)
+			
+			if needed_charges < COLLECTION.timer_charges:
+				var popup = PopUpConfirm.new("spend " + str(needed_charges) + " timer charges to refill pack bar?\n" + "you currently own " + str(COLLECTION.timer_charges))
+				popup.confirm.connect(func():
+					COLLECTION._spend_timer_charges(needed_charges)
+					pull_single_pack(ExpansionID)
+				)
+				LOGGER.post_msg_board_node(popup)
+				await popup.tree_exiting
+			else:
+				var msg: String = str(needed_charges) + " timer charges are needed to refill pack bar.\n" + "you currently own " + str(COLLECTION.timer_charges)
+				LOGGER.post_msg_board_message(msg, 5)
+
+	else:
+		var PACK_IN_LARGE_PULL: int   = 10
+		var time_diff         : float = max(max(COLLECTION.next_pack_timestamp+COLLECTION.NEXT_PACK_UNIX_TIME_OFFSET,COLLECTION.next_pack_timestamp)-Time.get_unix_time_from_system(), 0)
+		var price_in_seconds  : float = (COLLECTION.NEXT_PACK_UNIX_TIME_OFFSET * (PACK_IN_LARGE_PULL-2)) + time_diff
+		var needed_charges    : int   = ceil(price_in_seconds/COLLECTION.TIMER_CHARGE_VALUE)
+		
+		if needed_charges < COLLECTION.timer_charges:
+			var popup = PopUpConfirm.new("spend " + str(needed_charges) + " timer charges to refill pack bar?\n" + "you currently own " + str(COLLECTION.timer_charges))
+			popup.confirm.connect(func():
+				COLLECTION._spend_timer_charges(needed_charges)
+				pull_booster_box(ExpansionID)
+			)
+			LOGGER.post_msg_board_node(popup)
+			await popup.tree_exiting
+		else:
+			var msg: String = str(needed_charges) + " timer charges are needed to refill pack bar.\n" + "you currently own " + str(COLLECTION.timer_charges)
+			LOGGER.post_msg_board_message(msg, 5)
+
+func pull_single_pack(ExpansionID: DATA.ExpansionIDs) -> void:
+	_start()
 	
-	var pull: Dictionary = determine_pack_pull(ExpansionID)
-	var pack_rarity: DATA.Rarities = pull["RARITY"]
-	var pack_content: Array[Card] = pull["CONTENT"] 
+	var pull        : Dictionary    = determine_pack_pull(ExpansionID)
+	var pack_rarity : DATA.Rarities = pull["RARITY"]
+	var pack_content: Array[Card]   = pull["CONTENT"] 
 	
-	LOGGER.log_msg("pack_zone.gd: generated a " + DATA.Rarities.find_key(pack_rarity) + " pack from " + DATA.ExpansionIDs.find_key(ExpansionID))
+	LOGGER.log_msg("pack_zone.gd - pull_single_pack(): generated a " + DATA.Rarities.find_key(pack_rarity) + " pack from " + DATA.ExpansionIDs.find_key(ExpansionID))
 	pack_pull_results.emit(ExpansionID, pack_content)
 	
 	var pack: Pack = Pack.new(pack_rarity, pack_content)
 	pack.set_name(DATA.Rarities.find_key(pack_rarity).to_lower()+"_pack_"+str(int(RNG.random_value()*1000)))
-	add_child(pack)
 	pack.finished.connect(finished.emit)
+	add_child(pack)
+
+
+func pull_booster_box(ExpansionID: DATA.ExpansionIDs):
+	var packs  : Array[Pack] = []
+	var results: Array[Card] = []
+	var counts : Array[int]  = [0,0,0]
+	
+	while counts[DATA.ContentTypes.CRITTER]    < 5 and \
+		  counts[DATA.ContentTypes.CONSUMABLE] < 5 and \
+		  counts[DATA.ContentTypes.WEAPON]     < 5:
+		var pull        : Dictionary    = determine_pack_pull(ExpansionID)
+		var pack_rarity : DATA.Rarities = pull["RARITY"]
+		var pack_content: Array[Card]   = pull["CONTENT"] 
+		
+		for i in range(pack_content.size()): if not i%2: counts[pack_content[i].Type]+=1
+		
+		results.append_array(pack_content)
+		LOGGER.log_msg("pack_zone.gd - pull_booster_box(): generated a " + DATA.Rarities.find_key(pack_rarity) + " pack from " + DATA.ExpansionIDs.find_key(ExpansionID))
+		
+		var pack: Pack = Pack.new(pack_rarity, pack_content)
+		pack.set_name(DATA.Rarities.find_key(pack_rarity).to_lower()+"_pack_"+str(int(RNG.random_value()*1000)))
+		packs.append(pack)
+	
+	pack_pull_results.emit(ExpansionID, results)
+	while packs.size():
+		var pack: Pack = packs.pop_front()
+		add_child(pack)
+		if not packs.size(): pack.finished.connect(finished.emit)
+		else: await pack.finished
+
 # ================ #
 # internal utility #
 # ================ #
-func enter_pack_zone(camera: Camera3D) -> void: 
-	MainCamera = camera
+func enter_pack_zone() -> void: UI._update_timer_charge_count()
 func determine_pack_pull(ExpansionID : DATA.ExpansionIDs) -> Dictionary:
 	var pack_rarity     : DATA.Rarities        = determine_pack_rarity(ExpansionID)
 	var content_rarities: Array[DATA.Rarities] = determine_pack_content_rarities(ExpansionID, pack_rarity)

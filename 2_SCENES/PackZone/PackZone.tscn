@@ -7,7 +7,9 @@
 script = ExtResource("1_2y5ru")
 
 [node name="PackUI" parent="." instance=ExtResource("2_68amo")]
+visible = false
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="back_button_pressed" from="PackUI" to="." method="_on_ui_back_button_pressed"]
 [connection signal="expansion_selected" from="PackUI" to="." method="_on_ui_expansion_selected"]
+[connection signal="store_button_pressed" from="PackUI" to="." method="_on_ui_store_button_pressed"]

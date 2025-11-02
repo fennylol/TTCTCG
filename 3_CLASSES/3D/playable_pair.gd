@@ -156,7 +156,9 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	
 	var mat: StandardMaterial3D = DATA.create_paired_rarity_material(Rarity, PairedRarity) 
 	set_surface_override_material(0, mat)
-
+# ================ #
+# internal utility #
+# ================ #
 func _notification(what: int) -> void: 
 	if what == NOTIFICATION_PREDELETE:
 		PairedSprite.queue_free()

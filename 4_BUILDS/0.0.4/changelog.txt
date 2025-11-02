@@ -2,9 +2,11 @@
 
 ADDED
 - Card title, stats, and descriptions! Whoa... maybe that will be useful somewhere?
+- Timer charges! Extract them to buy a booster box!
+- Speaking of which! Booster boxes! Open packs until you can make a deck with them!
 
 REMOVED
 -
 
 CHANGED
-- 
+- GREATLY improved pack open screen and pack timer.

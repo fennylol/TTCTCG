@@ -3,8 +3,10 @@ class_name Card
 
 signal AnimationComplete(anim_name: String)
 
-const CARD_WIDTH : float = 2.5
-const CARD_HEIGHT: float = 3
+const CARD_WIDTH    : float = 2.5
+const CARD_HEIGHT   : float = 3
+const NORMAL_SPEED  : float = 1.0
+const SKIPPING_SPEED: float = 3.0
 
 var ExpansionID : DATA.ExpansionIDs
 var Rarity      : DATA.Rarities
@@ -19,7 +21,8 @@ var Sprite    : Sprite3D
 
 enum DictFields {EXPANSIONID, RARITY, TYPE, CONTENTINDEX}
 
-
+func set_anim_speed(speed: float) -> void: Animations.speed_scale = speed
+func get_anim_speed() -> float: return Animations.speed_scale
 # ====================== #
 # creation & destruction #
 # ====================== #
@@ -135,6 +138,9 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	var mat: StandardMaterial3D = DATA.create_rarity_material(Rarity)
 	set_surface_override_material(0, mat)
 
+# ================ #
+# internal utility #
+# ================ #
 func _disable():
 	var img = Img.get_image()
 	var width = img.get_width()

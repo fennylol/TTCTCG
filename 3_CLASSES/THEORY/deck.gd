@@ -41,7 +41,20 @@ static func dict_is_deck(Dict: Dictionary, LogResult: bool = false) -> bool:
 	if not Dict.keys().has(DictFields.WILDCARDS): 
 		if LogResult: LOGGER.log_msg("deck.gd - dict_is_deck(): Dict is not a deck, no WILDCARDS",   LOGGER.Flags.WARN)
 		return false
+	if LogResult: LOGGER.log_msg("deck.gd - dict_is_deck(): Dict is deck.",    LOGGER.Flags.MSG)
 	return true
+static func dict_is_playable(Dict: Dictionary, LogResult: bool = false) -> bool:
+	if dict_is_deck(Dict, LogResult):
+		var deck = restore_from_dict(Dict)
+		if  deck.Critters.size() == 5 and deck.Consumables.size() == 5 and deck.Weapons.size() == 5:
+			if LogResult: LOGGER.log_msg("deck.gd - dict_is_playable(): Dict is playable.",    LOGGER.Flags.MSG)
+			return true
+		else: 
+			if LogResult: LOGGER.log_msg("deck.gd - dict_is_playable(): Dict is not playable, not full.",    LOGGER.Flags.WARN)
+			return false
+	else:
+		return false
+	
 
 func add_to_deck(pair: Dictionary):
 	assert(PlayablePair.dict_is_playable_pair(pair, true), "deck.gd - add_to_deck(): Dict is not a PlayablePair")

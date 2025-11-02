@@ -5,8 +5,15 @@ signal finished
 
 @onready var UI: GameUINode = $GameUI
 
-func enter_game_zone(decks: Dictionary) -> void: UI._passthrough_to_deckdisplay_show_decks(decks)
-func _on_visibility_changed()           -> void: UI.set_visible(visible)
+func enter_game_zone()        -> void: 
+	var decks: Dictionary = {}
+	for deck_dict in COLLECTION.decks:
+		if Deck.dict_is_playable(deck_dict):
+			decks[deck_dict["NAME"]]=deck_dict
+	UI._passthrough_to_deckdisplay_show_decks(decks)
+	
+	
+func _on_visibility_changed() -> void: UI.set_visible(visible)
 
 # ================ #
 # signal reception #

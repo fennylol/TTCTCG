@@ -1,0 +1,52 @@
+[gd_scene load_steps=3 format=3 uid="uid://cido7wg8rtofs"]
+
+[ext_resource type="Texture2D" uid="uid://cjabjcj72u3yy" path="res://2_SCENES/MainZone/UI_textures/large/empty.png" id="1_11q6b"]
+[ext_resource type="Script" uid="uid://clqhgi5usykkd" path="res://2_SCENES/MainZone/pack_timer.gd" id="1_y4hpn"]
+
+[node name="PackTimer" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_y4hpn")
+
+[node name="Spacer" type="Control" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.75
+
+[node name="PackTimerBarARContainer" type="AspectRatioContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+ratio = 0.25
+stretch_mode = 1
+
+[node name="PackTimerBar" type="TextureProgressBar" parent="PackTimerBarARContainer"]
+layout_mode = 2
+step = 0.001
+value = 10.0
+texture_under = ExtResource("1_11q6b")
+
+[node name="TimerLabel" type="Label" parent="PackTimerBarARContainer/PackTimerBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+mouse_filter = 2
+
+[node name="Spacer3" type="Control" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 8.0
+mouse_filter = 2

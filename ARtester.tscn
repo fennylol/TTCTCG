@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cd7hjag6nfdpp"]
 
-[ext_resource type="PackedScene" uid="uid://280odfhvfqk8" path="res://2_SCENES/CollectionZone/CollectionUI.tscn" id="1_guyeb"]
-[ext_resource type="PackedScene" uid="uid://dgfk33enfx6j0" path="res://dbug.tscn" id="2_gffto"]
+[ext_resource type="PackedScene" uid="uid://bqvwyy5rimbt2" path="res://2_SCENES/MainZone/MainUI.tscn" id="2_2efw3"]
+[ext_resource type="PackedScene" uid="uid://cido7wg8rtofs" path="res://2_SCENES/MainZone/PackTimer.tscn" id="3_mpr82"]
 
 [node name="ARtester" type="AspectRatioContainer"]
 custom_minimum_size = Vector2(1080, 2400)
@@ -13,9 +13,9 @@ grow_horizontal = 2
 grow_vertical = 2
 ratio = 0.4286
 
-[node name="CollectionUI" parent="." instance=ExtResource("1_guyeb")]
-visible = false
+[node name="MainUI" parent="." instance=ExtResource("2_2efw3")]
 layout_mode = 2
+script = null
 
-[node name="CollectionUI2" parent="." instance=ExtResource("2_gffto")]
+[node name="PackTimer" parent="." instance=ExtResource("3_mpr82")]
 layout_mode = 2
