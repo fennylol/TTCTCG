@@ -7,8 +7,8 @@
 [node name="CollectionZone" type="Node3D"]
 script = ExtResource("1_vdifo")
 
-[node name="DisplayCase" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 7.5)
+[node name="DisplayZone" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.75, 10)
 
 [node name="CollectionUI" parent="." instance=ExtResource("2_vdifo")]
 visible = false

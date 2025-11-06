@@ -69,7 +69,7 @@ static func dicts_are_eq(D1 : Dictionary, D2: Dictionary) -> bool:
 		D1[DictFields.CONTENTINDEX] == D2[DictFields.CONTENTINDEX]: return true
 	else: return false
 
-
+#func _exit_tree() -> void:
 func _notification(what: int) -> void: 
 	if what == NOTIFICATION_PREDELETE:
 		Animations.queue_free()
@@ -142,19 +142,25 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 # internal utility #
 # ================ #
 func _disable():
-	var img = Img.get_image()
-	var width = img.get_width()
-	var height = img.get_height()
-	var bw_img = Image.create(width, height, false, Image.FORMAT_RGBA8)
+	#var img = Img.get_image()
+	#var width = img.get_width()
+	#var height = img.get_height()
+	#var bw_img = Image.create(width, height, false, Image.FORMAT_RGBA8)
+	#
+	#for y in range(height):
+		#for x in range(width):
+			#var color = img.get_pixel(x, y)
+			#var luminance = (color.r * 0.2126 + color.g * 0.7152 + color.b * 0.0722)
+			#var bw_color = Color(luminance, luminance, luminance, color.a)
+			#bw_img.set_pixel(x, y, bw_color)
 	
-	for y in range(height):
-		for x in range(width):
-			var color = img.get_pixel(x, y)
-			var luminance = (color.r * 0.2126 + color.g * 0.7152 + color.b * 0.0722)
-			var bw_color = Color(luminance, luminance, luminance, color.a)
-			bw_img.set_pixel(x, y, bw_color)
+	#Sprite.set_texture(ImageTexture.create_from_image(bw_img))
+	#img.set_data(img.get_width(), img.get_height(), img.has_mipmaps(), Image.Format.FORMAT_R8, img.get_data())
 	
-	Sprite.set_texture(ImageTexture.create_from_image(bw_img))
+	var img = Sprite.texture.get_image()
+	img.convert(Image.Format.FORMAT_L8)
+	Sprite.set_texture(ImageTexture.create_from_image(img))
+	
 	@warning_ignore("int_as_enum_without_match")
 	var mat: StandardMaterial3D = DATA.create_rarity_material(6 as DATA.Rarities)
 	set_surface_override_material(0, mat)

@@ -33,7 +33,7 @@ window/handheld/orientation=5
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/GodotGetImage/plugin.cfg", "res://addons/ToastPlugin/plugin.cfg")
+enabled=PackedStringArray()
 
 [importer_defaults]
 

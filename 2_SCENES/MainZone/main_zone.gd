@@ -8,18 +8,23 @@ extends Node3D
 @onready var CollectionZone: CollectionZoneNode = $ZoneZone/CollectionZone
 enum Elements {MAINMENU, PACKZONE_PICKING, PACKZONE_PULLING, COLLECTIONZONE, GAMEZONE}
 
-func _enter_tree() -> void:
-	pass
-
 func _ready() -> void:
 	get_tree().root.ready.connect(func(): get_tree().root.move_child(self, 0))
 	get_tree().set_quit_on_go_back(false)
 	get_tree().set_auto_accept_quit(false)
+	
 	set_visible_element(Elements.MAINMENU)
+	#DATA.DEBUG_print_expansion_EVs(DATA.ExpansionIDs.INCHEFTION)
+	#PackZone.DEBUG_roll_pack_odds(DATA.ExpansionIDs.INCHEFTION)
+	#PackZone.DEBUG_roll_booster_box_odds(DATA.ExpansionIDs.INCHEFTION)
+	
 	#DATA.DEBUG_print_expansion_EVs(DATA.ExpansionIDs.TEST_SET)
 	#PackZone.DEBUG_roll_pack_odds(DATA.ExpansionIDs.TEST_SET)
+	#PackZone.DEBUG_roll_booster_box_odds(DATA.ExpansionIDs.TEST_SET)
+	
 	#DATA.DEBUG_print_expansion_EVs(DATA.ExpansionIDs.OTHER_SET)
 	#PackZone.DEBUG_roll_pack_odds(DATA.ExpansionIDs.OTHER_SET)
+	#PackZone.DEBUG_roll_booster_box_odds(DATA.ExpansionIDs.OTHER_SET)
 # ========= #
 # pack zone #
 # ========= #
@@ -71,8 +76,11 @@ func get_visible_element() -> Elements:
 
 func _notification(what: int) -> void: 
 	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
-			if MainMenu.visible:
-				LOGGER.log_msg("main_zone.gd: Recieved top level back button request.")
+			if LOGGER.MessageBoard.get_child_count() > 0:
+				var child = LOGGER.MessageBoard.get_child(0)
+				child.queue_free()
+			elif MainMenu.visible:
+				LOGGER.log_msg("main_zone.gd - notification_wm_go_back_request(): Recieved top level back button request.")
 				#get_tree().quit()
 			elif PackZone.visible:
 				PackZone.finished.emit()
@@ -82,5 +90,5 @@ func _notification(what: int) -> void:
 				GameZone.finished.emit()
 		
 	elif what == NOTIFICATION_WM_CLOSE_REQUEST:
-		LOGGER.log_msg("main_zone.gd: Quitting normally.")
+		LOGGER.log_msg("main_zone.gd - notification_wm_close_request(): Quitting normally.")
 		get_tree().quit()

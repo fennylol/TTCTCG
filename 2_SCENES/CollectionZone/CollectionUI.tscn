@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://280odfhvfqk8"]
+[gd_scene load_steps=10 format=3 uid="uid://280odfhvfqk8"]
 
 [ext_resource type="Script" uid="uid://bfjyge4onolfe" path="res://2_SCENES/CollectionZone/collection_ui.gd" id="1_dceaw"]
 [ext_resource type="Texture2D" uid="uid://c412f3mqr2lsf" path="res://1_ASSETS/UI/DEBUG_button_pressed.png" id="2_dceaw"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://c07uprgyv6ps3" path="res://3_CLASSES/UI/deck_display.gd" id="4_16lt4"]
 [ext_resource type="Theme" uid="uid://bqjv56c2yp8w1" path="res://1_ASSETS/UI/GeneralUITheme.tres" id="4_hjcf2"]
 [ext_resource type="StyleBox" uid="uid://cxyb4vqr6sd8c" path="res://1_ASSETS/UI/Overrides/CollectionUI/BodyPanelContainerOverride.tres" id="5_3qy1s"]
+[ext_resource type="Texture2D" uid="uid://cq53rklfx2fye" path="res://1_ASSETS/cards/art/icon/damage_icon.png" id="6_e0aag"]
+[ext_resource type="Texture2D" uid="uid://biie382wg1yrj" path="res://1_ASSETS/cards/art/icon/health_icon.png" id="7_rogxw"]
 
 [node name="CollectionUI" type="Control"]
 layout_mode = 3
@@ -100,10 +102,12 @@ text = "Show Side
 "
 flat = false
 item_count = 2
-popup/item_0/text = "Attack"
+popup/item_0/text = "Takers"
+popup/item_0/icon = ExtResource("6_e0aag")
 popup/item_0/checked = true
 popup/item_0/id = 0
-popup/item_1/text = "Defense"
+popup/item_1/text = "Bakers"
+popup/item_1/icon = ExtResource("7_rogxw")
 popup/item_1/id = 1
 
 [node name="SortOrderMenu" type="MenuButton" parent="VBoxContainer/TopBar/TopBarPadding"]

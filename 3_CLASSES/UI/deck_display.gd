@@ -142,7 +142,7 @@ func handle_save_deck() -> void:
 func stitch_textures_vertical(top_texture: Texture2D, bottom_texture: Texture2D) -> ImageTexture:
 	var top_image = top_texture.get_image()
 	var bottom_image = bottom_texture.get_image()
-	assert(top_image.get_format() == bottom_image.get_format())
+	assert(top_image.get_format() == bottom_image.get_format(), "formats dont match.\ntop format: " + str(top_image.get_format()) + "\ntbottom format: " + str(bottom_image.get_format()))
 	
 	var top_size = top_image.get_size()
 	var bottom_size = bottom_image.get_size()

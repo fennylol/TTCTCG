@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://dcef8fnkuexo1"]
+[gd_scene load_steps=5 format=3 uid="uid://dcef8fnkuexo1"]
 
 [ext_resource type="Theme" uid="uid://bqjv56c2yp8w1" path="res://1_ASSETS/UI/GeneralUITheme.tres" id="1_d0h67"]
 [ext_resource type="Script" uid="uid://bi1kp48j3vxuk" path="res://2_SCENES/PackZone/pack_ui.gd" id="2_oiq6j"]
+[ext_resource type="LabelSettings" uid="uid://b18qlba0natd8" path="res://1_ASSETS/UI/PopupLabelSettings.tres" id="3_fyadc"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_oiq6j"]
 font_size = 32
@@ -54,14 +55,13 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 0.5
 mouse_filter = 2
 
-[node name="TimerChargeLabel" type="Label" parent="VBoxContainer/TopBar"]
+[node name="OddsButton" type="Button" parent="VBoxContainer/TopBar"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 1
-size_flags_stretch_ratio = 0.4
-text = "20 Charges"
-horizontal_alignment = 1
-vertical_alignment = 1
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.2
+text = "See Expansion 
+Odds"
 
 [node name="Spacer3" type="Control" parent="VBoxContainer/TopBar"]
 layout_mode = 2
@@ -157,20 +157,30 @@ mouse_filter = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.33
+size_flags_stretch_ratio = 0.1
 mouse_filter = 2
 
 [node name="StoreTimeButton" type="Button" parent="VBoxContainer/Body/StoreButtonPadding"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.33
+size_flags_stretch_ratio = 0.5
 text = "STORE TIME"
+
+[node name="TimerChargeLabel" type="Label" parent="VBoxContainer/Body/StoreButtonPadding"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+size_flags_stretch_ratio = 0.3
+text = "0 Timer Charges"
+label_settings = ExtResource("3_fyadc")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Spacer2" type="Control" parent="VBoxContainer/Body/StoreButtonPadding"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.33
+size_flags_stretch_ratio = 0.1
 mouse_filter = 2
 
 [node name="Spacer2" type="Control" parent="VBoxContainer/Body"]
@@ -181,4 +191,5 @@ size_flags_stretch_ratio = 0.75
 mouse_filter = 2
 
 [connection signal="pressed" from="VBoxContainer/TopBar/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/TopBar/OddsButton" to="." method="_on_odds_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/Body/StoreButtonPadding/StoreTimeButton" to="." method="_on_store_time_button_pressed"]

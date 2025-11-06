@@ -15,7 +15,6 @@ script = ExtResource("1_y4hpn")
 [node name="Spacer" type="Control" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.75
 
 [node name="PackTimerBarARContainer" type="AspectRatioContainer" parent="."]
 layout_mode = 2
@@ -48,5 +47,5 @@ mouse_filter = 2
 [node name="Spacer3" type="Control" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 8.0
+size_flags_stretch_ratio = 7.75
 mouse_filter = 2

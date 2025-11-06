@@ -24,7 +24,7 @@ grow_vertical = 2
 [node name="Spacer" type="Control" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 2.0
+size_flags_stretch_ratio = 2.25
 
 [node name="PackButtonContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -108,7 +108,7 @@ size_flags_stretch_ratio = 0.25
 [node name="Spacer4" type="Control" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.5
+size_flags_stretch_ratio = 0.25
 
 [connection signal="pressed" from="VBoxContainer/PackButtonContainer/PackZoneButton" to="." method="_on_pack_zone_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/CollectionButtonContainer/CollectionZoneButton" to="." method="_on_collection_zone_button_pressed"]

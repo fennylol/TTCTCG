@@ -83,35 +83,35 @@ func _delete_deck(DeckName: String) -> void:
 func _recieve_cards(ExpansionID : DATA.ExpansionIDs, CardList : Array[Card]) -> void:
 	var EID = DATA.ExpansionIDs.find_key(ExpansionID)
 	var expansion_dict: Dictionary = collection.get_or_add(EID, empty_expansion_dict.duplicate(true))
-	var atk_dict: Dictionary = expansion_dict[DATA.ContentSides.find_key(DATA.ContentSides.ATK)]
-	var def_dict: Dictionary = expansion_dict[DATA.ContentSides.find_key(DATA.ContentSides.DEF)]
+	var taker_dict: Dictionary = expansion_dict[DATA.ContentSides.find_key(DATA.ContentSides.TAKER)]
+	var baker_dict: Dictionary = expansion_dict[DATA.ContentSides.find_key(DATA.ContentSides.BAKER)]
 	
-	var atk_cards: Array[Card]
-	var def_cards: Array[Card]
+	var taker_cards: Array[Card]
+	var baker_cards: Array[Card]
 	for i in range(CardList.size()):
-		if i%2: def_cards.append(CardList[i])
-		else: atk_cards.append(CardList[i])
+		if i%2: baker_cards.append(CardList[i])
+		else: taker_cards.append(CardList[i])
 	
 	var rarity_dict: Dictionary = {}
 	for rarity in DATA.Rarities:
 		rarity_dict[rarity] = {}
 	
-	for i in range(atk_cards.size()):
-		var atk_card: Card = atk_cards[i]
-		var atk_card_rarity: DATA.Rarities = atk_card.Rarity
-		var atk_card_type: DATA.ContentTypes = atk_card.Type
+	for i in range(taker_cards.size()):
+		var taker_card: Card = taker_cards[i]
+		var taker_card_rarity: DATA.Rarities = taker_card.Rarity
+		var taker_card_type: DATA.ContentTypes = taker_card.Type
 		
-		var def_card: Card = def_cards[i]
-		var def_card_rarity: DATA.Rarities = def_card.Rarity
-		var def_card_type: DATA.ContentTypes = def_card.Type
+		var baker_card: Card = baker_cards[i]
+		var baker_card_rarity: DATA.Rarities = baker_card.Rarity
+		var baker_card_type: DATA.ContentTypes = baker_card.Type
 		
-		var atk_rarity_type_dict: Dictionary = atk_dict[DATA.Rarities.find_key(atk_card_rarity)][DATA.ContentTypes.find_key(atk_card_type)]
-		var atk_card_dict: Dictionary = atk_rarity_type_dict.get_or_add(atk_card.ContentIndex, rarity_dict.duplicate(true))[DATA.Rarities.find_key(def_card_rarity)]
-		atk_card_dict.set(def_card.ContentIndex, atk_card_dict.get_or_add(def_card.ContentIndex, 0)+1)
+		var taker_rarity_type_dict: Dictionary = taker_dict[DATA.Rarities.find_key(taker_card_rarity)][DATA.ContentTypes.find_key(taker_card_type)]
+		var taker_card_dict: Dictionary = taker_rarity_type_dict.get_or_add(taker_card.ContentIndex, rarity_dict.duplicate(true))[DATA.Rarities.find_key(baker_card_rarity)]
+		taker_card_dict.set(baker_card.ContentIndex, taker_card_dict.get_or_add(baker_card.ContentIndex, 0)+1)
 		
-		var def_rarity_type_dict: Dictionary = def_dict[DATA.Rarities.find_key(def_card_rarity)][DATA.ContentTypes.find_key(def_card_type)]
-		var def_card_dict: Dictionary = def_rarity_type_dict.get_or_add(def_card.ContentIndex, rarity_dict.duplicate(true))[DATA.Rarities.find_key(atk_card_rarity)]
-		def_card_dict.set(atk_card.ContentIndex, def_card_dict.get_or_add(atk_card.ContentIndex, 0)+1)
+		var baker_rarity_type_dict: Dictionary = baker_dict[DATA.Rarities.find_key(baker_card_rarity)][DATA.ContentTypes.find_key(baker_card_type)]
+		var baker_card_dict: Dictionary = baker_rarity_type_dict.get_or_add(baker_card.ContentIndex, rarity_dict.duplicate(true))[DATA.Rarities.find_key(taker_card_rarity)]
+		baker_card_dict.set(taker_card.ContentIndex, baker_card_dict.get_or_add(taker_card.ContentIndex, 0)+1)
 	
 	_save()
 #endregion

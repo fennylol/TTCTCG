@@ -7,7 +7,6 @@ var STDOUT_LOGGING_ENABLED : bool = true
 var TOAST_LOGGING_ENABLED  : bool = true
 
 var MessageBoard: CenterContainer
-var Messages: Array = []
 
 enum Flags {MSG, MSG_FILE, MSG_STDOUT, WARN, WARN_FILE, WARN_STDOUT, ERR, ERR_FILE, ERR_STDOUT, TOAST}
 
@@ -24,6 +23,8 @@ func _ready() -> void:
 	MessageBoard.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	MessageBoard.set_mouse_filter(Control.MOUSE_FILTER_IGNORE)
 	add_child(MessageBoard)
+	
+func _enact_censorship() -> void: if MessageBoard.get_child_count() > 0: MessageBoard.get_child(0).queue_free()
 
 func post_msg_board_message(msg: String, length: float= -1) -> void: 
 	while MessageBoard.get_child_count() > 0:

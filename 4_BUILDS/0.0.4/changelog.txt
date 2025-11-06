@@ -4,9 +4,13 @@ ADDED
 - Card title, stats, and descriptions! Whoa... maybe that will be useful somewhere?
 - Timer charges! Extract them to buy a booster box!
 - Speaking of which! Booster boxes! Open packs until you can make a deck with them!
+- look at your cards closely! spin em around!
+- A page where you can review the pull stats of each pack! (you're never getting that true holy moly...)
 
 REMOVED
 -
 
 CHANGED
 - GREATLY improved pack open screen and pack timer.
+- Packs now will not ensure cards are not paired with themselves.
+- changing between collection contexts should no longer reset you to the top of your collection no more!

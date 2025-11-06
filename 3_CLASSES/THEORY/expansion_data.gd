@@ -17,7 +17,7 @@ enum WeaponDescriptionFields     {FLAVOR, RANGE, DAMAGE, AMMO, ACCURACY, FIRERAT
 enum Targets                     {ENEMY, ALLY, TERRAIN}
 ## the types of content. 
 enum ContentTypes                {CRITTER, CONSUMABLE, WEAPON}
-enum ContentSides                {ATK, DEF}
+enum ContentSides                {TAKER, BAKER}
 
 
 #ExpansionIDs.TEST_SET : {
@@ -38,12 +38,12 @@ const ExpansionData: Dictionary = {
 	ExpansionIDs.INCHEFTION : {
 		ExpansionDataFields.PACK_RARITY_ODDS : [0.564, 0.248, 0.109, 0.048, 0.021, 0.010], # exponential, B=0.44
 		ExpansionDataFields.CONTENT_RARITY_ODDS : [
-			[0.389, 0.278, 0.179, 0.100, 0.044, 0.010], # beta, A=1.05, S=2
-			[0.275, 0.277, 0.220, 0.142, 0.069, 0.017], # beta, A=1.55, S=2
-			[0.180, 0.257, 0.249, 0.186, 0.101, 0.027], # beta, A=2.05, S=2
-			[0.110, 0.221, 0.263, 0.227, 0.138, 0.041], # beta, A=2.55, S=2
-			[0.063, 0.180, 0.261, 0.261, 0.177, 0.058], # beta, A=3.05, S=2
-			[0.035, 0.139, 0.247, 0.285, 0.216, 0.078]  # beta, A=3.55, S=2
+			[0.357, 0.341, 0.202, 0.080, 0.018, 0.002], # beta, A=2.05, S=4.25
+			[0.287, 0.344, 0.235, 0.105, 0.026, 0.003], # beta, A=2.35, S=4.15
+			[0.224, 0.336, 0.266, 0.133, 0.037, 0.004], # beta, A=2.65, S=4.05
+			[0.170, 0.319, 0.291, 0.164, 0.051, 0.005], # beta, A=2.95, S=3.95
+			[0.125, 0.294, 0.310, 0.196, 0.068, 0.007], # beta, A=3.25, S=3.85
+			[0.090, 0.264, 0.321, 0.227, 0.088, 0.010]  # beta, A=3.55, S=3.75
 		],
 		ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
 	},
@@ -86,7 +86,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER : [
 				{
 					ExpansionContentFields.NAME  : "Bort", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/0_Common/bort_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/0_Common/bort_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Bort",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -99,7 +99,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME  : "Droopler", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/0_Common/drooper_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/0_Common/drooper_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Droopler",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -112,7 +112,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME  : "Geppa", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/0_Common/geppa_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/0_Common/geppa_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Geppa",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -125,7 +125,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME  : "Glormpus The Great Frog", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/0_Common/glormpus_the_great_frog_HD.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/0_Common/glormpus_the_great_frog_HD.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "This big hungry frog wants his cake so FUCKING bad. He'll take a beating just to get some. (And he can fit a TON of cake in that big, fat, belly of his.)",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -138,7 +138,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME  : "Smudge", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/0_Common/smudge_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/0_Common/smudge_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Smudge",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -151,7 +151,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME  : "Snooflemander", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/0_Common/snooflemander_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/0_Common/snooflemander_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Snooflemander",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -164,7 +164,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME  : "Tamray", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/0_Common/tamray_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/0_Common/tamray_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Tamray",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -179,7 +179,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named oops",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -192,7 +192,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named oops",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -209,7 +209,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER    : [
 				{
 					ExpansionContentFields.NAME : "Gepper", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/gepper_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/gepper_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Gepper",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -222,7 +222,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Gubbi", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/gubbi_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/gubbi_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Gubbi",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -235,7 +235,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Horrorse", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/horrorse_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/horrorse_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Horrorse",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -248,7 +248,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Jooble", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/jooble_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/jooble_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Jooble",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -261,7 +261,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Meeber", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/meeber_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/meeber_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Meeber",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -274,7 +274,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Slorbor", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/slorbor_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/slorbor_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Slorbor",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -287,7 +287,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Weird Fish", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/weird_fish_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/weird_fish_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Weird",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -302,9 +302,20 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named oops",
+						ConsumableDescriptionFields.RANGE  : 100,
+						ConsumableDescriptionFields.DAMAGE : 100,
+						ConsumableDescriptionFields.AOE    : 1,
+						ConsumableDescriptionFields.TARGET : Targets.ENEMY
+					}
+				},
+				{
+					ExpansionContentFields.NAME : "oops2", 
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+					ExpansionContentFields.STATS : {
+						ConsumableDescriptionFields.FLAVOR : "a consumable named oops2",
 						ConsumableDescriptionFields.RANGE  : 100,
 						ConsumableDescriptionFields.DAMAGE : 100,
 						ConsumableDescriptionFields.AOE    : 1,
@@ -315,9 +326,22 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON     : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named oops",
+						WeaponDescriptionFields.RANGE    : 100,
+						WeaponDescriptionFields.DAMAGE   : 100,
+						WeaponDescriptionFields.AMMO     : 10,
+						WeaponDescriptionFields.ACCURACY : 100,
+						WeaponDescriptionFields.FIRERATE : 100,
+						WeaponDescriptionFields.TARGET   : Targets.ENEMY
+					}
+				},
+				{
+					ExpansionContentFields.NAME : "oops2", 
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+					ExpansionContentFields.STATS : {
+						WeaponDescriptionFields.FLAVOR   : "a weapon named oops2",
 						WeaponDescriptionFields.RANGE    : 100,
 						WeaponDescriptionFields.DAMAGE   : 100,
 						WeaponDescriptionFields.AMMO     : 10,
@@ -332,7 +356,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER    : [
 				{
 					ExpansionContentFields.NAME : "Audisea", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/2_Rare/audisea_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/2_Rare/audisea_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Audisea",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -345,7 +369,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Cathagaire", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/2_Rare/cathagaire_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/2_Rare/cathagaire_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Cathagaire",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -358,7 +382,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Geppington", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/2_Rare/gepington_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/2_Rare/gepington_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Geppington",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -371,7 +395,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Gooberta", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/2_Rare/gooberta_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/2_Rare/gooberta_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Gooberta",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -384,7 +408,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Smearzorg", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/2_Rare/smearzorg_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/2_Rare/smearzorg_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Smearzorg",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -397,7 +421,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Zerlemoth", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/2_Rare/zerlemoth_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/2_Rare/zerlemoth_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Zerlemoth",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -410,7 +434,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Weirder Fish", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/weird_fish_sketch.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/InCHEFtion/1_Uncommon/weird_fish_sketch.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Weirder",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -425,7 +449,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named oops",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -438,7 +462,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON     : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named oops",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -455,7 +479,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER    : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named oops (epic)",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -470,7 +494,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named oops",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -483,7 +507,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON     : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named oops",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -500,7 +524,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER    : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named oops",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -515,7 +539,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named oops",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -528,7 +552,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON     : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named oops",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -545,7 +569,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER    : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named oops",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -560,7 +584,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named oops",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -573,7 +597,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON     : [
 				{
 					ExpansionContentFields.NAME : "oops", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/oops.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named oops",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -592,7 +616,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER : [
 				{
 					ExpansionContentFields.NAME : "Glormpus The Great Frog", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/TEST_SET/GlormpusTheGreatFrog.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/0_Common/TEST_SET/GlormpusTheGreatFrog.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Glormpus The Great Frog",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -605,7 +629,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Rat", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/TEST_SET/Rat.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/0_Common/TEST_SET/Rat.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Rat",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -620,7 +644,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "Regular Ol' Cigarette", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/TEST_SET/RegularCigarette.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/0_Common/TEST_SET/RegularCigarette.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named Regular Ol' Cigarette",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -633,7 +657,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON : [
 				{
 					ExpansionContentFields.NAME : "Baseball Bat", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/TEST_SET/BaseballBat.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/0_Common/TEST_SET/BaseballBat.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named Baseball Bat",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -651,7 +675,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER : [
 				{
 					ExpansionContentFields.NAME : "Greg", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/1_Uncommon/TEST_SET/Greg.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/1_Uncommon/TEST_SET/Greg.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Greg",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -666,7 +690,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "Menthol Cigarette", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/1_Uncommon/TEST_SET/MentholCigarette.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/1_Uncommon/TEST_SET/MentholCigarette.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named Menthol Cigarette",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -679,7 +703,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON : [
 				{
 					ExpansionContentFields.NAME : "Body Spray", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/1_Uncommon/TEST_SET/BodySpray.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/1_Uncommon/TEST_SET/BodySpray.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named Body Spray",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -697,7 +721,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER : [
 				{
 					ExpansionContentFields.NAME : "The Weird Fish", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/2_Rare/TEST_SET/Weird_Fish.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/2_Rare/TEST_SET/Weird_Fish.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named The Weird Fish",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -712,7 +736,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "Reliable Grenade", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/2_Rare/TEST_SET/ReliableGrenade.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/2_Rare/TEST_SET/ReliableGrenade.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named Reliable Grenade",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -725,7 +749,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON : [
 				{
 					ExpansionContentFields.NAME : "Zipper Lighter", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/2_Rare/TEST_SET/ZipperLighter.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/2_Rare/TEST_SET/ZipperLighter.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named Zipper Lighter",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -743,7 +767,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER : [
 				{
 					ExpansionContentFields.NAME : "The Weirder Fish", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/3_Epic/TEST_SET/Weirder_Fish.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/3_Epic/TEST_SET/Weirder_Fish.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named The Weirder Fish",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -758,7 +782,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "Molotov Mocktail", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/3_Epic/TEST_SET/MolotovMocktail.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/3_Epic/TEST_SET/MolotovMocktail.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named Molotov Mocktail",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -771,7 +795,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON : [
 				{
 					ExpansionContentFields.NAME : "Blood Blade", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/3_Epic/TEST_SET/BloodKnife.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/3_Epic/TEST_SET/BloodKnife.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named Blood Blade",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -789,7 +813,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER : [
 				{
 					ExpansionContentFields.NAME : "Birb", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/4_Legendary/TEST_SET/Birb.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/4_Legendary/TEST_SET/Birb.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Birb",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -804,7 +828,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "Lump of Mold", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/4_Legendary/TEST_SET/PileOfMold.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/4_Legendary/TEST_SET/PileOfMold.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named Lump of Mold",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -817,7 +841,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON : [
 				{
 					ExpansionContentFields.NAME : "Shrank Ray", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/4_Legendary/TEST_SET/ShrankRay.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/4_Legendary/TEST_SET/ShrankRay.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named Shrank Ray",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -835,7 +859,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER : [
 				{
 					ExpansionContentFields.NAME : "The Man of Mud", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/TEST_SET/The_Man_of_Mud.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/5_Holy_Moly/TEST_SET/The_Man_of_Mud.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named The Man of Mud",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -848,7 +872,7 @@ const ExpansionContent: Dictionary = {
 				},
 				{
 					ExpansionContentFields.NAME : "Snel", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/TEST_SET/Snel.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/5_Holy_Moly/TEST_SET/Snel.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named ",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -863,7 +887,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "Chicken Nugget Dipped in Mystery Sauce", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/TEST_SET/ChickenNuggetInMysterySauce.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/5_Holy_Moly/TEST_SET/ChickenNuggetInMysterySauce.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named Chicken Nugget Dipped in Mystery Sauce",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -876,7 +900,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON : [
 				{
 					ExpansionContentFields.NAME : "Stank Ray", 
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/TEST_SET/StankRay.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/5_Holy_Moly/TEST_SET/StankRay.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named Stank Ray",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -895,7 +919,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER : [
 				{
 					ExpansionContentFields.NAME : "Gumbus Dragon",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/OTHER_SET/gumbus_dragon.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/0_Common/OTHER_SET/gumbus_dragon.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Gumbus Dragon",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -910,7 +934,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "Calming Flower",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/OTHER_SET/calming_flower.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/0_Common/OTHER_SET/calming_flower.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named Calming Flower",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -923,7 +947,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON : [
 				{
 					ExpansionContentFields.NAME : "Plain Knife",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/0_Common/OTHER_SET/plain_knife.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/0_Common/OTHER_SET/plain_knife.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named Plain Knife",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -940,7 +964,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER : [
 				{
 					ExpansionContentFields.NAME : "Brootiss",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/1_Uncommon/OTHER_SET/brutiss.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/1_Uncommon/OTHER_SET/brutiss.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Brootiss",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -955,7 +979,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "Rock Candy",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/1_Uncommon/OTHER_SET/rock_candy.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/1_Uncommon/OTHER_SET/rock_candy.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named Rock Candy",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -968,7 +992,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON : [
 				{
 					ExpansionContentFields.NAME : "Reapers Scythe",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/1_Uncommon/OTHER_SET/reapers_scythe.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/1_Uncommon/OTHER_SET/reapers_scythe.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named Reapers Scythe",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -985,7 +1009,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER : [
 				{
 					ExpansionContentFields.NAME : "Stoomp",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/2_Rare/OTHER_SET/stoomp.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/2_Rare/OTHER_SET/stoomp.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Stoomp",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -1000,7 +1024,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "Pile of Inordinate Wealth",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/2_Rare/OTHER_SET/pile_of_inordinate_wealth.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/2_Rare/OTHER_SET/pile_of_inordinate_wealth.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named Pile of Inordinate Wealth",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -1013,7 +1037,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON : [
 				{
 					ExpansionContentFields.NAME : "Burning Blade",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/2_Rare/OTHER_SET/burning_blade.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/2_Rare/OTHER_SET/burning_blade.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named Burning Blade",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -1030,7 +1054,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER : [
 				{
 					ExpansionContentFields.NAME : "Fat FLjck",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/3_Epic/OTHER_SET/fat_fLjck.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/3_Epic/OTHER_SET/fat_fLjck.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Fat FLjck",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -1045,7 +1069,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "Gents Glove",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/3_Epic/OTHER_SET/gents_glove.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/3_Epic/OTHER_SET/gents_glove.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named Gents Glove",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -1058,7 +1082,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON : [
 				{
 					ExpansionContentFields.NAME : "Liars Dice",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/3_Epic/OTHER_SET/liars_dice.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/3_Epic/OTHER_SET/liars_dice.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named Liars Dice",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -1075,7 +1099,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER : [
 				{
 					ExpansionContentFields.NAME : "Gribble",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/4_Legendary/OTHER_SET/squee.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/4_Legendary/OTHER_SET/squee.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Gribble",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -1090,7 +1114,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "Flask of Tears",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/4_Legendary/OTHER_SET/flask_of_tears.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/4_Legendary/OTHER_SET/flask_of_tears.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named Flask of Tears",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -1103,7 +1127,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON : [
 				{
 					ExpansionContentFields.NAME : "Tome of Curses",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/4_Legendary/OTHER_SET/tome_of_curses.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/4_Legendary/OTHER_SET/tome_of_curses.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named Tome of Curses",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -1120,7 +1144,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CRITTER : [
 				{
 					ExpansionContentFields.NAME : "Squee",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/OTHER_SET/gribble.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/5_Holy_Moly/OTHER_SET/gribble.png"),
 					ExpansionContentFields.STATS : {
 						CritterDescriptionFields.FLAVOR   : "a critter named Squee",
 						CritterDescriptionFields.HEALTH   : 100,
@@ -1135,7 +1159,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.CONSUMABLE : [
 				{
 					ExpansionContentFields.NAME : "Flask of Beers",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/OTHER_SET/flask_of_beers.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/5_Holy_Moly/OTHER_SET/flask_of_beers.png"),
 					ExpansionContentFields.STATS : {
 						ConsumableDescriptionFields.FLAVOR : "a consumable named Flask of Beers",
 						ConsumableDescriptionFields.RANGE  : 100,
@@ -1148,7 +1172,7 @@ const ExpansionContent: Dictionary = {
 			ContentTypes.WEAPON : [
 				{
 					ExpansionContentFields.NAME : "im not even kidding this staff is way too strong for you",
-					ExpansionContentFields.IMAGE : "res://1_ASSETS/cards/art/5_Holy_Moly/OTHER_SET/im_not_even_kidding_this_staff_is_way_too_strong_for_you.png",
+					ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/5_Holy_Moly/OTHER_SET/im_not_even_kidding_this_staff_is_way_too_strong_for_you.png"),
 					ExpansionContentFields.STATS : {
 						WeaponDescriptionFields.FLAVOR   : "a weapon named im not even kidding this staff is way too strong for you",
 						WeaponDescriptionFields.RANGE    : 100,
@@ -1244,7 +1268,7 @@ static func get_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Ra
 			ContentType,
 			ContentIndex,
 			data[ExpansionContentFields.NAME],
-			load(data[ExpansionContentFields.IMAGE])
+			data[ExpansionContentFields.IMAGE]
 		)
 static func get_paired_expansion_content(ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentType : ContentTypes, ContentIndex : int, \
 										 PairedExpansionID : ExpansionIDs, PairedRarity : Rarities, PairedIndex  : int) -> PlayablePair:
@@ -1256,13 +1280,13 @@ static func get_paired_expansion_content(ExpansionID : ExpansionIDs, ContentRari
 		ContentType,
 		ContentIndex,
 		data[ExpansionContentFields.NAME],
-		load(data[ExpansionContentFields.IMAGE]),
+		data[ExpansionContentFields.IMAGE],
 		
 		PairedExpansionID,
 		PairedRarity,
 		PairedIndex,
 		paired_data[ExpansionContentFields.NAME],
-		load(paired_data[ExpansionContentFields.IMAGE])
+		paired_data[ExpansionContentFields.IMAGE]
 	)
 static func get_content_stats(ExpansionID : ExpansionIDs, ContentRarity : Rarities, ContentType : ContentTypes, ContentIndex : int) -> Dictionary:
 	return ExpansionContent[ExpansionID][ContentRarity][ContentType][ContentIndex][ExpansionContentFields.STATS]
@@ -1357,15 +1381,7 @@ static func create_paired_rarity_material(front_rarity: Rarities, back_rarity: R
 	return material
 
 static func DEBUG_print_expansion_EVs(ExpansionID : ExpansionIDs) -> void:
-	var expected_values: Array[float] = [0, 0, 0, 0, 0, 0]
-	
-	for pack_tier in range(Rarities.size()):
-		var pack_probability = ExpansionData[ExpansionID][ExpansionDataFields.PACK_RARITY_ODDS][pack_tier]
-		var pack_card_count = ExpansionData[ExpansionID][ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS][pack_tier]
-	
-		for card_tier in range(Rarities.size()):
-			var card_probability = ExpansionData[ExpansionID][ExpansionDataFields.CONTENT_RARITY_ODDS][pack_tier][card_tier]
-			expected_values[card_tier] += pack_probability * pack_card_count * card_probability
+	var expected_values := get_expansion_EVs(ExpansionID)
 	
 	LOGGER.log_msg("The average pack from " + ExpansionIDs.find_key(ExpansionID) + " will contain:")
 	for rarity in Rarities:
@@ -1374,6 +1390,16 @@ static func DEBUG_print_expansion_EVs(ExpansionID : ExpansionIDs) -> void:
 		LOGGER.log_msg(Str + str(expected_values[r]) + " " + rarity + " cards")
 	LOGGER.log_msg("and an average of " + str(array_sum(expected_values)) + " total cards.\n")
 
+static func get_expansion_EVs(ExpansionID : ExpansionIDs) -> Array[float]:
+	var expected_values: Array[float] = [0, 0, 0, 0, 0, 0]
+	for pack_tier in range(Rarities.size()):
+		var pack_probability = ExpansionData[ExpansionID][ExpansionDataFields.PACK_RARITY_ODDS][pack_tier]
+		var pack_card_count = ExpansionData[ExpansionID][ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS][pack_tier]
+		for card_tier in range(Rarities.size()):
+			var card_probability = ExpansionData[ExpansionID][ExpansionDataFields.CONTENT_RARITY_ODDS][pack_tier][card_tier]
+			expected_values[card_tier] += pack_probability * pack_card_count * card_probability
+	return expected_values
+	
 
 ## [b]Purpose[/b]: sums all elements of an array of floats. Used for internal testing.[br]
 ## [b]Arr[/b]: an array of floats[br]

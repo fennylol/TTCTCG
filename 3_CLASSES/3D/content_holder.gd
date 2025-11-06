@@ -122,7 +122,6 @@ func get_node3D_from_click() -> Node3D:
 func _check_node_blocks_mouse(node: Node, pos: Vector2) -> bool:
 	if node is Control and node.is_visible_in_tree() and node.mouse_filter == Control.MOUSE_FILTER_STOP:
 		if node.get_global_rect().has_point(pos):
-			print(node.get_path(), " is blocking")
 			return true
 	
 	for child in node.get_children():
