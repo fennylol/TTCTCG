@@ -6,9 +6,11 @@ ADDED
 - Speaking of which! Booster boxes! Open packs until you can make a deck with them!
 - look at your cards closely! spin em around!
 - A page where you can review the pull stats of each pack! (you're never getting that true holy moly...)
+- A new* set! Gastroarcheology! it contains the same content as test and other set!
+- A beautiful rainbow effect to your rare cards!
 
 REMOVED
--
+- Other Set and Test Set
 
 CHANGED
 - GREATLY improved pack open screen and pack timer.

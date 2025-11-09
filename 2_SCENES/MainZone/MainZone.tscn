@@ -33,6 +33,15 @@ theme = ExtResource("3_cdsl6")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_4v2sq")
 
+[node name="TheSun" type="DirectionalLight3D" parent="."]
+light_energy = 0.45
+light_indirect_energy = 0.0
+light_volumetric_fog_energy = 0.0
+light_specular = 0.0
+light_bake_mode = 0
+shadow_enabled = true
+sky_mode = 1
+
 [node name="MainCamera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.9998157, 0.019197397, 0, -0.019197397, 0.9998157, 0, 0.5, 15)
 keep_aspect = 0

@@ -154,8 +154,18 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	add_child(flavor_label)
 	add_child(stats_display)
 	
-	var mat: StandardMaterial3D = DATA.create_paired_rarity_material(Rarity, PairedRarity) 
-	set_surface_override_material(0, mat)
+	if  Rarity       >= DATA.Rarities.EPIC or \
+		PairedRarity >= DATA.Rarities.EPIC:
+		var text_seed = int(RNG.random_value()*0xBEEF)
+		var mat: ShaderMaterial = DATA.create_paired_rarity_shader_material(Rarity, PairedRarity, text_seed) 
+		var sprite_mat = DATA.create_sprite_shader_material(Sprite.texture, text_seed)
+		var paired_sprite_mat = DATA.create_sprite_shader_material(PairedSprite.texture, text_seed)
+		set_surface_override_material(0, mat)
+		Sprite.set_material_override(sprite_mat)
+		PairedSprite.set_material_override(paired_sprite_mat)
+	else:
+		var mat: StandardMaterial3D = DATA.create_paired_rarity_material(Rarity, PairedRarity) 
+		set_surface_override_material(0, mat)
 # ================ #
 # internal utility #
 # ================ #
@@ -166,20 +176,6 @@ func _notification(what: int) -> void:
 
 func _disable():
 	super._disable()
-	
-	#var img = PairedImg.get_image()
-	#var width = img.get_width()
-	#var height = img.get_height()
-	#var bw_img = Image.create(width, height, false, Image.FORMAT_RGBA8)
-	#
-	#for y in range(height):
-		#for x in range(width):
-			#var color = img.get_pixel(x, y)
-			#var luminance = (color.r * 0.2126 + color.g * 0.7152 + color.b * 0.0722)
-			#var bw_color = Color(luminance, luminance, luminance, color.a)
-			#bw_img.set_pixel(x, y, bw_color)
-	
-	#PairedSprite.set_texture(ImageTexture.create_from_image(bw_img))
 	
 	var img = Sprite.texture.get_image()
 	img.convert(Image.Format.FORMAT_L8)

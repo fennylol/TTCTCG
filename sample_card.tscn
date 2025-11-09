@@ -1,0 +1,207 @@
+[gd_scene load_steps=14 format=3 uid="uid://cw0muoi3absw7"]
+
+[ext_resource type="ArrayMesh" uid="uid://bgd8euw824lfg" path="res://1_ASSETS/cards/pair_with_uv.tres" id="1_kqsm8"]
+[ext_resource type="Shader" uid="uid://cxbyxalugwanb" path="res://1_ASSETS/cards/holographic.gdshader" id="2_1ulhs"]
+[ext_resource type="AnimationLibrary" uid="uid://cpplob0143mdp" path="res://1_ASSETS/cards/animations/basic_card_anims.res" id="2_4u157"]
+[ext_resource type="Texture2D" uid="uid://c2bafseb6ie0y" path="res://1_ASSETS/cards/art/GastroArcheology/0_Common/GlormpusTheGreatFrog.png" id="3_1ulhs"]
+[ext_resource type="FontVariation" uid="uid://4e76rpu7bw1d" path="res://1_ASSETS/UI/italicize.tres" id="4_l5s61"]
+[ext_resource type="Texture2D" uid="uid://biie382wg1yrj" path="res://1_ASSETS/cards/art/icon/health_icon.png" id="5_evcc0"]
+[ext_resource type="Texture2D" uid="uid://cq53rklfx2fye" path="res://1_ASSETS/cards/art/icon/damage_icon.png" id="6_j25dc"]
+[ext_resource type="Texture2D" uid="uid://h7nfk02pfawh" path="res://1_ASSETS/cards/art/icon/speed_icon.png" id="7_tw15l"]
+[ext_resource type="Texture2D" uid="uid://61pnecscfbq5" path="res://1_ASSETS/cards/art/icon/eyesight_icon.png" id="8_hymre"]
+[ext_resource type="Texture2D" uid="uid://c57ulprxg1mjn" path="res://1_ASSETS/cards/art/icon/hearing_icon.png" id="9_4kue5"]
+[ext_resource type="Texture2D" uid="uid://b4r1vt3whj1ak" path="res://1_ASSETS/cards/art/icon/nature_icon.png" id="10_2606n"]
+[ext_resource type="Texture2D" uid="uid://bsj1078b8jvgg" path="res://1_ASSETS/cards/art/GastroArcheology/2_Rare/Weird_Fish.png" id="11_6i8dj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_l5s61"]
+render_priority = 0
+shader = ExtResource("2_1ulhs")
+shader_parameter/color_compression = 8.0
+shader_parameter/noise_strength = 0.3
+shader_parameter/noise_scale = 1.0
+
+[node name="glormpus_the_great_frog_811_the_weird_fish_803" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 0.99874306, 0.050122406, 0, -0.050122406, 0.99874306, 0, 0, 0)
+mesh = ExtResource("1_kqsm8")
+surface_material_override/0 = SubResource("ShaderMaterial_l5s61")
+
+[node name="glormpus_the_great_frog_animations" type="AnimationPlayer" parent="."]
+libraries = {
+&"moves": ExtResource("2_4u157")
+}
+
+[node name="glormpus_the_great_frog_sprite" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.625, 0.0055)
+pixel_size = 0.0625
+texture_filter = 0
+texture = ExtResource("3_1ulhs")
+
+[node name="glormpus_the_great_frog_name" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0.011)
+text = "Glormpus The Great Frog"
+
+[node name="glormpus_the_great_frog_flavor" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 0.011)
+pixel_size = 0.003
+text = "a critter named Glormpus The Great Frog"
+font = ExtResource("4_l5s61")
+vertical_alignment = 0
+autowrap_mode = 2
+width = 700.0
+
+[node name="glormpus_the_great_frog_stats" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.25, 0.011)
+
+[node name="HEALTH_sprite" type="Sprite3D" parent="glormpus_the_great_frog_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.89285713, 0, 0)
+pixel_size = 0.00325
+texture = ExtResource("5_evcc0")
+
+[node name="HEALTH_label" type="Label3D" parent="glormpus_the_great_frog_stats/HEALTH_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="DAMAGE_sprite" type="Sprite3D" parent="glormpus_the_great_frog_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.53571427, 0, 0)
+pixel_size = 0.00325
+texture = ExtResource("6_j25dc")
+
+[node name="DAMAGE_label" type="Label3D" parent="glormpus_the_great_frog_stats/DAMAGE_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="SPEED_sprite" type="Sprite3D" parent="glormpus_the_great_frog_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.17857143, 0, 0)
+pixel_size = 0.00325
+texture = ExtResource("7_tw15l")
+
+[node name="SPEED_label" type="Label3D" parent="glormpus_the_great_frog_stats/SPEED_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="EYESIGHT_sprite" type="Sprite3D" parent="glormpus_the_great_frog_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17857143, 0, 0)
+pixel_size = 0.00325
+texture = ExtResource("8_hymre")
+
+[node name="EYESIGHT_label" type="Label3D" parent="glormpus_the_great_frog_stats/EYESIGHT_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="HEARING_sprite" type="Sprite3D" parent="glormpus_the_great_frog_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.53571427, 0, 0)
+pixel_size = 0.00325
+texture = ExtResource("9_4kue5")
+
+[node name="HEARING_label" type="Label3D" parent="glormpus_the_great_frog_stats/HEARING_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="NATURE_sprite" type="Sprite3D" parent="glormpus_the_great_frog_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.89285713, 0, 0)
+pixel_size = 0.00325
+texture = ExtResource("10_2606n")
+
+[node name="NATURE_label" type="Label3D" parent="glormpus_the_great_frog_stats/NATURE_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "0"
+
+[node name="paired_the_weird_fish_sprite" type="Sprite3D" parent="."]
+transform = Transform3D(-1, 0, -8.742277e-08, 0, 0.99999994, 0, 8.742278e-08, 0, -0.99999994, 0, 0.625, -0.0055)
+pixel_size = 0.0625
+texture_filter = 0
+texture = ExtResource("11_6i8dj")
+
+[node name="the_weird_fish_name" type="Label3D" parent="."]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.3, -0.011)
+text = "The Weird Fish"
+
+[node name="the_weird_fish_flavor" type="Label3D" parent="."]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.45, -0.011)
+pixel_size = 0.003
+text = "a critter named The Weird Fish"
+font = ExtResource("4_l5s61")
+vertical_alignment = 0
+autowrap_mode = 2
+width = 700.0
+
+[node name="the_weird_fish_stats" type="Node3D" parent="."]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -1.25, -0.011)
+
+[node name="HEALTH_sprite" type="Sprite3D" parent="the_weird_fish_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.89285713, 0, 0)
+pixel_size = 0.00325
+texture = ExtResource("5_evcc0")
+
+[node name="HEALTH_label" type="Label3D" parent="the_weird_fish_stats/HEALTH_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="DAMAGE_sprite" type="Sprite3D" parent="the_weird_fish_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.53571427, 0, 0)
+pixel_size = 0.00325
+texture = ExtResource("6_j25dc")
+
+[node name="DAMAGE_label" type="Label3D" parent="the_weird_fish_stats/DAMAGE_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="SPEED_sprite" type="Sprite3D" parent="the_weird_fish_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.17857143, 0, 0)
+pixel_size = 0.00325
+texture = ExtResource("7_tw15l")
+
+[node name="SPEED_label" type="Label3D" parent="the_weird_fish_stats/SPEED_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="EYESIGHT_sprite" type="Sprite3D" parent="the_weird_fish_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17857143, 0, 0)
+pixel_size = 0.00325
+texture = ExtResource("8_hymre")
+
+[node name="EYESIGHT_label" type="Label3D" parent="the_weird_fish_stats/EYESIGHT_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="HEARING_sprite" type="Sprite3D" parent="the_weird_fish_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.53571427, 0, 0)
+pixel_size = 0.00325
+texture = ExtResource("9_4kue5")
+
+[node name="HEARING_label" type="Label3D" parent="the_weird_fish_stats/HEARING_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="NATURE_sprite" type="Sprite3D" parent="the_weird_fish_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.89285713, 0, 0)
+pixel_size = 0.00325
+texture = ExtResource("10_2606n")
+
+[node name="NATURE_label" type="Label3D" parent="the_weird_fish_stats/NATURE_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "0"

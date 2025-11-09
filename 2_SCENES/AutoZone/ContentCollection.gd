@@ -189,6 +189,11 @@ func _load() -> Error:
 		collection                = data["COLLECTION"]
 		decks                     = data["DECKS"]
 		timer_charges             = data["TIMER_CHARGES"]
+		
+		for expansionID in DATA.ExpansionIDs:
+			if not collection.keys().has(expansionID): 
+				print("collection doesnt have ", expansionID)
+				collection[expansionID] = empty_expansion_dict.duplicate(true)
 		LOGGER.log_msg("content_collection.gd: compatible save file version. loaded collection successfully.")
 	return OK
 #endregion
