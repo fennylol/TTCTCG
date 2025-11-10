@@ -43,6 +43,7 @@ func _init(type: DATA.ContentTypes, stats: Dictionary, pixel_size: float = 0.003
 			label_names = DATA.WeaponDescriptionFields
 	
 	
+	#var texture_seed = int(RNG.random_value()*0xBEEF)
 	var dist = Card.CARD_WIDTH/(icons.size()+1)
 	for key in icons:
 		var plain_name = label_names.find_key(key)
@@ -51,18 +52,30 @@ func _init(type: DATA.ContentTypes, stats: Dictionary, pixel_size: float = 0.003
 		sprite.set_name(plain_name+"_sprite")
 		sprite.set_texture(icons[key])
 		sprite.set_pixel_size(pixel_size)
+		sprite.set_render_priority(1)
 		sprite.position.x = (get_child_count()-(icons.size()-1)/2.0)*dist
+		#var sprite_mat = DATA.create_sprite_shader_material(sprite.texture, texture_seed)
+		#sprite.set_material_override(sprite_mat)
 		
 		var label = Label3D.new()
 		label.set_name(plain_name+"_label")
 		label.set_text(str(stats[key]))
-		label.set_render_priority(2)
-		label.set_outline_render_priority(1)
+		label.set_render_priority(3)
+		label.set_outline_render_priority(2)
 		label.position.z = 0.001
 		sprite.add_child(label)
 		
 		add_child(sprite)
-		
+	_change_material(false)
+func _change_material(shaded: bool) -> void:
+	if shaded:
+		var texture_seed = int(RNG.random_value()*0xBEEF)
+		for sprite in get_children():
+			var sprite_mat = DATA.create_sprite_shader_material(sprite.texture, texture_seed)
+			sprite.set_material_override(sprite_mat)
+	else:
+		for sprite in get_children():
+			sprite.set_material_override(null)
 #
 #match Type:
 		#DATA.ContentTypes.CRITTER:

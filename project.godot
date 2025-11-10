@@ -22,6 +22,7 @@ config/icon="uid://3qx28dhixryw"
 RNG="*res://2_SCENES/AutoZone/RNG.gd"
 LOGGER="*res://2_SCENES/AutoZone/LumberJack.gd"
 COLLECTION="*res://2_SCENES/AutoZone/ContentCollection.gd"
+THEBANK="*res://2_SCENES/AutoZone/TheBank.gd"
 
 [debug]
 

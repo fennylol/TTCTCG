@@ -1,0 +1,277 @@
+[gd_scene load_steps=23 format=3 uid="uid://ddos8q016tupa"]
+
+[ext_resource type="ArrayMesh" uid="uid://bgd8euw824lfg" path="res://1_ASSETS/cards/pair_with_uv.tres" id="1_cq167"]
+[ext_resource type="Shader" uid="uid://cxbyxalugwanb" path="res://1_ASSETS/cards/holographic.gdshader" id="2_y4xa5"]
+[ext_resource type="AnimationLibrary" uid="uid://cpplob0143mdp" path="res://1_ASSETS/cards/animations/basic_card_anims.res" id="3_nrjy6"]
+[ext_resource type="Texture2D" uid="uid://bphtg6hrttf6d" path="res://1_ASSETS/cards/art/GastroArcheology/4_Legendary/Birb.png" id="4_mbil6"]
+[ext_resource type="FontVariation" uid="uid://4e76rpu7bw1d" path="res://1_ASSETS/UI/italicize.tres" id="5_fk0c5"]
+[ext_resource type="Texture2D" uid="uid://biie382wg1yrj" path="res://1_ASSETS/cards/art/icon/health_icon.png" id="6_18vii"]
+[ext_resource type="Texture2D" uid="uid://cq53rklfx2fye" path="res://1_ASSETS/cards/art/icon/damage_icon.png" id="7_nncot"]
+[ext_resource type="Texture2D" uid="uid://h7nfk02pfawh" path="res://1_ASSETS/cards/art/icon/speed_icon.png" id="8_q8e16"]
+[ext_resource type="Texture2D" uid="uid://61pnecscfbq5" path="res://1_ASSETS/cards/art/icon/eyesight_icon.png" id="9_jbre5"]
+[ext_resource type="Texture2D" uid="uid://c57ulprxg1mjn" path="res://1_ASSETS/cards/art/icon/hearing_icon.png" id="10_s0b7e"]
+[ext_resource type="Texture2D" uid="uid://b4r1vt3whj1ak" path="res://1_ASSETS/cards/art/icon/nature_icon.png" id="11_mjtca"]
+[ext_resource type="Texture2D" uid="uid://rk8gcjcylv0q" path="res://1_ASSETS/cards/art/GastroArcheology/2_Rare/stoomp.png" id="12_5bg8i"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hn8iq"]
+render_priority = 0
+shader = ExtResource("2_y4xa5")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_w5k30"]
+render_priority = 0
+shader = ExtResource("2_y4xa5")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5duks"]
+render_priority = 0
+shader = ExtResource("2_y4xa5")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vh02g"]
+render_priority = 0
+shader = ExtResource("2_y4xa5")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a3d5h"]
+render_priority = 0
+shader = ExtResource("2_y4xa5")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a34iq"]
+render_priority = 0
+shader = ExtResource("2_y4xa5")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_74nkf"]
+render_priority = 0
+shader = ExtResource("2_y4xa5")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jfcbl"]
+render_priority = 0
+shader = ExtResource("2_y4xa5")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3qb1c"]
+render_priority = 0
+shader = ExtResource("2_y4xa5")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b8675"]
+render_priority = 0
+shader = ExtResource("2_y4xa5")
+
+[node name="Birbdisplay_case" type="Node3D"]
+
+[node name="display_stand" type="RigidBody3D" parent="."]
+transform = Transform3D(-0.96365243, 0, 0.26715928, 0, 1, 0, -0.26715928, 0, -0.96365243, 0, 0, 0)
+mass = 100.0
+gravity_scale = 0.0
+angular_velocity = Vector3(0, -0.62831855, 0)
+angular_damp_mode = 1
+
+[node name="birb_565_stoomp_922" type="MeshInstance3D" parent="display_stand"]
+transform = Transform3D(0.9275951, 0, 0.37358668, 0, 1, 0, -0.37358668, 0, 0.9275951, 0.26016903, 0, 0.93843836)
+mesh = ExtResource("1_cq167")
+surface_material_override/0 = SubResource("ShaderMaterial_hn8iq")
+
+[node name="birb_animations" type="AnimationPlayer" parent="display_stand/birb_565_stoomp_922"]
+libraries = {
+&"moves": ExtResource("3_nrjy6")
+}
+
+[node name="birb_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.625, 0.0055)
+visible = false
+material_override = SubResource("ShaderMaterial_w5k30")
+pixel_size = 0.0625
+texture_filter = 0
+texture = ExtResource("4_mbil6")
+
+[node name="birb_name" type="Label3D" parent="display_stand/birb_565_stoomp_922"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0.011)
+material_override = SubResource("ShaderMaterial_5duks")
+render_priority = 2
+outline_render_priority = 1
+text = "Birb"
+
+[node name="birb_flavor" type="Label3D" parent="display_stand/birb_565_stoomp_922"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 0.011)
+material_override = SubResource("ShaderMaterial_5duks")
+pixel_size = 0.003
+render_priority = 2
+outline_render_priority = 1
+text = "a critter named Birb"
+font = ExtResource("5_fk0c5")
+vertical_alignment = 0
+autowrap_mode = 2
+width = 700.0
+
+[node name="birb_stats" type="Node3D" parent="display_stand/birb_565_stoomp_922"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.25, 0.011)
+
+[node name="HEALTH_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922/birb_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.89285713, 0, 0)
+material_override = SubResource("ShaderMaterial_vh02g")
+pixel_size = 0.00325
+texture = ExtResource("6_18vii")
+
+[node name="HEALTH_label" type="Label3D" parent="display_stand/birb_565_stoomp_922/birb_stats/HEALTH_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="DAMAGE_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922/birb_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.53571427, 0, 0)
+material_override = SubResource("ShaderMaterial_a3d5h")
+pixel_size = 0.00325
+texture = ExtResource("7_nncot")
+
+[node name="DAMAGE_label" type="Label3D" parent="display_stand/birb_565_stoomp_922/birb_stats/DAMAGE_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="SPEED_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922/birb_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.17857143, 0, 0)
+material_override = SubResource("ShaderMaterial_a34iq")
+pixel_size = 0.00325
+texture = ExtResource("8_q8e16")
+
+[node name="SPEED_label" type="Label3D" parent="display_stand/birb_565_stoomp_922/birb_stats/SPEED_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="EYESIGHT_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922/birb_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17857143, 0, 0)
+material_override = SubResource("ShaderMaterial_74nkf")
+pixel_size = 0.00325
+texture = ExtResource("9_jbre5")
+
+[node name="EYESIGHT_label" type="Label3D" parent="display_stand/birb_565_stoomp_922/birb_stats/EYESIGHT_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="HEARING_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922/birb_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.53571427, 0, 0)
+material_override = SubResource("ShaderMaterial_jfcbl")
+pixel_size = 0.00325
+texture = ExtResource("10_s0b7e")
+
+[node name="HEARING_label" type="Label3D" parent="display_stand/birb_565_stoomp_922/birb_stats/HEARING_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="NATURE_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922/birb_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.89285713, 0, 0)
+material_override = SubResource("ShaderMaterial_3qb1c")
+pixel_size = 0.00325
+texture = ExtResource("11_mjtca")
+
+[node name="NATURE_label" type="Label3D" parent="display_stand/birb_565_stoomp_922/birb_stats/NATURE_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "0"
+
+[node name="paired_stoomp_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.625, -0.0055)
+visible = false
+material_override = SubResource("ShaderMaterial_b8675")
+pixel_size = 0.014285714
+texture_filter = 0
+texture = ExtResource("12_5bg8i")
+
+[node name="stoomp_name" type="Label3D" parent="display_stand/birb_565_stoomp_922"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_5duks")
+render_priority = 2
+outline_render_priority = 1
+text = "Stoomp"
+
+[node name="stoomp_flavor" type="Label3D" parent="display_stand/birb_565_stoomp_922"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.45, -0.011)
+material_override = SubResource("ShaderMaterial_5duks")
+pixel_size = 0.003
+render_priority = 2
+outline_render_priority = 1
+text = "a critter named Stoomp"
+font = ExtResource("5_fk0c5")
+vertical_alignment = 0
+autowrap_mode = 2
+width = 700.0
+
+[node name="stoomp_stats" type="Node3D" parent="display_stand/birb_565_stoomp_922"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -1.25, -0.011)
+
+[node name="HEALTH_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922/stoomp_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.89285713, 0, 0)
+material_override = SubResource("ShaderMaterial_vh02g")
+pixel_size = 0.00325
+texture = ExtResource("6_18vii")
+
+[node name="HEALTH_label" type="Label3D" parent="display_stand/birb_565_stoomp_922/stoomp_stats/HEALTH_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="DAMAGE_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922/stoomp_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.53571427, 0, 0)
+material_override = SubResource("ShaderMaterial_a3d5h")
+pixel_size = 0.00325
+texture = ExtResource("7_nncot")
+
+[node name="DAMAGE_label" type="Label3D" parent="display_stand/birb_565_stoomp_922/stoomp_stats/DAMAGE_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="SPEED_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922/stoomp_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.17857143, 0, 0)
+material_override = SubResource("ShaderMaterial_a34iq")
+pixel_size = 0.00325
+texture = ExtResource("8_q8e16")
+
+[node name="SPEED_label" type="Label3D" parent="display_stand/birb_565_stoomp_922/stoomp_stats/SPEED_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="EYESIGHT_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922/stoomp_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17857143, 0, 0)
+material_override = SubResource("ShaderMaterial_74nkf")
+pixel_size = 0.00325
+texture = ExtResource("9_jbre5")
+
+[node name="EYESIGHT_label" type="Label3D" parent="display_stand/birb_565_stoomp_922/stoomp_stats/EYESIGHT_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="HEARING_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922/stoomp_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.53571427, 0, 0)
+material_override = SubResource("ShaderMaterial_jfcbl")
+pixel_size = 0.00325
+texture = ExtResource("10_s0b7e")
+
+[node name="HEARING_label" type="Label3D" parent="display_stand/birb_565_stoomp_922/stoomp_stats/HEARING_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "100"
+
+[node name="NATURE_sprite" type="Sprite3D" parent="display_stand/birb_565_stoomp_922/stoomp_stats"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.89285713, 0, 0)
+material_override = SubResource("ShaderMaterial_3qb1c")
+pixel_size = 0.00325
+texture = ExtResource("11_mjtca")
+
+[node name="NATURE_label" type="Label3D" parent="display_stand/birb_565_stoomp_922/stoomp_stats/NATURE_sprite"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
+render_priority = 2
+outline_render_priority = 1
+text = "0"

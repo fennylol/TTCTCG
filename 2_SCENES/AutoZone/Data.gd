@@ -19,11 +19,10 @@ enum Targets                     {ENEMY, ALLY, TERRAIN}
 enum ContentTypes                {CRITTER, CONSUMABLE, WEAPON}
 enum ContentSides                {TAKER, BAKER}
 
-
 ## metadata about expansions. contains pack and content rarity and content count per pack.[br]
 ## see [member ExpansionContent] for pack contents. 
 const ExpansionData: Dictionary = {
-	ExpansionIDs.INCHEFTION       :  IncheftionData.EXPANSION_DATA,
+	ExpansionIDs.INCHEFTION       : IncheftionData.EXPANSION_DATA,
 	ExpansionIDs.GASTROARCHEOLOGY : GastroArcheologyData.EXPANSION_DATA
 	#ExpansionIDs.TEST_SET : {
 		#ExpansionDataFields.PACK_RARITY_ODDS : [],
@@ -164,119 +163,148 @@ static func get_color_from_rarity(Rarity: Rarities) -> Color:
 	return RarityColors[Rarity]
 
 static func create_rarity_material(rarity: Rarities) -> StandardMaterial3D:
-	var color: Color = get_color_from_rarity(rarity)
-	var img_size: int = 64
-	var image = Image.create(img_size, img_size, false, Image.FORMAT_RGB8)
-	
-	for y in range(img_size): 
-		for x in range(img_size):
-			image.set_pixel(x, y, color)
-	
-	var texture = ImageTexture.new()
-	texture.set_image(image)
-	
-	var material = StandardMaterial3D.new()
-	material.albedo_texture = texture
-	
-	return material
+	var mat_name: String = Rarities.find_key(rarity)+"_flat"
+	if not THEBANK._check_material(mat_name): 
+		var color: Color = get_color_from_rarity(rarity)
+		var img_size: int = 64
+		var image = Image.create(img_size, img_size, false, Image.FORMAT_RGB8)
+		
+		for y in range(img_size): 
+			for x in range(img_size):
+				image.set_pixel(x, y, color)
+		
+		var texture = ImageTexture.new()
+		texture.set_image(image)
+		
+		var material = StandardMaterial3D.new()
+		material.albedo_texture = texture
+		THEBANK._check_in_material(mat_name, material)
+	return THEBANK._check_out_material(mat_name)
 
 static func create_rarity_shader_material(rarity: Rarities, texture_seed: int) -> ShaderMaterial:
-	var color: Color = get_color_from_rarity(rarity)
-	var img_size: int = 64
-	var image = Image.create(img_size, img_size, false, Image.FORMAT_RGB8)
-	
-	for y in range(img_size): 
-		for x in range(img_size):
-			image.set_pixel(x, y, color)
-	
-	var texture = ImageTexture.new()
-	texture.set_image(image)
-	
-	var noise_texture := NoiseTexture2D.new()
-	var noise := FastNoiseLite.new()
-	noise.set_seed(texture_seed)
-	noise.set_noise_type(FastNoiseLite.TYPE_PERLIN)
-	noise.set_frequency(0.05)
-	noise.set_fractal_type(FastNoiseLite.FRACTAL_PING_PONG)
-	noise.set_fractal_octaves(1)
-	noise_texture.set_seamless(true)
-	noise_texture.set_noise(noise)
-	
-	var material = ShaderMaterial.new()
-	material.shader = load("res://1_ASSETS/cards/holographic.gdshader")
-	material.set_shader_parameter("texture_albedo", texture)
-	material.set_shader_parameter("texture_noise", noise_texture)
-	
-	return material
+	var mat_name: String = Rarities.find_key(rarity)+"_shaded"
+	if not THEBANK._check_material(mat_name): 
+		var color: Color = get_color_from_rarity(rarity)
+		var img_size: int = 64
+		var image = Image.create(img_size, img_size, false, Image.FORMAT_RGB8)
+		
+		for y in range(img_size): 
+			for x in range(img_size):
+				image.set_pixel(x, y, color)
+		
+		var texture = ImageTexture.new()
+		texture.set_image(image)
+		
+		var noise_texture := NoiseTexture2D.new()
+		var noise := FastNoiseLite.new()
+		noise.set_seed(texture_seed)
+		noise.set_noise_type(FastNoiseLite.TYPE_PERLIN)
+		noise.set_frequency(0.05)
+		noise.set_fractal_type(FastNoiseLite.FRACTAL_PING_PONG)
+		noise.set_fractal_octaves(1)
+		noise_texture.set_seamless(true)
+		noise_texture.set_noise(noise)
+		
+		var material = ShaderMaterial.new()
+		material.shader = load("res://1_ASSETS/cards/holographic.gdshader")
+		material.set_shader_parameter("texture_albedo", texture)
+		material.set_shader_parameter("texture_noise", noise_texture)
+		THEBANK._check_in_material(mat_name, material)
+	return THEBANK._check_out_material(mat_name)
 
 static func create_paired_rarity_material(front_rarity: Rarities, back_rarity: Rarities) -> StandardMaterial3D:
-	var front_color: Color = get_color_from_rarity(front_rarity)
-	var back_color: Color = get_color_from_rarity(back_rarity)
-	var img_size: int = 64
-	var image = Image.create(img_size, img_size, false, Image.FORMAT_RGB8)
-	
-	for y in range(img_size): 
-		for x in range(img_size):
-			if x < img_size/2: image.set_pixel(x, y, front_color)
-			else: image.set_pixel(x, y, back_color)
-	
-	var texture = ImageTexture.new()
-	texture.set_image(image)
-	
-	var material = StandardMaterial3D.new()
-	material.albedo_texture = texture
-	
-	return material
+	var mat_name: String = Rarities.find_key(front_rarity)+"_"+Rarities.find_key(back_rarity)+"_flat"
+	if not THEBANK._check_material(mat_name): 
+		var front_color: Color = get_color_from_rarity(front_rarity)
+		var back_color: Color = get_color_from_rarity(back_rarity)
+		var img_size: int = 64
+		var image = Image.create(img_size, img_size, false, Image.FORMAT_RGB8)
+		
+		for y in range(img_size): 
+			for x in range(img_size):
+				if x < img_size/2: image.set_pixel(x, y, front_color)
+				else: image.set_pixel(x, y, back_color)
+		
+		var texture = ImageTexture.new()
+		texture.set_image(image)
+		
+		var material = StandardMaterial3D.new()
+		material.albedo_texture = texture
+		THEBANK._check_in_material(mat_name, material)
+	return THEBANK._check_out_material(mat_name)
 
 static func create_paired_rarity_shader_material(front_rarity: Rarities, back_rarity: Rarities, texture_seed: int) -> ShaderMaterial:
-	var front_color: Color = get_color_from_rarity(front_rarity)
-	var back_color: Color = get_color_from_rarity(back_rarity)
-	var img_size: int = 64
-	var image = Image.create(img_size, img_size, false, Image.FORMAT_RGB8)
-	
-	for y in range(img_size): 
-		for x in range(img_size):
-			if x < img_size/2: image.set_pixel(x, y, front_color)
-			else: image.set_pixel(x, y, back_color)
-	
-	var texture = ImageTexture.new()
-	texture.set_image(image)
-	
-	var noise_texture := NoiseTexture2D.new()
-	var noise := FastNoiseLite.new()
-	noise.set_seed(texture_seed)
-	noise.set_noise_type(FastNoiseLite.TYPE_PERLIN)
-	noise.set_frequency(0.05)
-	noise.set_fractal_type(FastNoiseLite.FRACTAL_PING_PONG)
-	noise.set_fractal_octaves(1)
-	noise_texture.set_seamless(true)
-	noise_texture.set_noise(noise)
-	
-	var material = ShaderMaterial.new()
-	material.shader = load("res://1_ASSETS/cards/holographic.gdshader")
-	material.set_shader_parameter("texture_albedo", texture)
-	material.set_shader_parameter("texture_noise", noise_texture)
-	#material.albedo_texture = texture
-	
-	return material
+	var mat_name: String = Rarities.find_key(front_rarity)+"_"+Rarities.find_key(back_rarity)+"_shaded"
+	if not THEBANK._check_material(mat_name): 
+		var front_color: Color = get_color_from_rarity(front_rarity)
+		var back_color: Color = get_color_from_rarity(back_rarity)
+		var img_size: int = 64
+		var image = Image.create(img_size, img_size, false, Image.FORMAT_RGB8)
+		
+		for y in range(img_size): 
+			for x in range(img_size):
+				if x < img_size/2: image.set_pixel(x, y, front_color)
+				else: image.set_pixel(x, y, back_color)
+		
+		var texture = ImageTexture.new()
+		texture.set_image(image)
+		
+		var noise_texture := NoiseTexture2D.new()
+		var noise := FastNoiseLite.new()
+		noise.set_seed(texture_seed)
+		noise.set_noise_type(FastNoiseLite.TYPE_PERLIN)
+		noise.set_frequency(0.05)
+		noise.set_fractal_type(FastNoiseLite.FRACTAL_PING_PONG)
+		noise.set_fractal_octaves(1)
+		noise_texture.set_seamless(true)
+		noise_texture.set_noise(noise)
+		
+		var material = ShaderMaterial.new()
+		material.shader = load("res://1_ASSETS/cards/holographic.gdshader")
+		material.set_shader_parameter("texture_albedo", texture)
+		material.set_shader_parameter("texture_noise", noise_texture)
+		
+		THEBANK._check_in_material(mat_name, material)
+	return THEBANK._check_out_material(mat_name)
 
 static func create_sprite_shader_material(texture : Texture, texture_seed: int) -> ShaderMaterial:
-	var noise_texture := NoiseTexture2D.new()
-	var noise := FastNoiseLite.new()
-	noise.set_seed(texture_seed)
-	noise.set_noise_type(FastNoiseLite.TYPE_PERLIN)
-	noise.set_frequency(0.025)
-	noise.set_fractal_type(FastNoiseLite.FRACTAL_PING_PONG)
-	noise.set_fractal_octaves(1)
-	noise_texture.set_seamless(true)
-	noise_texture.set_noise(noise)
-	
-	var material = ShaderMaterial.new()
-	material.shader = load("res://1_ASSETS/cards/holographic.gdshader")
-	material.set_shader_parameter("texture_albedo", texture)
-	material.set_shader_parameter("texture_noise", noise_texture)
-	
-	return material
+	var mat_name: String = texture.resource_path+"_shaded"
+	if not THEBANK._check_material(mat_name): 
+		var noise_texture := NoiseTexture2D.new()
+		var noise := FastNoiseLite.new()
+		noise.set_seed(texture_seed)
+		noise.set_noise_type(FastNoiseLite.TYPE_PERLIN)
+		noise.set_frequency(0.025)
+		noise.set_fractal_type(FastNoiseLite.FRACTAL_PING_PONG)
+		noise.set_fractal_octaves(1)
+		noise_texture.set_seamless(true)
+		noise_texture.set_noise(noise)
+		
+		var material = ShaderMaterial.new()
+		material.shader = load("res://1_ASSETS/cards/holographic.gdshader")
+		material.set_shader_parameter("texture_albedo", texture)
+		material.set_shader_parameter("texture_noise", noise_texture)
+		THEBANK._check_in_material(mat_name, material)
+	return THEBANK._check_out_material(mat_name)
+
+#static func create_text_shader_material(texture_seed: int) -> ShaderMaterial:
+	#var mat_name: String = "text_shaded"
+	#if not THEBANK._check_material(mat_name): 
+		#var noise_texture := NoiseTexture2D.new()
+		#var noise := FastNoiseLite.new()
+		#noise.set_seed(texture_seed)
+		#noise.set_noise_type(FastNoiseLite.TYPE_PERLIN)
+		#noise.set_frequency(0.025)
+		#noise.set_fractal_type(FastNoiseLite.FRACTAL_PING_PONG)
+		#noise.set_fractal_octaves(1)
+		#noise_texture.set_seamless(true)
+		#noise_texture.set_noise(noise)
+		#
+		#var material = ShaderMaterial.new()
+		#material.shader = load("res://1_ASSETS/cards/holographic.gdshader")
+		#material.set_shader_parameter("texture_noise", noise_texture)
+		#THEBANK._check_in_material(mat_name, material)
+	#return THEBANK._check_out_material(mat_name)
 
 static func DEBUG_print_expansion_EVs(ExpansionID : ExpansionIDs) -> void:
 	var expected_values := get_expansion_EVs(ExpansionID)

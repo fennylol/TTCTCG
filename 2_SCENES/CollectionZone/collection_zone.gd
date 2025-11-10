@@ -154,6 +154,7 @@ func _on_display_grid_card_clicked(card: Card, _content_holder: ContentHolder) -
 				#card.AnimationComplete.connect(return_to_zero)
 	var display_card = func(card_to_display: Card) -> void:
 		WorkingCard = PlayablePair.restore_from_dict((card_to_display as PlayablePair).reduce_to_dict(true)) if card_to_display is PlayablePair else card_to_display
+		WorkingCard._change_material(true)
 		DisplayZone.add_child(DisplayCase.new(WorkingCard))
 		_to_display_grid_send_card_list([])
 	

@@ -10,7 +10,7 @@ var PairedImg: Texture2D
 var PairedStats: Dictionary
 
 var PairedSprite : Sprite3D
-
+var PairedDisplay: StatsDisplay
 # ====================== #
 # creation & destruction #
 # ====================== #
@@ -108,18 +108,31 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	var plain_name: String = PairedName.replace(" ", "_").to_lower()
 	set_name(name+"_"+plain_name+"_"+str(int(RNG.random_value()*1000)))
 	
+	# create mesh 
+	var M: Mesh = load("res://1_ASSETS/cards/pair_with_uv.tres")
+	set_mesh(M)
+	
 	# create card text
+	#var text_mat = DATA.create_text_shader_material(0)
 	var name_label = Label3D.new()
 	name_label.set_text(Paired_Name)
 	name_label.set_name(plain_name+"_name")
+	name_label.set_render_priority(2)
+	name_label.set_outline_render_priority(1)
+	#name_label.set_material_override(text_mat)
 	name_label.rotation.y = PI
 	name_label.position.y = -0.3
 	name_label.position.z = -0.011
+	add_child(name_label)
 	
 	
+
 	var flavor_label = Label3D.new()
 	flavor_label.set_text(PairedStats[DATA.CritterDescriptionFields.FLAVOR])
 	flavor_label.set_name(plain_name+"_flavor")
+	flavor_label.set_render_priority(2)
+	flavor_label.set_outline_render_priority(1)
+	#flavor_label.set_material_override(text_mat)
 	flavor_label.set_pixel_size(0.003)
 	flavor_label.set_width(700.0)
 	flavor_label.set_vertical_alignment(VERTICAL_ALIGNMENT_TOP)
@@ -128,12 +141,14 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	flavor_label.position.y = -0.45
 	flavor_label.position.z = -0.011
 	flavor_label.rotation.y = PI
+	add_child(flavor_label)
 	
-	var stats_display = StatsDisplay.new(Type, PairedStats)
-	stats_display.set_name(plain_name+"_stats")
-	stats_display.position.y = -1.25
-	stats_display.position.z = -0.011
-	stats_display.rotation.y = PI
+	PairedDisplay = StatsDisplay.new(Type, PairedStats)
+	PairedDisplay.set_name(plain_name+"_stats")
+	PairedDisplay.position.y = -1.25
+	PairedDisplay.position.z = -0.011
+	PairedDisplay.rotation.y = PI
+	add_child(PairedDisplay)
 	
 	# create sprite
 	PairedSprite = Sprite3D.new()
@@ -145,27 +160,29 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	Sprite.position.z = 0.0055
 	PairedSprite.position.y = 0.625
 	PairedSprite.rotation.y = PI
-	
-	# create mesh 
-	var M: Mesh = load("res://1_ASSETS/cards/pair_with_uv.tres")
-	set_mesh(M)
 	add_child(PairedSprite)
-	add_child(name_label)
-	add_child(flavor_label)
-	add_child(stats_display)
 	
-	if  Rarity       >= DATA.Rarities.EPIC or \
-		PairedRarity >= DATA.Rarities.EPIC:
-		var text_seed = int(RNG.random_value()*0xBEEF)
-		var mat: ShaderMaterial = DATA.create_paired_rarity_shader_material(Rarity, PairedRarity, text_seed) 
-		var sprite_mat = DATA.create_sprite_shader_material(Sprite.texture, text_seed)
-		var paired_sprite_mat = DATA.create_sprite_shader_material(PairedSprite.texture, text_seed)
+	_change_material(false)
+
+func _change_material(shaded: bool) -> void:
+	if shaded and (Rarity >= DATA.Rarities.EPIC or \
+				   PairedRarity >= DATA.Rarities.EPIC):
+		var texture_seed = int(RNG.random_value()*0xBEEF)
+		var mat: ShaderMaterial = DATA.create_paired_rarity_shader_material(Rarity, PairedRarity, texture_seed) 
+		var sprite_mat = DATA.create_sprite_shader_material(Sprite.texture, texture_seed)
+		var paired_sprite_mat = DATA.create_sprite_shader_material(PairedSprite.texture, texture_seed)
 		set_surface_override_material(0, mat)
 		Sprite.set_material_override(sprite_mat)
 		PairedSprite.set_material_override(paired_sprite_mat)
+		StatDisplay._change_material(true)
+		PairedDisplay._change_material(true)
 	else:
 		var mat: StandardMaterial3D = DATA.create_paired_rarity_material(Rarity, PairedRarity) 
 		set_surface_override_material(0, mat)
+		Sprite.set_material_override(null)
+		PairedSprite.set_material_override(null)
+		StatDisplay._change_material(false)
+		PairedDisplay._change_material(false)
 # ================ #
 # internal utility #
 # ================ #

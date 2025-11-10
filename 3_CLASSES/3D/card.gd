@@ -16,8 +16,9 @@ var Name : String
 var Img  : Texture2D
 var Stats: Dictionary
 
-var Animations: AnimationPlayer
-var Sprite    : Sprite3D
+var Animations : AnimationPlayer
+var Sprite     : Sprite3D
+var StatDisplay: StatsDisplay
 
 enum DictFields {EXPANSIONID, RARITY, TYPE, CONTENTINDEX}
 
@@ -87,16 +88,27 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	var plain_name: String = Name.replace(" ", "_").to_lower()
 	set_name(plain_name+"_"+str(int(RNG.random_value()*1000)))
 	
+	# create mesh 
+	var new_mesh: Mesh = load("res://1_ASSETS/cards/basic_card_mesh.tres")
+	set_mesh(new_mesh)
+	
 	#create card text
 	var name_label = Label3D.new()
 	name_label.set_text(Name)
 	name_label.set_name(plain_name+"_name")
+	name_label.set_render_priority(2)
+	name_label.set_outline_render_priority(1)
+	#name_label.set_material_override(text_mat)
 	name_label.position.y = -0.3
 	name_label.position.z = 0.011
+	add_child(name_label)
 	
 	var flavor_label = Label3D.new()
 	flavor_label.set_text(Stats[DATA.CritterDescriptionFields.FLAVOR])
 	flavor_label.set_name(plain_name+"_flavor")
+	flavor_label.set_render_priority(2)
+	flavor_label.set_outline_render_priority(1)
+	#flavor_label.set_material_override(text_mat)
 	flavor_label.set_pixel_size(0.003)
 	flavor_label.set_width(700.0)
 	flavor_label.set_vertical_alignment(VERTICAL_ALIGNMENT_TOP)
@@ -104,11 +116,13 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	flavor_label.font = load("res://1_ASSETS/UI/italicize.tres")
 	flavor_label.position.y = -0.45
 	flavor_label.position.z = 0.011
+	add_child(flavor_label)
 	
-	var stats_display = StatsDisplay.new(Type, Stats)
-	stats_display.set_name(plain_name+"_stats")
-	stats_display.position.y = -1.25
-	stats_display.position.z = 0.011
+	StatDisplay = StatsDisplay.new(Type, Stats)
+	StatDisplay.set_name(plain_name+"_stats")
+	StatDisplay.position.y = -1.25
+	StatDisplay.position.z = 0.011
+	add_child(StatDisplay)
 	
 	# create sprite
 	Sprite = Sprite3D.new()
@@ -118,33 +132,31 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	Sprite.set_pixel_size(2.0/Img.get_width())
 	Sprite.position.z = 0.001
 	Sprite.position.y = 0.625
+	add_child(Sprite)
 	
 	# create animation player
 	Animations = AnimationPlayer.new()
 	Animations.set_name(plain_name+"_animations")
 	Animations.add_animation_library("moves", load("res://1_ASSETS/cards/animations/basic_card_anims.res"))
 	Animations.animation_finished.connect(AnimationComplete.emit)
-	
-	# create mesh 
-	var new_mesh: Mesh = load("res://1_ASSETS/cards/basic_card_mesh.tres")
-	set_mesh(new_mesh)
-	
 	add_child(Animations)
-	add_child(Sprite)
-	add_child(name_label)
-	add_child(flavor_label)
-	add_child(stats_display)
 	
-	if Rarity >= DATA.Rarities.EPIC:
-		var text_seed = int(RNG.random_value()*0xBEEF)
-		var mat: ShaderMaterial = DATA.create_rarity_shader_material(Rarity, text_seed)
-		var sprite_mat = DATA.create_sprite_shader_material(Sprite.texture, text_seed)
+	if self is not PlayablePair: _change_material(false)
+
+
+func _change_material(shaded: bool) -> void:
+	if shaded and Rarity >= DATA.Rarities.EPIC:
+		StatDisplay._change_material(false)
+		var texture_seed = int(RNG.random_value()*0xBEEF)
+		var mat: ShaderMaterial = DATA.create_rarity_shader_material(Rarity, texture_seed)
+		var sprite_mat = DATA.create_sprite_shader_material(Sprite.texture, texture_seed)
 		set_surface_override_material(0, mat)
 		Sprite.set_material_override(sprite_mat)
 	else:
+		StatDisplay._change_material(true)
 		var mat: StandardMaterial3D = DATA.create_rarity_material(Rarity)
 		set_surface_override_material(0, mat)
-
+		Sprite.set_material_override(null)
 # ================ #
 # internal utility #
 # ================ #
