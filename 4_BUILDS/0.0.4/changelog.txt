@@ -16,3 +16,4 @@ CHANGED
 - GREATLY improved pack open screen and pack timer.
 - Packs now will not ensure cards are not paired with themselves.
 - changing between collection contexts should no longer reset you to the top of your collection no more!
+- the core model of cards to surpport full arts and more detailed shading!

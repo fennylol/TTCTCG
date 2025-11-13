@@ -123,14 +123,36 @@ const COMMON_CRITTERS: Array[Dictionary] = [
 func COMMON_CONSUMABLE() -> void: pass
 const COMMON_CONSUMABLES: Array[Dictionary] = [
 	{
-		DATA.ExpansionContentFields.NAME : "oops", 
+		DATA.ExpansionContentFields.NAME : "Sewing Kit", 
 		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 		DATA.ExpansionContentFields.STATS : {
-			DATA.ConsumableDescriptionFields.FLAVOR : "a consumable named oops",
-			DATA.ConsumableDescriptionFields.RANGE  : 100,
-			DATA.ConsumableDescriptionFields.DAMAGE : 100,
+			DATA.ConsumableDescriptionFields.FLAVOR : "One (1) Needle.\nTwelve Meters (12m) Black Waxed Thread.\nOne Pair (2?) Scissors.\nNo (0) Thimble.",
+			DATA.ConsumableDescriptionFields.RANGE  : 1,
+			DATA.ConsumableDescriptionFields.DAMAGE : 0,
 			DATA.ConsumableDescriptionFields.AOE    : 1,
-			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.ENEMY
+			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.ALLY
+		}
+	},
+	{
+		DATA.ExpansionContentFields.NAME : "Half-Smoked Cigarette", 
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.STATS : {
+			DATA.ConsumableDescriptionFields.FLAVOR : "\"I'll save the rest for later...\"",
+			DATA.ConsumableDescriptionFields.RANGE  : 1,
+			DATA.ConsumableDescriptionFields.DAMAGE : 0,
+			DATA.ConsumableDescriptionFields.AOE    : 0,
+			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.ALLY
+		}
+	},
+	{
+		DATA.ExpansionContentFields.NAME : "Flour Grenade", 
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.STATS : {
+			DATA.ConsumableDescriptionFields.FLAVOR : "ESRB says we can't show smoking in a E10+ game :(",
+			DATA.ConsumableDescriptionFields.RANGE  : 5,
+			DATA.ConsumableDescriptionFields.DAMAGE : 0,
+			DATA.ConsumableDescriptionFields.AOE    : 5.5,
+			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.EVERYONELOL
 		}
 	}
 ]
@@ -140,10 +162,49 @@ const COMMON_CONSUMABLES: Array[Dictionary] = [
 func COMMON_WEAPON() -> void: pass
 const COMMON_WEAPONS: Array[Dictionary] = [
 	{
-		DATA.ExpansionContentFields.NAME : "oops", 
+		DATA.ExpansionContentFields.NAME : "Blenderbus", 
 		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 		DATA.ExpansionContentFields.STATS : {
-			DATA.WeaponDescriptionFields.FLAVOR   : "a weapon named oops",
+			DATA.WeaponDescriptionFields.FLAVOR   : "Range depends on what you load into it. We've had the best results from frozen peas.",
+			DATA.WeaponDescriptionFields.RANGE    : 100,
+			DATA.WeaponDescriptionFields.DAMAGE   : 100,
+			DATA.WeaponDescriptionFields.AMMO     : 10,
+			DATA.WeaponDescriptionFields.ACCURACY : 100,
+			DATA.WeaponDescriptionFields.FIRERATE : 100,
+			DATA.WeaponDescriptionFields.TARGET   : DATA.Targets.ENEMY
+		}
+	},
+	{
+		DATA.ExpansionContentFields.NAME : "Cartoonish Mallet", 
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.STATS : {
+			DATA.WeaponDescriptionFields.FLAVOR   : "How the death penalty should be doled out.",
+			DATA.WeaponDescriptionFields.RANGE    : 100,
+			DATA.WeaponDescriptionFields.DAMAGE   : 100,
+			DATA.WeaponDescriptionFields.AMMO     : 10,
+			DATA.WeaponDescriptionFields.ACCURACY : 100,
+			DATA.WeaponDescriptionFields.FIRERATE : 100,
+			DATA.WeaponDescriptionFields.TARGET   : DATA.Targets.ENEMY
+		}
+	},
+	{
+		DATA.ExpansionContentFields.NAME : "pistol type thing", 
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.STATS : {
+			DATA.WeaponDescriptionFields.FLAVOR   : "weak but quiet",
+			DATA.WeaponDescriptionFields.RANGE    : 100,
+			DATA.WeaponDescriptionFields.DAMAGE   : 100,
+			DATA.WeaponDescriptionFields.AMMO     : 10,
+			DATA.WeaponDescriptionFields.ACCURACY : 100,
+			DATA.WeaponDescriptionFields.FIRERATE : 100,
+			DATA.WeaponDescriptionFields.TARGET   : DATA.Targets.ENEMY
+		}
+	},
+	{
+		DATA.ExpansionContentFields.NAME : "bow and arrow?", 
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.STATS : {
+			DATA.WeaponDescriptionFields.FLAVOR   : "ftawng",
 			DATA.WeaponDescriptionFields.RANGE    : 100,
 			DATA.WeaponDescriptionFields.DAMAGE   : 100,
 			DATA.WeaponDescriptionFields.AMMO     : 10,
@@ -258,25 +319,49 @@ const UNCOMMON_CRITTERS: Array[Dictionary] = [
 func UNCOMMON_CONSUMABLE() -> void: pass
 const UNCOMMON_CONSUMABLES: Array[Dictionary] = [
 	{
-		DATA.ExpansionContentFields.NAME : "oops", 
+		DATA.ExpansionContentFields.NAME : "Wall Charge", 
 		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 		DATA.ExpansionContentFields.STATS : {
-			DATA.ConsumableDescriptionFields.FLAVOR : "a consumable named oops",
+			DATA.ConsumableDescriptionFields.FLAVOR : "Instant hallway.",
 			DATA.ConsumableDescriptionFields.RANGE  : 100,
 			DATA.ConsumableDescriptionFields.DAMAGE : 100,
 			DATA.ConsumableDescriptionFields.AOE    : 1,
-			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.ENEMY
+			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.TERRAIN
 		}
 	},
 	{
-		DATA.ExpansionContentFields.NAME : "oops2", 
+		DATA.ExpansionContentFields.NAME : "The Instigator", 
 		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 		DATA.ExpansionContentFields.STATS : {
-			DATA.ConsumableDescriptionFields.FLAVOR : "a consumable named oops2",
-			DATA.ConsumableDescriptionFields.RANGE  : 100,
+			DATA.ConsumableDescriptionFields.FLAVOR : "Sets off bombs... Even... uh... the ones that arent supposed to go off yet... ",
+			DATA.ConsumableDescriptionFields.RANGE  : 0,
 			DATA.ConsumableDescriptionFields.DAMAGE : 100,
-			DATA.ConsumableDescriptionFields.AOE    : 1,
-			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.ENEMY
+			DATA.ConsumableDescriptionFields.AOE    : 15,
+			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.EVERYONELOL
+		}
+	},
+	{
+		DATA.ExpansionContentFields.NAME : "Classic Grenade", 
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.STATS : {
+			DATA.ConsumableDescriptionFields.FLAVOR : "You know what this does.",
+			DATA.ConsumableDescriptionFields.RANGE  : 7.5,
+			DATA.ConsumableDescriptionFields.DAMAGE : 100,
+			DATA.ConsumableDescriptionFields.AOE    : 4.5,
+			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.EVERYONELOL
+		}
+	},
+	{
+		DATA.ExpansionContentFields.NAME : "Maul-atov", 
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.STATS : {
+			DATA.WeaponDescriptionFields.FLAVOR   : "Hurts (literally) really bad.",
+			DATA.WeaponDescriptionFields.RANGE    : 100,
+			DATA.WeaponDescriptionFields.DAMAGE   : 100,
+			DATA.WeaponDescriptionFields.AMMO     : 10,
+			DATA.WeaponDescriptionFields.ACCURACY : 100,
+			DATA.WeaponDescriptionFields.FIRERATE : 100,
+			DATA.WeaponDescriptionFields.TARGET   : DATA.Targets.ENEMY
 		}
 	}
 ]
@@ -286,10 +371,10 @@ const UNCOMMON_CONSUMABLES: Array[Dictionary] = [
 func UNCOMMON_WEAPON() -> void: pass
 const UNCOMMON_WEAPONS: Array[Dictionary] = [
 	{
-		DATA.ExpansionContentFields.NAME : "oops", 
+		DATA.ExpansionContentFields.NAME : "Sling-Slop", 
 		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 		DATA.ExpansionContentFields.STATS : {
-			DATA.WeaponDescriptionFields.FLAVOR   : "a weapon named oops",
+			DATA.WeaponDescriptionFields.FLAVOR   : "Shoots alternating pellets of sticky and slicky goop.",
 			DATA.WeaponDescriptionFields.RANGE    : 100,
 			DATA.WeaponDescriptionFields.DAMAGE   : 100,
 			DATA.WeaponDescriptionFields.AMMO     : 10,
@@ -299,10 +384,23 @@ const UNCOMMON_WEAPONS: Array[Dictionary] = [
 		}
 	},
 	{
-		DATA.ExpansionContentFields.NAME : "oops2", 
+		DATA.ExpansionContentFields.NAME : "AR type deal", 
 		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 		DATA.ExpansionContentFields.STATS : {
-			DATA.WeaponDescriptionFields.FLAVOR   : "a weapon named oops2",
+			DATA.WeaponDescriptionFields.FLAVOR   : "average",
+			DATA.WeaponDescriptionFields.RANGE    : 100,
+			DATA.WeaponDescriptionFields.DAMAGE   : 100,
+			DATA.WeaponDescriptionFields.AMMO     : 10,
+			DATA.WeaponDescriptionFields.ACCURACY : 100,
+			DATA.WeaponDescriptionFields.FIRERATE : 100,
+			DATA.WeaponDescriptionFields.TARGET   : DATA.Targets.ENEMY
+		}
+	},
+	{
+		DATA.ExpansionContentFields.NAME : "The Problem \"Solver\"", 
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.STATS : {
+			DATA.WeaponDescriptionFields.FLAVOR   : "big ahh gun. goofy ahh gun.",
 			DATA.WeaponDescriptionFields.RANGE    : 100,
 			DATA.WeaponDescriptionFields.DAMAGE   : 100,
 			DATA.WeaponDescriptionFields.AMMO     : 10,
@@ -417,14 +515,25 @@ const RARE_CRITTERS: Array[Dictionary] = [
 func RARE_CONSUMABLE() -> void: pass
 const RARE_CONSUMABLES: Array[Dictionary] = [
 	{
-		DATA.ExpansionContentFields.NAME : "oops", 
+		DATA.ExpansionContentFields.NAME : "Unsmoked Cigarette", 
 		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 		DATA.ExpansionContentFields.STATS : {
-			DATA.ConsumableDescriptionFields.FLAVOR : "a consumable named oops",
+			DATA.ConsumableDescriptionFields.FLAVOR : "score.",
 			DATA.ConsumableDescriptionFields.RANGE  : 100,
 			DATA.ConsumableDescriptionFields.DAMAGE : 100,
 			DATA.ConsumableDescriptionFields.AOE    : 1,
 			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.ENEMY
+		}
+	},
+	{
+		DATA.ExpansionContentFields.NAME : "Judgement", 
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.STATS : {
+			DATA.ConsumableDescriptionFields.FLAVOR : "resounds.",
+			DATA.ConsumableDescriptionFields.RANGE  : 100,
+			DATA.ConsumableDescriptionFields.DAMAGE : 100,
+			DATA.ConsumableDescriptionFields.AOE    : 1,
+			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.EVERYONELOL
 		}
 	}
 ]
@@ -435,10 +544,36 @@ const RARE_CONSUMABLES: Array[Dictionary] = [
 func RARE_WEAPON() -> void: pass
 const RARE_WEAPONS: Array[Dictionary] = [
 	{
-		DATA.ExpansionContentFields.NAME : "oops", 
+		DATA.ExpansionContentFields.NAME : "Gootling Gun", 
 		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 		DATA.ExpansionContentFields.STATS : {
-			DATA.WeaponDescriptionFields.FLAVOR   : "a weapon named oops",
+			DATA.WeaponDescriptionFields.FLAVOR   : "plurp plurp plurp plurp plurp plurp",
+			DATA.WeaponDescriptionFields.RANGE    : 100,
+			DATA.WeaponDescriptionFields.DAMAGE   : 100,
+			DATA.WeaponDescriptionFields.AMMO     : 10,
+			DATA.WeaponDescriptionFields.ACCURACY : 100,
+			DATA.WeaponDescriptionFields.FIRERATE : 100,
+			DATA.WeaponDescriptionFields.TARGET   : DATA.Targets.ENEMY
+		}
+	},
+	{
+		DATA.ExpansionContentFields.NAME : "sniper type thing", 
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.STATS : {
+			DATA.WeaponDescriptionFields.FLAVOR   : "range",
+			DATA.WeaponDescriptionFields.RANGE    : 100,
+			DATA.WeaponDescriptionFields.DAMAGE   : 100,
+			DATA.WeaponDescriptionFields.AMMO     : 10,
+			DATA.WeaponDescriptionFields.ACCURACY : 100,
+			DATA.WeaponDescriptionFields.FIRERATE : 100,
+			DATA.WeaponDescriptionFields.TARGET   : DATA.Targets.ENEMY
+		}
+	},
+	{
+		DATA.ExpansionContentFields.NAME : "The Problewm \"Re-Solver\"", 
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.STATS : {
+			DATA.WeaponDescriptionFields.FLAVOR   : "range",
 			DATA.WeaponDescriptionFields.RANGE    : 100,
 			DATA.WeaponDescriptionFields.DAMAGE   : 100,
 			DATA.WeaponDescriptionFields.AMMO     : 10,

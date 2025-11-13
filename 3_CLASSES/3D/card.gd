@@ -8,6 +8,16 @@ const CARD_HEIGHT   : float = 3
 const NORMAL_SPEED  : float = 1.0
 const SKIPPING_SPEED: float = 3.0
 
+# element position consts
+const SPRITE_DEPTH         : float = 0.003
+const SPRITE_HEIGHT        : float = 0.625
+const SPRITE_FULLART_HEIGHT: float = 0.0
+const TEXT_DEPTH           : float = 0.006
+const TEXT_NAME_HEIGHT     : float = -0.3
+const TEXT_FLAVOR_HEIGHT   : float = -0.45
+const STATS_HEIGHT         : float = -1.25
+
+
 var ExpansionID : DATA.ExpansionIDs
 var Rarity      : DATA.Rarities
 var Type        : DATA.ContentTypes
@@ -15,6 +25,7 @@ var ContentIndex: int
 var Name : String
 var Img  : Texture2D
 var Stats: Dictionary
+var Core : MeshInstance3D
 
 var Animations : AnimationPlayer
 var Sprite     : Sprite3D
@@ -89,8 +100,15 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	set_name(plain_name+"_"+str(int(RNG.random_value()*1000)))
 	
 	# create mesh 
-	var new_mesh: Mesh = load("res://1_ASSETS/cards/basic_card_mesh.tres")
+	#var new_mesh: Mesh = load("res://1_ASSETS/cards/basic_card_mesh.tres")
+	var new_mesh: Mesh = load("res://1_ASSETS/cards/tres/frame.tres")
 	set_mesh(new_mesh)
+	
+	var new_core_mesh: Mesh = load("res://1_ASSETS/cards/tres/core_card.tres") if Rarity < DATA.Rarities.EPIC else load("res://1_ASSETS/cards/tres/core_card_full_art.tres")
+	Core = MeshInstance3D.new()
+	Core.set_name(plain_name + "_core_mesh")
+	Core.set_mesh(new_core_mesh)
+	add_child(Core)
 	
 	#create card text
 	var name_label = Label3D.new()
@@ -99,8 +117,8 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	name_label.set_render_priority(2)
 	name_label.set_outline_render_priority(1)
 	#name_label.set_material_override(text_mat)
-	name_label.position.y = -0.3
-	name_label.position.z = 0.011
+	name_label.position.y = TEXT_NAME_HEIGHT
+	name_label.position.z = TEXT_DEPTH
 	add_child(name_label)
 	
 	var flavor_label = Label3D.new()
@@ -114,14 +132,14 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	flavor_label.set_vertical_alignment(VERTICAL_ALIGNMENT_TOP)
 	flavor_label.set_autowrap_mode(TextServer.AUTOWRAP_WORD)
 	flavor_label.font = load("res://1_ASSETS/UI/italicize.tres")
-	flavor_label.position.y = -0.45
-	flavor_label.position.z = 0.011
+	flavor_label.position.y = TEXT_FLAVOR_HEIGHT
+	flavor_label.position.z = TEXT_DEPTH
 	add_child(flavor_label)
 	
 	StatDisplay = StatsDisplay.new(Type, Stats)
 	StatDisplay.set_name(plain_name+"_stats")
-	StatDisplay.position.y = -1.25
-	StatDisplay.position.z = 0.011
+	StatDisplay.position.y = STATS_HEIGHT
+	StatDisplay.position.z = TEXT_DEPTH
 	add_child(StatDisplay)
 	
 	# create sprite
@@ -130,8 +148,8 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	Sprite.set_texture_filter(BaseMaterial3D.TEXTURE_FILTER_NEAREST)
 	Sprite.set_texture(Img)
 	Sprite.set_pixel_size(2.0/Img.get_width())
-	Sprite.position.z = 0.001
-	Sprite.position.y = 0.625
+	Sprite.position.y = SPRITE_HEIGHT if Rarity < DATA.Rarities.EPIC else SPRITE_FULLART_HEIGHT
+	Sprite.position.z = SPRITE_DEPTH
 	add_child(Sprite)
 	
 	# create animation player
@@ -146,17 +164,19 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 
 func _change_material(shaded: bool) -> void:
 	if shaded and Rarity >= DATA.Rarities.EPIC:
-		StatDisplay._change_material(false)
 		var texture_seed = int(RNG.random_value()*0xBEEF)
 		var mat: ShaderMaterial = DATA.create_rarity_shader_material(Rarity, texture_seed)
 		var sprite_mat = DATA.create_sprite_shader_material(Sprite.texture, texture_seed)
 		set_surface_override_material(0, mat)
 		Sprite.set_material_override(sprite_mat)
+		StatDisplay._change_material(false)
 	else:
-		StatDisplay._change_material(true)
 		var mat: StandardMaterial3D = DATA.create_rarity_material(Rarity)
 		set_surface_override_material(0, mat)
 		Sprite.set_material_override(null)
+		StatDisplay._change_material(true)
+	var core_mat: StandardMaterial3D = DATA.create_rarity_material(Rarity)
+	Core.set_surface_override_material(0, core_mat)
 # ================ #
 # internal utility #
 # ================ #

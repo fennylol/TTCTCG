@@ -3,21 +3,23 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bbntkk7orj1fh"
-path="res://.godot/imported/paired_card.glb-2762983dc7d824e908a794f6f1d5001b.scn"
+uid="uid://btdjw43w04afe"
+path="res://.godot/imported/core_pair.glb-a5e6237024a47ed033f8d1ce3902e42a.scn"
 
 [deps]
 
-source_file="res://1_ASSETS/cards/paired_card.glb"
-dest_files=["res://.godot/imported/paired_card.glb-2762983dc7d824e908a794f6f1d5001b.scn"]
+source_file="res://1_ASSETS/cards/glbs/core_pair.glb"
+dest_files=["res://.godot/imported/core_pair.glb-a5e6237024a47ed033f8d1ce3902e42a.scn"]
 
 [params]
 
 nodes/root_type=""
 nodes/root_name=""
+nodes/root_script=null
 nodes/apply_root_scale=true
 nodes/root_scale=1.0
 nodes/import_as_skeleton_bones=false
+nodes/use_name_suffixes=true
 nodes/use_node_type_suffixes=true
 meshes/ensure_tangents=true
 meshes/generate_lods=true
@@ -32,6 +34,9 @@ animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
+materials/extract=0
+materials/extract_format=0
+materials/extract_path=""
 _subresources={}
-gltf/naming_version=1
+gltf/naming_version=2
 gltf/embedded_image_handling=1

@@ -14,7 +14,7 @@ enum CritterDescriptionFields    {FLAVOR, HEALTH, DAMAGE, SPEED, EYESIGHT, HEARI
 enum CritterNatures              {NORMAL, BRAVE, SKITTISH, HUNGRY, HELPFUL, VENGEFUL}
 enum ConsumableDescriptionFields {FLAVOR, RANGE, DAMAGE, AOE, TARGET}
 enum WeaponDescriptionFields     {FLAVOR, RANGE, DAMAGE, AMMO, ACCURACY, FIRERATE, TARGET}
-enum Targets                     {ENEMY, ALLY, TERRAIN}
+enum Targets                     {ENEMY, ALLY, TERRAIN, EVERYONELOL}
 ## the types of content. 
 enum ContentTypes                {CRITTER, CONSUMABLE, WEAPON}
 enum ContentSides                {TAKER, BAKER}
@@ -260,7 +260,7 @@ static func create_paired_rarity_shader_material(front_rarity: Rarities, back_ra
 		noise_texture.set_noise(noise)
 		
 		var material = ShaderMaterial.new()
-		material.shader = load("res://1_ASSETS/cards/holographic.gdshader")
+		material.shader = load("res://1_ASSETS/cards/shaders/holographic.gdshader")
 		material.set_shader_parameter("texture_albedo", texture)
 		material.set_shader_parameter("texture_noise", noise_texture)
 		
@@ -281,7 +281,7 @@ static func create_sprite_shader_material(texture : Texture, texture_seed: int) 
 		noise_texture.set_noise(noise)
 		
 		var material = ShaderMaterial.new()
-		material.shader = load("res://1_ASSETS/cards/holographic.gdshader")
+		material.shader = load("res://1_ASSETS/cards/shaders/holographic.gdshader")
 		material.set_shader_parameter("texture_albedo", texture)
 		material.set_shader_parameter("texture_noise", noise_texture)
 		THEBANK._check_in_material(mat_name, material)

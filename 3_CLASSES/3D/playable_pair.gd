@@ -108,9 +108,12 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	var plain_name: String = PairedName.replace(" ", "_").to_lower()
 	set_name(name+"_"+plain_name+"_"+str(int(RNG.random_value()*1000)))
 	
-	# create mesh 
-	var M: Mesh = load("res://1_ASSETS/cards/pair_with_uv.tres")
-	set_mesh(M)
+	var new_core_mesh: Mesh = load("res://1_ASSETS/cards/tres/core_pair.tres")               if Rarity <  DATA.Rarities.EPIC and PairedRarity <  DATA.Rarities.EPIC else \
+							  load("res://1_ASSETS/cards/tres/core_pair_true_full_art.tres") if Rarity >= DATA.Rarities.EPIC and PairedRarity >= DATA.Rarities.EPIC else \
+							  load("res://1_ASSETS/cards/tres/core_pair_full_art.tres")
+	Core.set_mesh(new_core_mesh)
+	Core.set_name(plain_name + "_core_mesh")
+	if (Rarity < DATA.Rarities.EPIC and PairedRarity >= DATA.Rarities.EPIC): Core.rotation.y += PI
 	
 	# create card text
 	#var text_mat = DATA.create_text_shader_material(0)
@@ -121,8 +124,8 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	name_label.set_outline_render_priority(1)
 	#name_label.set_material_override(text_mat)
 	name_label.rotation.y = PI
-	name_label.position.y = -0.3
-	name_label.position.z = -0.011
+	name_label.position.y = TEXT_NAME_HEIGHT
+	name_label.position.z = -TEXT_DEPTH
 	add_child(name_label)
 	
 	
@@ -138,15 +141,15 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	flavor_label.set_vertical_alignment(VERTICAL_ALIGNMENT_TOP)
 	flavor_label.set_autowrap_mode(TextServer.AUTOWRAP_WORD)
 	flavor_label.font = load("res://1_ASSETS/UI/italicize.tres")
-	flavor_label.position.y = -0.45
-	flavor_label.position.z = -0.011
+	flavor_label.position.y = TEXT_FLAVOR_HEIGHT
+	flavor_label.position.z = -TEXT_DEPTH
 	flavor_label.rotation.y = PI
 	add_child(flavor_label)
 	
 	PairedDisplay = StatsDisplay.new(Type, PairedStats)
 	PairedDisplay.set_name(plain_name+"_stats")
-	PairedDisplay.position.y = -1.25
-	PairedDisplay.position.z = -0.011
+	PairedDisplay.position.y = STATS_HEIGHT
+	PairedDisplay.position.z = -TEXT_DEPTH*1.1
 	PairedDisplay.rotation.y = PI
 	add_child(PairedDisplay)
 	
@@ -156,9 +159,8 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	PairedSprite.set_texture_filter(BaseMaterial3D.TEXTURE_FILTER_NEAREST)
 	PairedSprite.set_texture(PairedImg)
 	PairedSprite.set_pixel_size(2.0/PairedImg.get_width())
-	PairedSprite.position.z = -0.0055
-	Sprite.position.z = 0.0055
-	PairedSprite.position.y = 0.625
+	PairedSprite.position.y = SPRITE_HEIGHT if PairedRarity < DATA.Rarities.EPIC else SPRITE_FULLART_HEIGHT
+	PairedSprite.position.z = -SPRITE_DEPTH
 	PairedSprite.rotation.y = PI
 	add_child(PairedSprite)
 	
@@ -169,20 +171,22 @@ func _change_material(shaded: bool) -> void:
 				   PairedRarity >= DATA.Rarities.EPIC):
 		var texture_seed = int(RNG.random_value()*0xBEEF)
 		var mat: ShaderMaterial = DATA.create_paired_rarity_shader_material(Rarity, PairedRarity, texture_seed) 
-		var sprite_mat = DATA.create_sprite_shader_material(Sprite.texture, texture_seed)
-		var paired_sprite_mat = DATA.create_sprite_shader_material(PairedSprite.texture, texture_seed)
+		#var sprite_mat = DATA.create_sprite_shader_material(Sprite.texture, texture_seed)
+		#var paired_sprite_mat = DATA.create_sprite_shader_material(PairedSprite.texture, texture_seed)
 		set_surface_override_material(0, mat)
-		Sprite.set_material_override(sprite_mat)
-		PairedSprite.set_material_override(paired_sprite_mat)
-		StatDisplay._change_material(true)
-		PairedDisplay._change_material(true)
+		#Sprite.set_material_override(sprite_mat)
+		#PairedSprite.set_material_override(paired_sprite_mat)
+		StatDisplay._change_material(false)
+		PairedDisplay._change_material(false)
 	else:
 		var mat: StandardMaterial3D = DATA.create_paired_rarity_material(Rarity, PairedRarity) 
 		set_surface_override_material(0, mat)
 		Sprite.set_material_override(null)
 		PairedSprite.set_material_override(null)
-		StatDisplay._change_material(false)
-		PairedDisplay._change_material(false)
+		StatDisplay._change_material(true)
+		PairedDisplay._change_material(true)
+	var core_mat: StandardMaterial3D = DATA.create_paired_rarity_material(Rarity, PairedRarity) 
+	Core.set_surface_override_material(0, core_mat)
 # ================ #
 # internal utility #
 # ================ #

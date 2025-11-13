@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode blend_mix, depth_prepass_alpha, depth_draw_opaque, diffuse_burley, specular_schlick_ggx, cull_disabled;
+render_mode depth_prepass_alpha, depth_draw_always, blend_mix, diffuse_burley, specular_schlick_ggx; //, cull_disabled;
 uniform float color_compression = 8.0;
 uniform sampler2D texture_albedo : source_color, filter_nearest;
 
@@ -45,6 +45,7 @@ void fragment() {
 	ROUGHNESS = 1.0;
 	METALLIC = 1.0;
 	
+	ALPHA_SCISSOR_THRESHOLD = 0.5;
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 
