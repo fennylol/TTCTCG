@@ -592,7 +592,7 @@ func EPIC_CRITTER() -> void: pass
 const EPIC_CRITTERS: Array[Dictionary] = [
 	{
 		DATA.ExpansionContentFields.NAME : "oops", 
-		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops_fullart.png"),
 		DATA.ExpansionContentFields.STATS : {
 			DATA.CritterDescriptionFields.FLAVOR   : "a critter named oops (epic)",
 			DATA.CritterDescriptionFields.HEALTH   : 100,
@@ -611,7 +611,7 @@ func EPIC_CONSUMABLE() -> void: pass
 const EPIC_CONSUMABLES: Array[Dictionary] = [
 	{
 		DATA.ExpansionContentFields.NAME : "oops", 
-		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops_fullart.png"),
 		DATA.ExpansionContentFields.STATS : {
 			DATA.ConsumableDescriptionFields.FLAVOR : "a consumable named oops",
 			DATA.ConsumableDescriptionFields.RANGE  : 100,
@@ -628,7 +628,7 @@ func EPIC_WEAPON() -> void: pass
 const EPIC_WEAPONS: Array[Dictionary] = [
 	{
 		DATA.ExpansionContentFields.NAME : "oops", 
-		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops_fullart.png"),
 		DATA.ExpansionContentFields.STATS : {
 			DATA.WeaponDescriptionFields.FLAVOR   : "a weapon named oops",
 			DATA.WeaponDescriptionFields.RANGE    : 100,
@@ -649,7 +649,7 @@ func LEGENDARY_CRITTER() -> void: pass
 const LEGENDARY_CRITTERS: Array[Dictionary] = [
 	{
 		DATA.ExpansionContentFields.NAME : "oops", 
-		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops_fullart.png"),
 		DATA.ExpansionContentFields.STATS : {
 			DATA.CritterDescriptionFields.FLAVOR   : "a critter named oops",
 			DATA.CritterDescriptionFields.HEALTH   : 100,
@@ -668,7 +668,7 @@ func LEGENDARY_CONSUMABLE() -> void: pass
 const LEGENDARY_CONSUMABLES: Array[Dictionary] = [
 	{
 		DATA.ExpansionContentFields.NAME : "oops", 
-		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops_fullart.png"),
 		DATA.ExpansionContentFields.STATS : {
 			DATA.ConsumableDescriptionFields.FLAVOR : "a consumable named oops",
 			DATA.ConsumableDescriptionFields.RANGE  : 100,
@@ -685,7 +685,7 @@ func LEGENDARY_WEAPON() -> void: pass
 const LEGENDARY_WEAPONS: Array[Dictionary] = [
 	{
 		DATA.ExpansionContentFields.NAME : "oops", 
-		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops_fullart.png"),
 		DATA.ExpansionContentFields.STATS : {
 			DATA.WeaponDescriptionFields.FLAVOR   : "a weapon named oops",
 			DATA.WeaponDescriptionFields.RANGE    : 100,
@@ -706,7 +706,7 @@ func HOLY_MOLY_CRITTER() -> void: pass
 const HOLY_MOLY_CRITTERS: Array[Dictionary] = [
 	{
 		DATA.ExpansionContentFields.NAME : "oops", 
-		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops_fullart.png"),
 		DATA.ExpansionContentFields.STATS : {
 			DATA.CritterDescriptionFields.FLAVOR   : "a critter named oops",
 			DATA.CritterDescriptionFields.HEALTH   : 100,
@@ -725,7 +725,7 @@ func HOLY_MOLY_CONSUMABLE() -> void: pass
 const HOLY_MOLY_CONSUMABLES: Array[Dictionary] = [
 	{
 		DATA.ExpansionContentFields.NAME : "oops", 
-		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops_fullart.png"),
 		DATA.ExpansionContentFields.STATS : {
 			DATA.ConsumableDescriptionFields.FLAVOR : "a consumable named oops",
 			DATA.ConsumableDescriptionFields.RANGE  : 100,
@@ -742,7 +742,7 @@ func HOLY_MOLY_WEAPON() -> void: pass
 const HOLY_MOLY_WEAPONS: Array[Dictionary] = [
 	{
 		DATA.ExpansionContentFields.NAME : "oops", 
-		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops_fullart.png"),
 		DATA.ExpansionContentFields.STATS : {
 			DATA.WeaponDescriptionFields.FLAVOR   : "a weapon named oops",
 			DATA.WeaponDescriptionFields.RANGE    : 100,

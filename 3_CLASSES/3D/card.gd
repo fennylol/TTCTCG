@@ -175,6 +175,13 @@ func _change_material(shaded: bool) -> void:
 		set_surface_override_material(0, mat)
 		Sprite.set_material_override(null)
 		StatDisplay._change_material(true)
+	
+	if shaded and (Rarity == DATA.Rarities.RARE or \
+				   Rarity == DATA.Rarities.HOLY_MOLY):
+		StatDisplay._change_material(true)
+	else:
+		StatDisplay._change_material(false)
+	
 	var core_mat: StandardMaterial3D = DATA.create_rarity_material(Rarity)
 	Core.set_surface_override_material(0, core_mat)
 # ================ #

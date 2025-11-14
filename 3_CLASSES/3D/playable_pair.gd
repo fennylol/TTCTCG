@@ -128,8 +128,6 @@ func _init(Expansion_ID: DATA.ExpansionIDs, Content_Rarity: DATA.Rarities, Conte
 	name_label.position.z = -TEXT_DEPTH
 	add_child(name_label)
 	
-	
-
 	var flavor_label = Label3D.new()
 	flavor_label.set_text(PairedStats[DATA.CritterDescriptionFields.FLAVOR])
 	flavor_label.set_name(plain_name+"_flavor")
@@ -176,16 +174,24 @@ func _change_material(shaded: bool) -> void:
 		set_surface_override_material(0, mat)
 		#Sprite.set_material_override(sprite_mat)
 		#PairedSprite.set_material_override(paired_sprite_mat)
-		StatDisplay._change_material(false)
-		PairedDisplay._change_material(false)
 	else:
 		var mat: StandardMaterial3D = DATA.create_paired_rarity_material(Rarity, PairedRarity) 
 		set_surface_override_material(0, mat)
 		Sprite.set_material_override(null)
 		PairedSprite.set_material_override(null)
+	
+	if shaded and (Rarity == DATA.Rarities.RARE or \
+				   Rarity == DATA.Rarities.HOLY_MOLY or \
+				   PairedRarity == DATA.Rarities.RARE or\
+				   PairedRarity == DATA.Rarities.HOLY_MOLY):
 		StatDisplay._change_material(true)
 		PairedDisplay._change_material(true)
-	var core_mat: StandardMaterial3D = DATA.create_paired_rarity_material(Rarity, PairedRarity) 
+	else:
+		StatDisplay._change_material(false)
+		PairedDisplay._change_material(false)
+	var core_mat: StandardMaterial3D =  DATA.create_paired_rarity_material(PairedRarity, Rarity) \
+										if Rarity < DATA.Rarities.EPIC and PairedRarity >= DATA.Rarities.EPIC else \
+										DATA.create_paired_rarity_material(Rarity, PairedRarity)
 	Core.set_surface_override_material(0, core_mat)
 # ================ #
 # internal utility #
