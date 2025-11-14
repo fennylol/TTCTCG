@@ -15,7 +15,11 @@ func _ready() -> void:
 	var LogFilePath: String = LogsDirPath + "/" + get_time(true) + ".log"
 	DirAccess.make_dir_recursive_absolute(LogsDirPath)
 	LogFile = FileAccess.open(LogFilePath , FileAccess.WRITE)
-	log_msg("Session Began", Flags.MSG)
+	log_msg("Session Began:   " +
+			"FILE_FLUSHING_ENABLED - "  + str(FILE_FLUSHING_ENABLED).to_upper()  + "   " +
+			"FILE_LOGGING_ENABLED - "   + str(FILE_LOGGING_ENABLED).to_upper()   + "   " +
+			"STDOUT_LOGGING_ENABLED - " + str(STDOUT_LOGGING_ENABLED).to_upper() + "   " +
+			"TOAST_LOGGING_ENABLED - "  + str(TOAST_LOGGING_ENABLED).to_upper())
 	
 	MessageBoard = CenterContainer.new()
 	MessageBoard.set_name("MessageBoard")

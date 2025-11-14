@@ -72,13 +72,24 @@ func _add_card_to_deck(card_dict: Dictionary) -> void:
 		target.remove_child(kill)
 		kill.queue_free()
 		
-		var img: Texture2D =  stitch_textures_vertical(card.Img, card.PairedImg) if card is PlayablePair else card.Img 
+		var img: Texture2D =  stitch_textures_diagonal(card.Img, card.PairedImg) if card is PlayablePair else card.Img 
 		var texture_rect := TextureRect.new()
 		texture_rect.name = card.Name
 		texture_rect.texture = img
 		texture_rect.expand_mode = TextureRect.EXPAND_FIT_HEIGHT_PROPORTIONAL
 		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		texture_rect.size_flags_horizontal |= Control.SIZE_EXPAND
+		
+		#var card_label: Label = Label.new()
+		#card_label.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+		#card_label.set_horizontal_alignment(HORIZONTAL_ALIGNMENT_CENTER)
+		#card_label.set_vertical_alignment(VERTICAL_ALIGNMENT_CENTER)
+		#card_label.set_autowrap_mode(TextServer.AUTOWRAP_ARBITRARY)
+		#card_label.set_text(card.Name + (" and " + card.PairedName if card is PlayablePair else ""))
+		#texture_rect.add_child(card_label)
+		#card_label.mouse_entered.connect(func(): print("wawawa");card_label.set_visible(true))
+		#card_label.mouse_exited.connect(func(): card_label.set_visible(false))
+		#card_label.set_visible(false)
 		
 		var tex_rect_button := Button.new()
 		tex_rect_button.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
@@ -157,6 +168,33 @@ func stitch_textures_vertical(top_texture: Texture2D, bottom_texture: Texture2D)
 	var result_texture = ImageTexture.new()
 	result_texture.set_image(combined_image)
 	
+	return result_texture
+func stitch_textures_diagonal(top_texture: Texture2D, bottom_texture: Texture2D) -> ImageTexture:
+	var top_image = top_texture.get_image()
+	var bottom_image = bottom_texture.get_image()
+	
+	var top_size = top_image.get_size()
+	var bottom_size = bottom_image.get_size()
+	
+	# Use minimum dimensions
+	var square_size = min(min(top_size.x, top_size.y), min(bottom_size.x, bottom_size.y))
+	
+	var combined_image = Image.create(square_size, square_size, false, top_image.get_format())
+	
+	# Trim and copy
+	for y in range(square_size):
+		for x in range(square_size):
+			if x + y < square_size:
+				# Top image: trim from bottom-right (start from 0,0)
+				combined_image.set_pixel(x, y, top_image.get_pixel(x, y))
+			else:
+				# Bottom image: trim from top-left (offset by excess)
+				var offset_x = bottom_size.x - square_size
+				var offset_y = bottom_size.y - square_size
+				combined_image.set_pixel(x, y, bottom_image.get_pixel(x + offset_x, y + offset_y))
+	
+	var result_texture = ImageTexture.new()
+	result_texture.set_image(combined_image)
 	return result_texture
 func kill_the_child() -> void: 
 	for i in range(get_child_count()): 

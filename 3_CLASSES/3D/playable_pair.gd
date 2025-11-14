@@ -202,11 +202,18 @@ func _notification(what: int) -> void:
 		PairedSprite.queue_free()
 
 func _disable():
-	super._disable()
-	
 	var img = Sprite.texture.get_image()
 	img.convert(Image.Format.FORMAT_L8)
 	Sprite.set_texture(ImageTexture.create_from_image(img))
+	
+	var paired_img = PairedSprite.texture.get_image()
+	paired_img.convert(Image.Format.FORMAT_LA8)
+	PairedSprite.set_texture(ImageTexture.create_from_image(paired_img))
+	
 	@warning_ignore("int_as_enum_without_match")
-	var mat: StandardMaterial3D = DATA.create_paired_rarity_material(6 as DATA.Rarities, 6 as DATA.Rarities) 
+	var mat: StandardMaterial3D = DATA.create_rarity_material(6 as DATA.Rarities)
 	set_surface_override_material(0, mat)
+	Core.set_surface_override_material(0, mat)
+	
+	StatDisplay._disable()
+	PairedDisplay._disable()

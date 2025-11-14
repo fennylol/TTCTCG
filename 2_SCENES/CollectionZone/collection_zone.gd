@@ -217,6 +217,8 @@ func _to_content_collection_rename_deck(new_name: String)         -> void:
 func _on_visibility_changed() -> void: UI.set_visible(visible)
 
 func change_view_state(new_state: ViewStates) -> void:
+	LOGGER.log_msg("CollectionZone.gd - change_view_state(): changing ViewDtate to " + ViewStates.find_key(new_state))
+	
 	if !(new_state == ViewStates.COLLECTIONCARDDISPLAY or \
 		 new_state == ViewStates.DECKLISTCARDDISPLAY):
 		empty_display_zone()

@@ -154,6 +154,28 @@ const COMMON_CONSUMABLES: Array[Dictionary] = [
 			DATA.ConsumableDescriptionFields.AOE    : 5.5,
 			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.EVERYONELOL
 		}
+	},
+	{
+		DATA.ExpansionContentFields.NAME : "Boom Box", 
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.STATS : {
+			DATA.ConsumableDescriptionFields.FLAVOR : "Beats so annoying your enemies will feel compelled to turn them off!",
+			DATA.ConsumableDescriptionFields.RANGE  : 5,
+			DATA.ConsumableDescriptionFields.DAMAGE : 0,
+			DATA.ConsumableDescriptionFields.AOE    : 5.5,
+			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.ENEMY
+		}
+	},
+	{
+		DATA.ExpansionContentFields.NAME : "Target Dummy", 
+		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
+		DATA.ExpansionContentFields.STATS : {
+			DATA.ConsumableDescriptionFields.FLAVOR : "Hollywood quality visuals",
+			DATA.ConsumableDescriptionFields.RANGE  : 5,
+			DATA.ConsumableDescriptionFields.DAMAGE : 0,
+			DATA.ConsumableDescriptionFields.AOE    : 5.5,
+			DATA.ConsumableDescriptionFields.TARGET : DATA.Targets.ENEMY
+		}
 	}
 ]
 
@@ -573,7 +595,7 @@ const RARE_WEAPONS: Array[Dictionary] = [
 		DATA.ExpansionContentFields.NAME : "The Problewm \"Re-Solver\"", 
 		DATA.ExpansionContentFields.IMAGE : preload("res://1_ASSETS/cards/art/oops.png"),
 		DATA.ExpansionContentFields.STATS : {
-			DATA.WeaponDescriptionFields.FLAVOR   : "range",
+			DATA.WeaponDescriptionFields.FLAVOR   : "solve them again.",
 			DATA.WeaponDescriptionFields.RANGE    : 100,
 			DATA.WeaponDescriptionFields.DAMAGE   : 100,
 			DATA.WeaponDescriptionFields.AMMO     : 10,

@@ -76,53 +76,10 @@ func _change_material(shaded: bool) -> void:
 	else:
 		for sprite in get_children():
 			sprite.set_material_override(null)
-#
-#match Type:
-		#DATA.ContentTypes.CRITTER:
-			#assert(StatsDict.keys().has(DATA.CritterDescriptionFields.FLAVOR),   "card.gd - get_stats_string(): CritterDescriptionFields.FLAVOR does not exist")
-			#assert(StatsDict.keys().has(DATA.CritterDescriptionFields.HEALTH),   "card.gd - get_stats_string(): CritterDescriptionFields.HEALTH does not exist")
-			#assert(StatsDict.keys().has(DATA.CritterDescriptionFields.SPEED),    "card.gd - get_stats_string(): CritterDescriptionFields.SPEED does not exist")
-			#assert(StatsDict.keys().has(DATA.CritterDescriptionFields.DAMAGE),   "card.gd - get_stats_string(): CritterDescriptionFields.DAMAGE does not exist")
-			#assert(StatsDict.keys().has(DATA.CritterDescriptionFields.EYESIGHT), "card.gd - get_stats_string(): CritterDescriptionFields.EYESIGHT does not exist")
-			#assert(StatsDict.keys().has(DATA.CritterDescriptionFields.HEARING),  "card.gd - get_stats_string(): CritterDescriptionFields.HEARING does not exist")
-			#assert(StatsDict.keys().has(DATA.CritterDescriptionFields.NATURE),   "card.gd - get_stats_string(): CritterDescriptionFields.NATURE does not exist")
-			#var min_len: int = 8 # the legnth of DATA.CritterDescriptionFields.NATURE.SKITTISH
-			#if StringA: 
-				#return  "HP:  "+str(StatsDict[DATA.CritterDescriptionFields.HEALTH]).rpad(min_len)+"\n"+\
-						#"SPD: "+str(StatsDict[DATA.CritterDescriptionFields.SPEED]).rpad(min_len) +"\n"+\
-						#"DMG: "+str(StatsDict[DATA.CritterDescriptionFields.DAMAGE]).rpad(min_len)
-			#else:
-				#return  "EYE:  "+str(                             StatsDict[DATA.CritterDescriptionFields.EYESIGHT]).lpad(min_len)+"\n"+\
-						#"HEAR: "+str(                             StatsDict[DATA.CritterDescriptionFields.HEARING]).lpad(min_len) +"\n"+\
-						#"NAT:  "+str(DATA.CritterNatures.find_key(StatsDict[DATA.CritterDescriptionFields.NATURE])).lpad(min_len)
-		#DATA.ContentTypes.CONSUMABLE:
-			#assert(StatsDict.keys().has(DATA.ConsumableDescriptionFields.FLAVOR), "card.gd - get_stats_string(): ConsumableDescriptionFields.FLAVOR does not exist.")
-			#assert(StatsDict.keys().has(DATA.ConsumableDescriptionFields.RANGE),  "card.gd - get_stats_string(): ConsumableDescriptionFields.RANGE does not exist.")
-			#assert(StatsDict.keys().has(DATA.ConsumableDescriptionFields.DAMAGE), "card.gd - get_stats_string(): ConsumableDescriptionFields.DAMAGE does not exist.")
-			#assert(StatsDict.keys().has(DATA.ConsumableDescriptionFields.AOE),    "card.gd - get_stats_string(): ConsumableDescriptionFields.AOE does not exist.")
-			#assert(StatsDict.keys().has(DATA.ConsumableDescriptionFields.TARGET), "card.gd - get_stats_string(): ConsumableDescriptionFields.TARGET does not exist.")
-			#var min_len: int = 7 # the legnth of DATA.Targets.TERRAIN
-			#if StringA: 
-				#return  "RNG: "+str(StatsDict[DATA.ConsumableDescriptionFields.RANGE]).rpad(min_len)+"\n"+\
-						#"DMG: "+str(StatsDict[DATA.ConsumableDescriptionFields.DAMAGE]).rpad(min_len)
-			#else:
-				#return  "AOE: "+str(                      StatsDict[DATA.ConsumableDescriptionFields.AOE]).lpad(min_len)+"\n"+\
-						#"TGT: "+str(DATA.Targets.find_key(StatsDict[DATA.ConsumableDescriptionFields.TARGET])).lpad(min_len)
-				#
-		#DATA.ContentTypes.WEAPON:
-			#assert(StatsDict.keys().has(DATA.WeaponDescriptionFields.FLAVOR),   "card.gd - get_stats_string(): WeaponDescriptionFields.FLAVOR does not exist")
-			#assert(StatsDict.keys().has(DATA.WeaponDescriptionFields.RANGE),    "card.gd - get_stats_string(): WeaponDescriptionFields.RANGE does not exist")
-			#assert(StatsDict.keys().has(DATA.WeaponDescriptionFields.DAMAGE),   "card.gd - get_stats_string(): WeaponDescriptionFields.DAMAGE does not exist")
-			#assert(StatsDict.keys().has(DATA.WeaponDescriptionFields.AMMO),     "card.gd - get_stats_string(): WeaponDescriptionFields.AMMO does not exist")
-			#assert(StatsDict.keys().has(DATA.WeaponDescriptionFields.ACCURACY), "card.gd - get_stats_string(): WeaponDescriptionFields.ACCURACY does not exist")
-			#assert(StatsDict.keys().has(DATA.WeaponDescriptionFields.FIRERATE), "card.gd - get_stats_string(): WeaponDescriptionFields.FIRERATE does not exist")
-			#assert(StatsDict.keys().has(DATA.WeaponDescriptionFields.TARGET),   "card.gd - get_stats_string(): WeaponDescriptionFields.TARGET does not exist")
-			#var min_len: int = 7 # the legnth of DATA.Targets.TERRAIN
-			#if StringA: 
-				#return  "RNG: "+str(StatsDict[DATA.WeaponDescriptionFields.RANGE]).rpad(min_len)+"\n"+\
-						#"DMG: "+str(StatsDict[DATA.WeaponDescriptionFields.DAMAGE]).rpad(min_len) +"\n"+\
-						#"AMO: "+str(StatsDict[DATA.WeaponDescriptionFields.AMMO]).rpad(min_len)
-			#else:
-				#return  "ACC: "+str(                      StatsDict[DATA.WeaponDescriptionFields.ACCURACY]).lpad(min_len)+"\n"+\
-						#"RPM: "+str(                      StatsDict[DATA.WeaponDescriptionFields.FIRERATE]).lpad(min_len) +"\n"+\
-						#"TGT: "+str(DATA.Targets.find_key(StatsDict[DATA.WeaponDescriptionFields.TARGET])).lpad(min_len)
+
+func _disable():
+	for sprite in get_children():
+		var img = sprite.texture.get_image()
+		img.convert(Image.Format.FORMAT_LA8)
+		sprite.set_texture(ImageTexture.create_from_image(img))
+		#sprite.get_child(0).queue_free()

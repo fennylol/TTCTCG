@@ -163,7 +163,7 @@ static func get_color_from_rarity(Rarity: Rarities) -> Color:
 	return RarityColors[Rarity]
 
 static func create_rarity_material(rarity: Rarities) -> StandardMaterial3D:
-	var mat_name: String = Rarities.find_key(rarity)+"_flat"
+	var mat_name: String = Rarities.find_key(rarity)+"_flat" if rarity != 6 else "disabled_flat"
 	if not THEBANK._check_material(mat_name): 
 		var color: Color = get_color_from_rarity(rarity)
 		var img_size: int = 64

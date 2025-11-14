@@ -77,10 +77,10 @@ func display_content_list() -> void:
 		
 		var excluded: bool = false
 		for excluded_card in excludes:
-			excluded = excluded or (                                                           card.Name       == excluded_card.Name      )
-			excluded = excluded or (card is PlayablePair and                                   card.PairedName == excluded_card.Name      )
-			excluded = excluded or (                         excluded_card is PlayablePair and card.Name       == excluded_card.PairedName)
-			excluded = excluded or (card is PlayablePair and excluded_card is PlayablePair and card.PairedName == excluded_card.PairedName)
+			excluded = excluded or (                                                           (card.Name       == excluded_card.Name       and card.ExpansionID       == excluded_card.ExpansionID      ))
+			excluded = excluded or (card is PlayablePair and                                   (card.PairedName == excluded_card.Name       and card.PairedExpansionID == excluded_card.ExpansionID      ))
+			excluded = excluded or (                         excluded_card is PlayablePair and (card.Name       == excluded_card.PairedName and card.ExpansionID       == excluded_card.PairedExpansionID))
+			excluded = excluded or (card is PlayablePair and excluded_card is PlayablePair and (card.PairedName == excluded_card.PairedName and card.PairedExpansionID == excluded_card.PairedExpansionID))
 		
 		var ch: ContentHolder = display_content(card)
 		if excluded: card._disable()

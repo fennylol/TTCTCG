@@ -189,12 +189,15 @@ func _change_material(shaded: bool) -> void:
 # ================ #
 func _disable():
 	var img = Sprite.texture.get_image()
-	img.convert(Image.Format.FORMAT_L8)
+	img.convert(Image.Format.FORMAT_LA8)
 	Sprite.set_texture(ImageTexture.create_from_image(img))
 	
 	@warning_ignore("int_as_enum_without_match")
 	var mat: StandardMaterial3D = DATA.create_rarity_material(6 as DATA.Rarities)
 	set_surface_override_material(0, mat)
+	Core.set_surface_override_material(0, mat)
+	
+	StatDisplay._disable()
 
 func play_anim(AnimName : StringName):
 	Animations.play(AnimName)
