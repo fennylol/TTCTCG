@@ -46,8 +46,8 @@
 
 
 const EXPANSION_DATA: Dictionary = {
-	DATA.ExpansionDataFields.PACK_RARITY_ODDS : [0.564, 0.248, 0.109, 0.048, 0.021, 0.010], # exponential, B=0.44
-	DATA.ExpansionDataFields.CONTENT_RARITY_ODDS : [
+	DATA.ProbabilityCurveFields.PACK_RARITY_ODDS : [0.564, 0.248, 0.109, 0.048, 0.021, 0.010], # exponential, B=0.44
+	DATA.ProbabilityCurveFields.CONTENT_RARITY_ODDS : [
 		[0.357, 0.341, 0.202, 0.080, 0.018, 0.002], # beta, A=2.05, S=4.25
 		[0.287, 0.344, 0.235, 0.105, 0.026, 0.003], # beta, A=2.35, S=4.15
 		[0.224, 0.336, 0.266, 0.133, 0.037, 0.004], # beta, A=2.65, S=4.05
@@ -55,7 +55,7 @@ const EXPANSION_DATA: Dictionary = {
 		[0.125, 0.294, 0.310, 0.196, 0.068, 0.007], # beta, A=3.25, S=3.85
 		[0.090, 0.264, 0.321, 0.227, 0.088, 0.010]  # beta, A=3.55, S=3.75
 	],
-	DATA.ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
+	DATA.ProbabilityCurveFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
 }
 
 func COMMON_CRITTER() -> void: pass

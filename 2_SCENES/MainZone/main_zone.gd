@@ -14,17 +14,12 @@ func _ready() -> void:
 	get_tree().set_auto_accept_quit(false)
 	
 	set_visible_element(Elements.MAINMENU)
-	#DATA.DEBUG_print_expansion_EVs(DATA.ExpansionIDs.INCHEFTION)
-	#PackZone.DEBUG_roll_pack_odds(DATA.ExpansionIDs.INCHEFTION)
-	#PackZone.DEBUG_roll_booster_box_odds(DATA.ExpansionIDs.INCHEFTION)
 	
-	#DATA.DEBUG_print_expansion_EVs(DATA.ExpansionIDs.TEST_SET)
-	#PackZone.DEBUG_roll_pack_odds(DATA.ExpansionIDs.TEST_SET)
-	#PackZone.DEBUG_roll_booster_box_odds(DATA.ExpansionIDs.TEST_SET)
-	
-	#DATA.DEBUG_print_expansion_EVs(DATA.ExpansionIDs.OTHER_SET)
-	#PackZone.DEBUG_roll_pack_odds(DATA.ExpansionIDs.OTHER_SET)
-	#PackZone.DEBUG_roll_booster_box_odds(DATA.ExpansionIDs.OTHER_SET)
+	DATA.DEBUG_print_prob_curve_EVs(DATA.Probabilities.BRUTAL)
+	DATA.DEBUG_print_prob_curve_EVs(DATA.Probabilities.CURRENT_IDEAL)
+	PackZone.DEBUG_roll_pack_odds(DATA.ExpansionIDs.INCHEFTION, 1000)
+	PackZone.DEBUG_roll_pack_odds(DATA.ExpansionIDs.GASTROARCHEOLOGY, 1000)
+
 # ========= #
 # pack zone #
 # ========= #

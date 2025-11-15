@@ -6,8 +6,6 @@ class_name DATA
 enum Rarities                    {COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, HOLY_MOLY}
 ## the internal IDs for each expansion
 enum ExpansionIDs                {GASTROARCHEOLOGY, INCHEFTION}
-## the fields of [member ExpansionData] 
-enum ExpansionDataFields         {PACK_RARITY_ODDS, CONTENT_RARITY_ODDS, PACK_RARITY_CONTENT_COUNTS}
 ## the fields of [member ExpansionContent]
 enum ExpansionContentFields      {NAME, IMAGE, STATS}
 enum CritterDescriptionFields    {FLAVOR, HEALTH, DAMAGE, SPEED, EYESIGHT, HEARING, NATURE}
@@ -19,43 +17,91 @@ enum Targets                     {ENEMY, ALLY, TERRAIN, EVERYONELOL}
 enum ContentTypes                {CRITTER, CONSUMABLE, WEAPON}
 enum ContentSides                {TAKER, BAKER}
 
+enum Probabilities {ORIGINAL, MOD_RARE, CURRENT_IDEAL, BRUTAL}
+enum ProbabilityCurveFields         {PACK_RARITY_ODDS, CONTENT_RARITY_ODDS, PACK_RARITY_CONTENT_COUNTS}
+const ProbabilityCurves: Dictionary = {
+	Probabilities.ORIGINAL : {
+		DATA.ProbabilityCurveFields.PACK_RARITY_ODDS : [0.564, 0.248, 0.109, 0.048, 0.021, 0.010], # exponential, B=0.44
+		DATA.ProbabilityCurveFields.CONTENT_RARITY_ODDS : [
+			[0.389, 0.278, 0.179, 0.100, 0.044, 0.010], # beta, A=1.05, S=2
+			[0.275, 0.277, 0.220, 0.142, 0.069, 0.017], # beta, A=1.55, S=2
+			[0.180, 0.257, 0.249, 0.186, 0.101, 0.027], # beta, A=2.05, S=2
+			[0.110, 0.221, 0.263, 0.227, 0.138, 0.041], # beta, A=2.55, S=2
+			[0.063, 0.180, 0.261, 0.261, 0.177, 0.058], # beta, A=3.05, S=2
+			[0.035, 0.139, 0.247, 0.285, 0.216, 0.078]  # beta, A=3.55, S=2
+		],
+		DATA.ProbabilityCurveFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
+	},
+	Probabilities.MOD_RARE : {
+		DATA.ProbabilityCurveFields.PACK_RARITY_ODDS : [0.564, 0.248, 0.109, 0.048, 0.021, 0.010], # exponential, B=0.44
+		DATA.ProbabilityCurveFields.CONTENT_RARITY_ODDS : [
+			[0.357, 0.341, 0.202, 0.080, 0.018, 0.002], # beta, A=2.05, S=4.25
+			[0.287, 0.344, 0.235, 0.105, 0.026, 0.003], # beta, A=2.35, S=4.15
+			[0.224, 0.336, 0.266, 0.133, 0.037, 0.004], # beta, A=2.65, S=4.05
+			[0.170, 0.319, 0.291, 0.164, 0.051, 0.005], # beta, A=2.95, S=3.95
+			[0.125, 0.294, 0.310, 0.196, 0.068, 0.007], # beta, A=3.25, S=3.85
+			[0.090, 0.264, 0.321, 0.227, 0.088, 0.010]  # beta, A=3.55, S=3.75
+		],
+		DATA.ProbabilityCurveFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
+	},
+	Probabilities.CURRENT_IDEAL : {
+		DATA.ProbabilityCurveFields.PACK_RARITY_ODDS : [0.564, 0.248, 0.109, 0.048, 0.021, 0.010], # exponential, B=0.44
+		DATA.ProbabilityCurveFields.CONTENT_RARITY_ODDS : [
+			[0.4528, 0.3157, 0.1600, 0.0583, 0.0125, 0.0007], # beta, A=1.53, S=3.92, N=7.9
+			[0.4058, 0.3272, 0.1805, 0.0699, 0.0157, 0.0009], # beta, A=1.74, S=3.92, N=7.9
+			[0.3595, 0.3354, 0.2015, 0.0829, 0.0195, 0.0012], # beta, A=1.95, S=3.92, N=7.9
+			[0.3150, 0.3400, 0.2223, 0.0972, 0.0240, 0.0015], # beta, A=2.16, S=3.92, N=7.9
+			[0.2730, 0.3406, 0.2426, 0.1127, 0.0291, 0.0020], # beta, A=2.37, S=3.92, N=7.9
+			[0.2339, 0.3376, 0.2619, 0.1291, 0.0350, 0.0025]  # beta, A=2.58, S=3.92, N=7.9
+		],
+		DATA.ProbabilityCurveFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
+	},
+	Probabilities.BRUTAL : {
+		DATA.ProbabilityCurveFields.PACK_RARITY_ODDS : [0.564, 0.248, 0.109, 0.048, 0.021, 0.010], # exponential, B=0.44
+		DATA.ProbabilityCurveFields.CONTENT_RARITY_ODDS : [
+			[0.4251, 0.3195, 0.1743, 0.0671, 0.0137, 0.0003], # beta, A=1.53, S=3.2, N=7.42
+			[0.3782, 0.3290, 0.1954, 0.0171, 0.0799, 0.0004], # beta, A=1.74, S=3.2, N=7.42
+			[0.3329, 0.3348, 0.2166, 0.0941, 0.0211, 0.0005], # beta, A=1.95, S=3.2, N=7.42
+			[0.2897, 0.3370, 0.2374, 0.1095, 0.0258, 0.0006], # beta, A=2.16, S=3.2, N=7.42
+			[0.2492, 0.3354, 0.2573, 0.1261, 0.0312, 0.0008], # beta, A=2.37, S=3.2, N=7.42
+			[0.2122, 0.3303, 0.2758, 0.1436, 0.0371, 0.0010]  # beta, A=2.58, S=3.2, N=7.42
+		],
+		DATA.ProbabilityCurveFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
+	}
+}
+
 ## metadata about expansions. contains pack and content rarity and content count per pack.[br]
 ## see [member ExpansionContent] for pack contents. 
-const ExpansionData: Dictionary = {
-	ExpansionIDs.INCHEFTION       : IncheftionData.EXPANSION_DATA,
-	ExpansionIDs.GASTROARCHEOLOGY : GastroArcheologyData.EXPANSION_DATA
-	#ExpansionIDs.TEST_SET : {
-		#ExpansionDataFields.PACK_RARITY_ODDS : [],
-		#ExpansionDataFields.CONTENT_RARITY_ODDS : [[],[],[],[],[],[]],
-		#ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS : []
-	#},
+const ExpansionProbability: Dictionary = {
+	ExpansionIDs.INCHEFTION       : ProbabilityCurves[Probabilities.CURRENT_IDEAL],
+	ExpansionIDs.GASTROARCHEOLOGY : ProbabilityCurves[Probabilities.CURRENT_IDEAL]
 }
 
 ## data store of content from each expansion. [br]
-## for expansion statistics, see [member ExpansionData]
+## for expansion statistics, see [member ExpansionProbability]
 const ExpansionContent: Dictionary = {
 	ExpansionIDs.INCHEFTION       : IncheftionData.EXPANSION_CONTENT,
 	ExpansionIDs.GASTROARCHEOLOGY : GastroArcheologyData.EXPANSION_CONTENT
 }
 
 ## [b]Purpose[/b]: gets the odds for each rarity of pack to be generated for a specific expansion [br]
-## from [constant ExpansionData] [br]
+## from [constant ExpansionProbability] [br]
 ## [b]ExpansionID[/b]: the expansion for the pack being generated. (See [enum ExpansionIDs])[br]
 ## [b]Returns[/b]: an array of floats, indexed by [enum Rarities] representing the odds for each rarity to be[br]
 ## pulled
 static func get_pack_rarity_odds(ExpansionID : ExpansionIDs) -> Array[float]:
-	var arr: Array[float] = Array(ExpansionData[ExpansionID][ExpansionDataFields.PACK_RARITY_ODDS], TYPE_FLOAT, "", null)
+	var arr: Array[float] = Array(ExpansionProbability[ExpansionID][ProbabilityCurveFields.PACK_RARITY_ODDS], TYPE_FLOAT, "", null)
 	assert(abs(array_sum(arr)-1.0) <= 0.001, "pack odds != 1, "+ str(array_sum(arr)))
 	return arr
 
 ## [b]Purpose[/b]: gets the odds for each content in a specific rarity of pack to be generated for a[br]
-## specific expansion from [constant ExpansionData][br]
+## specific expansion from [constant ExpansionProbability][br]
 ## [b]ExpansionID[/b]: the expansion for the pack being generated. (See [enum ExpansionIDs])[br]
 ## [b]PackRarity[/b]: the rarity for the pack being generated. (see [enum Rarities])[br]
 ## [b]Returns[/b]: an array of floats, indexed by [enum Rarities] representing the odds for each rarity to be[br]
 ## pulled
 static func get_content_rarity_odds(ExpansionID : ExpansionIDs, PackRarity : Rarities) -> Array[float]: 
-	var arr: Array[float] = Array(ExpansionData[ExpansionID][ExpansionDataFields.CONTENT_RARITY_ODDS][PackRarity], TYPE_FLOAT, "", null)
+	var arr: Array[float] = Array(ExpansionProbability[ExpansionID][ProbabilityCurveFields.CONTENT_RARITY_ODDS][PackRarity], TYPE_FLOAT, "", null)
 	assert(abs(array_sum(arr)-1.0) <= 0.001, "pack content odds != 1, " + str(array_sum(arr)))
 	return arr
 
@@ -64,7 +110,7 @@ static func get_content_rarity_odds(ExpansionID : ExpansionIDs, PackRarity : Rar
 ## [b]ExpansionID[/b]: the expansion being queried. (See [enum ExpansionIDs])[br]
 ## [b]PackRarity[/b]: the rarity of the pack being queried. (see [enum Rarities])[br]
 static func get_pack_content_count(ExpansionID : ExpansionIDs, PackRarity : Rarities) -> int:
-	return ExpansionData[ExpansionID][ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS][PackRarity]
+	return ExpansionProbability[ExpansionID][ProbabilityCurveFields.PACK_RARITY_CONTENT_COUNTS][PackRarity]
 
 
 ## [b]Purpose[/b]: gets the number of content contained in an expansion of a specified rarity[br] 
@@ -287,24 +333,25 @@ static func create_sprite_shader_material(texture : Texture, texture_seed: int) 
 		THEBANK._check_in_material(mat_name, material)
 	return THEBANK._check_out_material(mat_name)
 
-#static func create_text_shader_material(texture_seed: int) -> ShaderMaterial:
-	#var mat_name: String = "text_shaded"
-	#if not THEBANK._check_material(mat_name): 
-		#var noise_texture := NoiseTexture2D.new()
-		#var noise := FastNoiseLite.new()
-		#noise.set_seed(texture_seed)
-		#noise.set_noise_type(FastNoiseLite.TYPE_PERLIN)
-		#noise.set_frequency(0.025)
-		#noise.set_fractal_type(FastNoiseLite.FRACTAL_PING_PONG)
-		#noise.set_fractal_octaves(1)
-		#noise_texture.set_seamless(true)
-		#noise_texture.set_noise(noise)
-		#
-		#var material = ShaderMaterial.new()
-		#material.shader = load("res://1_ASSETS/cards/holographic.gdshader")
-		#material.set_shader_parameter("texture_noise", noise_texture)
-		#THEBANK._check_in_material(mat_name, material)
-	#return THEBANK._check_out_material(mat_name)
+static func DEBUG_print_prob_curve_EVs(curve_type: Probabilities) -> void:
+	var expected_values := DEBUG_test_probability_curve(curve_type)
+	
+	LOGGER.log_msg("The average pack from " + Probabilities.find_key(curve_type) + " will contain:")
+	for rarity in Rarities:
+		var r = Rarities[rarity]
+		var Str: String = "├─ " if r != Rarities.HOLY_MOLY else "╰─ "
+		LOGGER.log_msg(Str + str(expected_values[r]) + " " + rarity + " cards")
+	LOGGER.log_msg("and an average of " + str(array_sum(expected_values)) + " total cards.\n")
+
+static func DEBUG_test_probability_curve(curve_type: Probabilities) -> Array[float]:
+	var expected_values: Array[float] = [0, 0, 0, 0, 0, 0]
+	for pack_tier in range(Rarities.size()):
+		var pack_probability = ProbabilityCurves[curve_type][ProbabilityCurveFields.PACK_RARITY_ODDS][pack_tier]
+		var pack_card_count = ProbabilityCurves[curve_type][ProbabilityCurveFields.PACK_RARITY_CONTENT_COUNTS][pack_tier]
+		for card_tier in range(Rarities.size()):
+			var card_probability = ProbabilityCurves[curve_type][ProbabilityCurveFields.CONTENT_RARITY_ODDS][pack_tier][card_tier]
+			expected_values[card_tier] += pack_probability * pack_card_count * card_probability
+	return expected_values
 
 static func DEBUG_print_expansion_EVs(ExpansionID : ExpansionIDs) -> void:
 	var expected_values := get_expansion_EVs(ExpansionID)
@@ -319,10 +366,10 @@ static func DEBUG_print_expansion_EVs(ExpansionID : ExpansionIDs) -> void:
 static func get_expansion_EVs(ExpansionID : ExpansionIDs) -> Array[float]:
 	var expected_values: Array[float] = [0, 0, 0, 0, 0, 0]
 	for pack_tier in range(Rarities.size()):
-		var pack_probability = ExpansionData[ExpansionID][ExpansionDataFields.PACK_RARITY_ODDS][pack_tier]
-		var pack_card_count = ExpansionData[ExpansionID][ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS][pack_tier]
+		var pack_probability = ExpansionProbability[ExpansionID][ProbabilityCurveFields.PACK_RARITY_ODDS][pack_tier]
+		var pack_card_count = ExpansionProbability[ExpansionID][ProbabilityCurveFields.PACK_RARITY_CONTENT_COUNTS][pack_tier]
 		for card_tier in range(Rarities.size()):
-			var card_probability = ExpansionData[ExpansionID][ExpansionDataFields.CONTENT_RARITY_ODDS][pack_tier][card_tier]
+			var card_probability = ExpansionProbability[ExpansionID][ProbabilityCurveFields.CONTENT_RARITY_ODDS][pack_tier][card_tier]
 			expected_values[card_tier] += pack_probability * pack_card_count * card_probability
 	return expected_values
 	

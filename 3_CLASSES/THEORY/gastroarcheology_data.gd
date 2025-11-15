@@ -45,7 +45,7 @@
 #]        
 
 # DATA.Rarities                   
-# DATA.ExpansionDataFields        
+# DATA.ProbabilityCurveFields        
 # DATA.ExpansionContentFields     
 # DATA.CritterDescriptionFields   
 # DATA.CritterNatures             
@@ -55,19 +55,6 @@
 # DATA.ContentTypes   
 
 class_name GastroArcheologyData
-
-const EXPANSION_DATA: Dictionary = {
-	DATA.ExpansionDataFields.PACK_RARITY_ODDS : [0.564, 0.248, 0.109, 0.048, 0.021, 0.010], # exponential, B=0.44
-	DATA.ExpansionDataFields.CONTENT_RARITY_ODDS : [
-		[0.389, 0.278, 0.179, 0.100, 0.044, 0.010], # beta, A=1.05, S=2
-		[0.275, 0.277, 0.220, 0.142, 0.069, 0.017], # beta, A=1.55, S=2
-		[0.180, 0.257, 0.249, 0.186, 0.101, 0.027], # beta, A=2.05, S=2
-		[0.110, 0.221, 0.263, 0.227, 0.138, 0.041], # beta, A=2.55, S=2
-		[0.063, 0.180, 0.261, 0.261, 0.177, 0.058], # beta, A=3.05, S=2
-		[0.035, 0.139, 0.247, 0.285, 0.216, 0.078]  # beta, A=3.55, S=2
-	],
-	DATA.ExpansionDataFields.PACK_RARITY_CONTENT_COUNTS : [2, 3, 5, 7, 11, 13]
-}
 
 func COMMON_CRITTER() -> void: pass
 const COMMON_CRITTERS: Array[Dictionary] = [
